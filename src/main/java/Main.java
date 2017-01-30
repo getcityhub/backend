@@ -13,12 +13,12 @@ public class Main {
     }
 
     private static Category[] retrieveCategories(Request request) {
+        Connection connection = null;
         Statement statement = null;
         ResultSet resultset = null;
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
-
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
             statement = connection.createStatement();
             resultset = statement.executeQuery("SElECT * FROM categories");
 
@@ -41,24 +41,23 @@ public class Main {
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
         } finally {
-            if (resultset != null) {
-                try {
+            try {
+                if (resultset != null) {
                     resultset.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                    resultset = null;
                 }
 
-                resultset = null;
-            }
-
-            if (statement != null) {
-                try {
+                if (statement != null) {
                     statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                    statement = null;
                 }
 
-                statement = null;
+                if (connection != null) {
+                    connection.close();
+                    connection = null;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
 
