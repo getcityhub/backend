@@ -41,23 +41,34 @@ public class Main {
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
         } finally {
-            try {
-                if (resultset != null) {
+            if (resultset != null) {
+                try {
                     resultset.close();
-                    resultset = null;
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
 
-                if (statement != null) {
+                resultset = null;
+            }
+
+            if (statement != null) {
+                try {
                     statement.close();
-                    statement = null;
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
 
-                if (connection != null) {
+                statement = null;
+            }
+
+            if (connection != null) {
+                try {
                     connection.close();
-                    connection = null;
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+
+                connection = null;
             }
         }
 
