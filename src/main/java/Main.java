@@ -10,6 +10,7 @@ public class Main {
     public static void main(String[] args) {
         get("/categories", (req, res) -> retrieveCategories(req), new JsonTransformer());
         System.out.println("Base URL: http://localhost:4567");
+        //post("/users", (req, res) -> createUsers(req));
     }
 
     private static Category[] retrieveCategories(Request request) {
@@ -74,4 +75,36 @@ public class Main {
 
         return null;
     }
+
+    private static User createUser(Request request) {
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
+            statement = connection.createStatement();
+            String resultSet = "INSERT INTO users(last_name,first_name,anonymous,languages,topics,unique_code)"
+                    + "Values (?,?,?,?,?,?)";
+            PreparedStatement preparedStmt = connection.prepareStatement(resultSet);
+            //preparedStmt.setString(1,);
+
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } finally {
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                statement = null;
+            }
+            return null;
+        }
+    }
 }
+
