@@ -2,59 +2,58 @@ import java.util.Date;
 import java.util.Random;
 
 public class User {
-    private String lastName;
+
+    private int id;
     private String firstName;
+    private String lastName;
     private boolean anonymous;
-    private String uniqueC;
     private String[] languages;
     private String[] topics;
-    private int id;
-    private Date update;
+    private String uniqueCode;
     private Date createdAt;
+    private Date updatedAt;
 
-    public User(String lastName, String firstName, boolean anonymous, String[] languages, String[] topics, int id){
-        this.lastName = lastName;
+    public User(int id, String firstName, String lastName, boolean anonymous, String[] languages, String[] topics, String uniqueCode, Date createdAt, Date updatedAt) {
+        this.id = id;
         this.firstName = firstName;
+        this.lastName = lastName;
         this.anonymous = anonymous;
         this.languages = languages;
         this.topics = topics;
-        this.id = id;
-        update = new Date();
-        createdAt = new Date();
-        uniqueC = generateRandom();
+        this.uniqueCode = uniqueCode;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    public static String generateRandom(){
-        String base = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789";
-        //deleted O, 0, I, l to avoid confusion
-        String s = "";
-        Random random = new Random();
-        for(int i = 0; i < 8; i++)
-            s += Character.toString(base.charAt(random.nextInt(base.length())));
-        return s;
-    }
-
-    public String getLastName(){
-        return lastName;
-    }
-
-    public String getFirstName(){
+    public String getFirstName() {
         return firstName;
     }
 
-    public boolean isAnonymous(){
+    public String getLastName() {
+        return lastName;
+    }
+
+    public boolean isAnonymous() {
         return anonymous;
     }
 
-    public String[] getLanguages(){
+    public String[] getLanguages()  {
         return languages;
     }
 
-    public String[] getTopics(){
+    public String[] getTopics() {
         return topics;
     }
 
-    public String getUniqueC(){
-        return uniqueC;
+    public String getUniqueCode() {
+        return uniqueCode;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 }
