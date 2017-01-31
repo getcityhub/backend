@@ -103,7 +103,7 @@ public class Main {
         String topicsString = "";
 
         for (JsonElement element : topics) {
-            topicsString += element.getAsString();
+            topicsString += element.getAsString() + ",";
         }
 
         topicsString = topicsString.substring(0, topicsString.length() - 1);
