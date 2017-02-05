@@ -31,6 +31,19 @@ public class Main {
 
         });
 
+
+        exception(UserCreationException.class, (exception, request, response) -> {
+            ResponseError responseError = new ResponseError(400, "The firstName, lastName, anonymous, languages, and topics keys need to be included in your request body.");
+            //add quotation marks later
+
+            response.status(responseError.getStatusCode());
+
+            JsonTransformer transformer = new JsonTransformer();
+            String body = transformer.render(responseError);
+            response.body(body);
+
+        });
+
         System.out.println("Base URL: http://localhost:4567");
     }
 
@@ -97,9 +110,17 @@ public class Main {
         return null;
     }
 
-    private static User createUser(Request request) {
+    private static User createUser(Request request) throws UserCreationException{
         JsonParser parser = new JsonParser();
         JsonObject userObject = (JsonObject) parser.parse(request.body());
+
+        if(!userObject.has("firstName")
+                || !userObject.has("lastName")
+                || !userObject.has("anonymous")
+                || !userObject.has("languages")
+                || !userObject.has("topics")){
+            throw new UserCreationException();
+        }
 
         String firstName = userObject.get("firstName").getAsString();
         String lastName = userObject.get("lastName").getAsString();
