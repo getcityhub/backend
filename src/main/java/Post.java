@@ -9,15 +9,17 @@ public class Post {
     private Date updatedAt;
     private int authorId;
     private String title;
+    private String text;
     private String topic;
     private String language;
 
-    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String topic, String language){
+    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, String topic, String language){
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.authorId = authorId;
         this.title = title;
+        this.text = text;
         this.topic = topic;
         this.language = language;
     }
@@ -28,9 +30,7 @@ public class Post {
         return createdAt;
     }
 
-    public Date getUpdatedAt(){
-        return updatedAt;
-    }
+    public Date getUpdatedAt(){ return updatedAt; }
 
     public int getAuthorId() {
         return authorId;
@@ -39,6 +39,8 @@ public class Post {
     public String getTitle() {
         return title;
     }
+
+    public String getText(){ return text; }
 
     public String getLanguages()  {
         return language;

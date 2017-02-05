@@ -13,9 +13,11 @@ import static spark.Spark.*;
 public class Main {
 
     public static void main(String[] args) {
-        get("/categories", (req, res) -> retrieveCategories(req), new JsonTransformer());
         post("/posts", (req, res) -> createPost(req), new JsonTransformer());
         post("/users", (req, res) -> createUser(req), new JsonTransformer());
+
+        get("/categories", (req, res) -> retrieveCategories(req), new JsonTransformer());
+        get("/posts",(req, res) -> retrievePosts(req), new JsonTransformer());
 
         System.out.println("Base URL: http://localhost:4567");
     }
@@ -28,7 +30,7 @@ public class Main {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
             statement = connection.createStatement();
-            resultset = statement.executeQuery("SElECT * FROM categories");
+            resultset = statement.executeQuery("SELECT * FROM categories");
 
             ArrayList<Category> categories = new ArrayList<Category>();
 
@@ -231,6 +233,7 @@ public class Main {
         int authorId = postObject.get("authorId").getAsInt();
         String title = postObject.get("title").getAsString();
         String topic = postObject.get("topic").getAsString();
+        String text = postObject.get("text").getAsString();
         String language = postObject.get("language").getAsString();
 
         Connection connection = null;
@@ -242,12 +245,13 @@ public class Main {
         try{
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
 
-            String query = "INSERT INTO posts (author_id, title, topic, language) VALUES (?, ?, ?, ?)"; //topic needs to be linked to categories
+            String query = "INSERT INTO posts (author_id, title, topic, text, language) VALUES (?, ?, ?, ?, ?)"; //topic needs to be linked to categories
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setInt(1, authorId);
             statement.setString(2, title);
             statement.setString(3, topic);
-            statement.setString(4, language);
+            statement.setString(4, text);
+            statement.setString(5, language);
             statement.executeUpdate();
 
             resultSet = statement.getGeneratedKeys();
@@ -264,11 +268,12 @@ public class Main {
                     String postTitle = postResultSet.getString(5);
                     String postTopic = postResultSet.getString(6);
                     String postLanguage = postResultSet.getString(7);
+                    String postText = postResultSet.getString(8);
 
-                    return new Post(id, postCreatedAt, postUpdatedAt, postAuthorId, postTitle, postLanguage, postTopic);
+                    return new Post(id, postCreatedAt, postUpdatedAt, postAuthorId, postTitle, postText, postLanguage, postTopic);
                 }
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
@@ -324,6 +329,74 @@ public class Main {
             }
         }
 
+        return null;
+    }
+
+    private static Post[] retrievePosts(Request request){
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultset = null;
+
+        try{
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
+            statement = connection.createStatement();
+            resultset = statement.executeQuery("SELECT * FROM posts");
+
+            ArrayList<Post> posts = new ArrayList<>();
+
+            while (resultset.next()) {
+                int id = resultset.getInt(1);
+                int authorId = resultset.getInt(2);
+                Date createdAt = resultset.getDate(3);
+                Date updatedAt = resultset.getDate(4);
+                String title = resultset.getString(5);
+                String topic = resultset.getString(6);
+                String language = resultset.getString(7);
+                String text = resultset.getString(8);
+
+                Post post = new Post(id, createdAt, updatedAt, authorId, title, text, topic, language);
+                posts.add(post);
+            }
+
+            Post[] postsArray = new Post[posts.size()];
+            postsArray = posts.toArray(postsArray);
+
+            return postsArray;
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } finally {
+            if (resultset != null) {
+                try {
+                    resultset.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                resultset = null;
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                statement = null;
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                connection = null;
+            }
+        }
         return null;
     }
 }
