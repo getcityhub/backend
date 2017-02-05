@@ -14,6 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         get("/categories", (req, res) -> retrieveCategories(req), new JsonTransformer());
+        post("/posts", (req, res) -> createPost(req), new JsonTransformer());
         post("/users", (req, res) -> createUser(req), new JsonTransformer());
 
         System.out.println("Base URL: http://localhost:4567");
@@ -222,5 +223,107 @@ public class Main {
             s += Character.toString(base.charAt(random.nextInt(base.length())));
         return s;
     }
-}
 
+    private static Post createPost(Request request){
+        JsonParser parser = new JsonParser();
+        JsonObject postObject =  (JsonObject) parser.parse(request.body());
+
+        int authorId = postObject.get("authorId").getAsInt();
+        String title = postObject.get("title").getAsString();
+        String topic = postObject.get("topic").getAsString();
+        String language = postObject.get("language").getAsString();
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Statement postStatement = null;
+        ResultSet postResultSet = null;
+
+        try{
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
+
+            String query = "INSERT INTO posts (author_id, title, topic, language) VALUES (?, ?, ?, ?)"; //topic needs to be linked to categories
+            statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, authorId);
+            statement.setString(2, title);
+            statement.setString(3, topic);
+            statement.setString(4, language);
+            statement.executeUpdate();
+
+            resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                int id = resultSet.getInt(1);
+
+                postStatement = connection.createStatement();
+                postResultSet = postStatement.executeQuery("SELECT * FROM posts WHERE id = " + id);
+
+                if (postResultSet.next()) {
+                    int postAuthorId = postResultSet.getInt(2);
+                    Date postCreatedAt = postResultSet.getDate(3);
+                    Date postUpdatedAt = postResultSet.getDate(4);
+                    String postTitle = postResultSet.getString(5);
+                    String postTopic = postResultSet.getString(6);
+                    String postLanguage = postResultSet.getString(7);
+
+                    return new Post(id, postCreatedAt, postUpdatedAt, postAuthorId, postTitle, postLanguage, postTopic);
+                }
+            }
+        }catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } finally {
+            if (postResultSet != null) {
+                try {
+                    postResultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                postResultSet = null;
+            }
+
+            if (postStatement != null) {
+                try {
+                    postStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                postStatement = null;
+            }
+
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                resultSet = null;
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                statement = null;
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                connection = null;
+            }
+        }
+
+        return null;
+    }
+}

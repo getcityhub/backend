@@ -24,6 +24,7 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+    public int getId() {return id; }
 
     public String getFirstName() {
         return firstName;
