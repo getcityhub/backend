@@ -19,6 +19,18 @@ public class Main {
         get("/categories", (req, res) -> retrieveCategories(req), new JsonTransformer());
         get("/posts",(req, res) -> retrievePosts(req), new JsonTransformer());
 
+        exception(PostCreationException.class, (exception, request, response) -> {
+            ResponseError responseError = new ResponseError(400, "The authorId, title, topics, language, and text keys need to be included in your request body.");
+            //add quotation marks later
+
+            response.status(responseError.getStatusCode());
+
+            JsonTransformer transformer = new JsonTransformer();
+            String body = transformer.render(responseError);
+            response.body(body);
+
+        });
+
         System.out.println("Base URL: http://localhost:4567");
     }
 
@@ -226,9 +238,17 @@ public class Main {
         return s;
     }
 
-    private static Post createPost(Request request){
+    private static Post createPost(Request request) throws PostCreationException{
         JsonParser parser = new JsonParser();
         JsonObject postObject =  (JsonObject) parser.parse(request.body());
+
+        if(!postObject.has("author")
+                || !postObject.has("title")
+                || !postObject.has("topic")
+                || !postObject.has("text")
+                || !postObject.has("language")){
+            throw new PostCreationException();
+        }
 
         int authorId = postObject.get("authorId").getAsInt();
         String title = postObject.get("title").getAsString();
