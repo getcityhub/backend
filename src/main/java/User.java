@@ -7,13 +7,14 @@ public class User {
     private String firstName;
     private String lastName;
     private boolean anonymous;
+    private short zipCode;
     private String[] languages;
     private String[] topics;
     private String uniqueCode;
     private Date createdAt;
     private Date updatedAt;
 
-    public User(int id, String firstName, String lastName, boolean anonymous, String[] languages, String[] topics, String uniqueCode, Date createdAt, Date updatedAt) {
+    public User(int id, String firstName, String lastName, boolean anonymous, short zipCode, String[] languages, String[] topics, String uniqueCode, Date createdAt, Date updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -23,6 +24,7 @@ public class User {
         this.uniqueCode = uniqueCode;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.zipCode = zipCode;
     }
     public int getId() {return id; }
 
@@ -37,6 +39,8 @@ public class User {
     public boolean isAnonymous() {
         return anonymous;
     }
+
+    public short getZipCode(){ return zipCode; }
 
     public String[] getLanguages()  {
         return languages;
@@ -57,4 +61,5 @@ public class User {
     public Date getUpdatedAt() {
         return updatedAt;
     }
+
 }

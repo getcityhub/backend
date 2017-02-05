@@ -117,6 +117,7 @@ public class Main {
         if(!userObject.has("firstName")
                 || !userObject.has("lastName")
                 || !userObject.has("anonymous")
+                || !userObject.has("zipCode")
                 || !userObject.has("languages")
                 || !userObject.has("topics")){
             throw new UserCreationException();
@@ -125,6 +126,7 @@ public class Main {
         String firstName = userObject.get("firstName").getAsString();
         String lastName = userObject.get("lastName").getAsString();
         boolean anonymous = userObject.get("anonymous").getAsBoolean();
+        short zipCode = userObject.get("zipCode").getAsShort();
 
         JsonArray languages = userObject.get("languages").getAsJsonArray();
         String languagesString = "";
@@ -155,14 +157,15 @@ public class Main {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
 
-            String query = "INSERT INTO users (first_name, last_name, anonymous, languages, topics, unique_code) VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (first_name, last_name, anonymous, zip_code, languages, topics, unique_code) VALUES (?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, firstName);
             statement.setString(2, lastName);
             statement.setBoolean(3, anonymous);
-            statement.setString(4, languagesString);
-            statement.setString(5, topicsString);
-            statement.setString(6, randomCode);
+            statement.setShort(4, zipCode);
+            statement.setString(5, languagesString);
+            statement.setString(6, topicsString);
+            statement.setString(7, randomCode);
             statement.executeUpdate();
 
             resultSet = statement.getGeneratedKeys();
@@ -176,18 +179,19 @@ public class Main {
                     String userFirstName = userResultSet.getString(2);
                     String userLastName = userResultSet.getString(3);
                     boolean userAnonymous = userResultSet.getBoolean(4);
+                    short userZipCode = userResultSet.getShort(5);
 
-                    String userLanguages = userResultSet.getString(5);
+                    String userLanguages = userResultSet.getString(6);
                     String[] userLanguagesArray = userLanguages.split(",");
 
-                    String userTopics = userResultSet.getString(6);
+                    String userTopics = userResultSet.getString(7);
                     String[] userTopicsArray = userTopics.split(",");
 
-                    String userUniqueCode = userResultSet.getString(7);
-                    Date userCreatedAt = userResultSet.getDate(8);
-                    Date userUpdatedAt = userResultSet.getDate(9);
+                    String userUniqueCode = userResultSet.getString(8);
+                    Date userCreatedAt = userResultSet.getDate(9);
+                    Date userUpdatedAt = userResultSet.getDate(10);
 
-                    return new User(id, userFirstName, userLastName, userAnonymous, userLanguagesArray, userTopicsArray, userUniqueCode, userCreatedAt, userUpdatedAt);
+                    return new User(id, userFirstName, userLastName, userAnonymous, userZipCode, userLanguagesArray, userTopicsArray, userUniqueCode, userCreatedAt, userUpdatedAt);
                 }
             }
         } catch (SQLException e) {
