@@ -1,7 +1,6 @@
 package nyc.getcityhub;
 
 import java.util.Date;
-import java.util.Random;
 
 public class User {
 
@@ -28,7 +27,10 @@ public class User {
         this.updatedAt = updatedAt;
         this.zipCode = zipCode;
     }
-    public int getId() {return id; }
+
+    public int getId() {
+        return id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -42,7 +44,9 @@ public class User {
         return anonymous;
     }
 
-    public short getZipCode(){ return zipCode; }
+    public short getZipCode() {
+        return zipCode;
+    }
 
     public String[] getLanguages()  {
         return languages;
@@ -63,5 +67,4 @@ public class User {
     public Date getUpdatedAt() {
         return updatedAt;
     }
-
 }

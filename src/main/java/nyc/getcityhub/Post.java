@@ -1,8 +1,10 @@
-package nyc.getcityhub; /**
- * Created by carol on 2/5/17.
- */
+package nyc.getcityhub;
+
 import java.util.Date;
 
+/**
+ * Created by carol on 2/5/17.
+ */
 public class Post {
     private int id;
     private Date createdAt;
@@ -13,7 +15,7 @@ public class Post {
     private String topic;
     private String language;
 
-    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, String topic, String language){
+    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, String topic, String language) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -24,13 +26,15 @@ public class Post {
         this.language = language;
     }
 
-    public int getId() {return id; }
+    public int getId() {
+        return id;
+    }
 
     public Date getCreatedAt() {
         return createdAt;
     }
 
-    public Date getUpdatedAt(){ return updatedAt; }
+    public Date getUpdatedAt() { return updatedAt; }
 
     public int getAuthorId() {
         return authorId;
@@ -40,7 +44,9 @@ public class Post {
         return title;
     }
 
-    public String getText(){ return text; }
+    public String getText() {
+        return text;
+    }
 
     public String getLanguages()  {
         return language;
@@ -49,5 +55,4 @@ public class Post {
     public String getTopics() {
         return topic;
     }
-
 }
