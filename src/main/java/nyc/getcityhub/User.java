@@ -1,3 +1,5 @@
+package nyc.getcityhub;
+
 import java.util.Date;
 import java.util.Random;
 

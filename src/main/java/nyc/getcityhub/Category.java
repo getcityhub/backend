@@ -1,3 +1,5 @@
+package nyc.getcityhub;
+
 public class Category {
 
     private int id;
