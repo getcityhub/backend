@@ -1,6 +1,6 @@
 package nyc.getcityhub.controllers;
 
-import nyc.getcityhub.Category;
+import nyc.getcityhub.models.Category;
 import spark.Request;
 
 import java.sql.*;

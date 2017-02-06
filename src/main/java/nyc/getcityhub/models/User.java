@@ -1,4 +1,4 @@
-package nyc.getcityhub;
+package nyc.getcityhub.models;
 
 import java.util.Date;
 

@@ -3,7 +3,7 @@ package nyc.getcityhub.controllers;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nyc.getcityhub.BadRequestException;
-import nyc.getcityhub.Post;
+import nyc.getcityhub.models.Post;
 import spark.Request;
 
 import java.sql.*;

@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nyc.getcityhub.BadRequestException;
-import nyc.getcityhub.User;
+import nyc.getcityhub.models.User;
 import spark.Request;
 
 import java.sql.*;
