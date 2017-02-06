@@ -13,35 +13,20 @@ import static spark.Spark.*;
 public class Main {
 
     public static void main(String[] args) {
+        before((request, response) -> response.type("application/json; charset=utf-8"));
+
         post("/posts", (req, res) -> createPost(req), new JsonTransformer());
         post("/users", (req, res) -> createUser(req), new JsonTransformer());
 
         get("/categories", (req, res) -> retrieveCategories(req), new JsonTransformer());
         get("/posts",(req, res) -> retrievePosts(req), new JsonTransformer());
 
-        exception(PostCreationException.class, (exception, request, response) -> {
-            ResponseError responseError = new ResponseError(400, "The authorId, title, topics, language, and text keys need to be included in your request body.");
-            //add quotation marks later
-
-            response.status(responseError.getStatusCode());
+        exception(BadRequestException.class, (exception, request, response) -> {
+            ResponseError error = new ResponseError(400, exception.getMessage());
+            response.status(error.getStatusCode());
 
             JsonTransformer transformer = new JsonTransformer();
-            String body = transformer.render(responseError);
-            response.body(body);
-
-        });
-
-
-        exception(UserCreationException.class, (exception, request, response) -> {
-            ResponseError responseError = new ResponseError(400, "The firstName, lastName, anonymous, languages, and topics keys need to be included in your request body.");
-            //add quotation marks later
-
-            response.status(responseError.getStatusCode());
-
-            JsonTransformer transformer = new JsonTransformer();
-            String body = transformer.render(responseError);
-            response.body(body);
-
+            response.body(transformer.render(error));
         });
 
         System.out.println("Base URL: http://localhost:4567");
@@ -110,7 +95,7 @@ public class Main {
         return null;
     }
 
-    private static User createUser(Request request) throws UserCreationException{
+    private static User createUser(Request request) throws BadRequestException {
         JsonParser parser = new JsonParser();
         JsonObject userObject = (JsonObject) parser.parse(request.body());
 
@@ -119,8 +104,8 @@ public class Main {
                 || !userObject.has("anonymous")
                 || !userObject.has("zipCode")
                 || !userObject.has("languages")
-                || !userObject.has("topics")){
-            throw new UserCreationException();
+                || !userObject.has("topics")) {
+            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'languages', and 'topics' keys must be included in your request body.");
         }
 
         String firstName = userObject.get("firstName").getAsString();
@@ -263,7 +248,7 @@ public class Main {
         return s;
     }
 
-    private static Post createPost(Request request) throws PostCreationException{
+    private static Post createPost(Request request) throws BadRequestException {
         JsonParser parser = new JsonParser();
         JsonObject postObject =  (JsonObject) parser.parse(request.body());
 
@@ -271,8 +256,8 @@ public class Main {
                 || !postObject.has("title")
                 || !postObject.has("topic")
                 || !postObject.has("text")
-                || !postObject.has("language")){
-            throw new PostCreationException();
+                || !postObject.has("language")) {
+            throw new BadRequestException("The 'authorId', 'title', 'topics', 'language', and 'text' keys must be included in your request body.");
         }
 
         int authorId = postObject.get("authorId").getAsInt();
