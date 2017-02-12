@@ -18,7 +18,7 @@ public class CategoryController {
         ResultSet resultset = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
             statement = connection.createStatement();
             resultset = statement.executeQuery("SELECT * FROM categories");
 

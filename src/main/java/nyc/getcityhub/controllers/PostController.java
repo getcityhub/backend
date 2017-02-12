@@ -40,7 +40,7 @@ public class PostController {
         ResultSet postResultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
 
             String query = "INSERT INTO posts (author_id, title, topic, text, language) VALUES (?, ?, ?, ?, ?)"; //topic needs to be linked to categories
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -140,7 +140,7 @@ public class PostController {
         ResultSet resultset = null;
 
         try{
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
             statement = connection.createStatement();
             resultset = statement.executeQuery("SELECT * FROM posts");
 

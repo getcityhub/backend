@@ -62,7 +62,7 @@ public class UserController {
         ResultSet userResultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
 
             String query = "INSERT INTO users (first_name, last_name, anonymous, zip_code, languages, topics, unique_code) VALUES (?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
