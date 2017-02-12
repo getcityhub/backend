@@ -26,15 +26,15 @@ public class UserController {
                 || !userObject.has("anonymous")
                 || !userObject.has("zipCode")
                 || !userObject.has("languages")
-                || !userObject.has("emailAddress")) {
-            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipCode', 'languages', and 'emailAddress' keys must be included in your request body.");
+                || !userObject.has("email")) {
+            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipCode', 'languages', and 'email' keys must be included in your request body.");
         }
 
         String firstName = userObject.get("firstName").getAsString();
         String lastName = userObject.get("lastName").getAsString();
         boolean anonymous = userObject.get("anonymous").getAsBoolean();
         short zipCode = userObject.get("zipCode").getAsShort();
-        String emailAddress = userObject.get("emailAddress").getAsString();
+        String emailAddress = userObject.get("email").getAsString();
 
         JsonArray languages = userObject.get("languages").getAsJsonArray();
         String languagesString = "";
@@ -56,7 +56,7 @@ public class UserController {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
 
-            String query = "INSERT INTO users (first_name, last_name, anonymous, zip_code, languages, email_address, unique_code) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (first_name, last_name, anonymous, zip_code, languages, email, unique_code) VALUES (?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, firstName);
             statement.setString(2, lastName);

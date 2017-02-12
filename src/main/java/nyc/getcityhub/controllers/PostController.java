@@ -19,17 +19,17 @@ public class PostController {
         JsonParser parser = new JsonParser();
         JsonObject postObject =  (JsonObject) parser.parse(request.body());
 
-        if (!postObject.has("author")
+        if (!postObject.has("authorId")
                 || !postObject.has("title")
-                || !postObject.has("topic")
+                || !postObject.has("categoryId")
                 || !postObject.has("text")
                 || !postObject.has("language")) {
-            throw new BadRequestException("The 'authorId', 'title', 'topics', 'language', and 'text' keys must be included in your request body.");
+            throw new BadRequestException("The 'authorId', 'title', 'categoryId', 'language', and 'text' keys must be included in your request body.");
         }
 
         int authorId = postObject.get("authorId").getAsInt();
         String title = postObject.get("title").getAsString();
-        String topic = postObject.get("topic").getAsString();
+        int categoryId = postObject.get("categoryId").getAsInt();
         String text = postObject.get("text").getAsString();
         String language = postObject.get("language").getAsString();
 
@@ -42,11 +42,11 @@ public class PostController {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
 
-            String query = "INSERT INTO posts (author_id, title, topic, text, language) VALUES (?, ?, ?, ?, ?)"; //topic needs to be linked to categories
+            String query = "INSERT INTO posts (author_id, title, category_id, text, language) VALUES (?, ?, ?, ?, ?)"; //topic needs to be linked to categories
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setInt(1, authorId);
             statement.setString(2, title);
-            statement.setString(3, topic);
+            statement.setInt(3, categoryId);
             statement.setString(4, text);
             statement.setString(5, language);
             statement.executeUpdate();
@@ -60,14 +60,14 @@ public class PostController {
 
                 if (postResultSet.next()) {
                     int postAuthorId = postResultSet.getInt(2);
-                    Date postCreatedAt = postResultSet.getDate(3);
-                    Date postUpdatedAt = postResultSet.getDate(4);
-                    String postTitle = postResultSet.getString(5);
-                    String postTopic = postResultSet.getString(6);
-                    String postLanguage = postResultSet.getString(7);
-                    String postText = postResultSet.getString(8);
+                    String postTitle = postResultSet.getString(3);
+                    String postText = postResultSet.getString(4);
+                    int postCategoryId = postResultSet.getInt(5);
+                    String postLanguage = postResultSet.getString(6);
+                    Date postCreatedAt = postResultSet.getDate(7);
+                    Date postUpdatedAt = postResultSet.getDate(8);
 
-                    return new Post(id, postCreatedAt, postUpdatedAt, postAuthorId, postTitle, postText, postLanguage, postTopic);
+                    return new Post(id, postCreatedAt, postUpdatedAt, postAuthorId, postTitle, postText, postCategoryId, postLanguage);
                 }
             }
         } catch (SQLException e) {
@@ -152,11 +152,11 @@ public class PostController {
                 Date createdAt = resultset.getDate(3);
                 Date updatedAt = resultset.getDate(4);
                 String title = resultset.getString(5);
-                String topic = resultset.getString(6);
+                int categoryId = resultset.getInt(6);
                 String language = resultset.getString(7);
                 String text = resultset.getString(8);
 
-                Post post = new Post(id, createdAt, updatedAt, authorId, title, text, topic, language);
+                Post post = new Post(id, createdAt, updatedAt, authorId, title, text, categoryId, language);
                 posts.add(post);
             }
 
