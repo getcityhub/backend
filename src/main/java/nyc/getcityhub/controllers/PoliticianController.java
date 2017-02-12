@@ -30,10 +30,15 @@ public class PoliticianController {
                 String firstName = resultset.getString(2);
                 String lastName = resultset.getString(3);
                 short zipCode = resultset.getShort(4);
-                Date CreatedAt = resultset.getDate(5);
-                Date UpdatedAt = resultset.getDate(6);
+                String email = resultset.getString(5);
+                String phoneNumber = resultset.getString(6);
+                String facebook = resultset.getString(7);
+                String google = resultset.getString(8);
+                String twitter = resultset.getString(9);
+                Date CreatedAt = resultset.getDate(10);
+                Date UpdatedAt = resultset.getDate(11);
 
-                Politician politician = new Politician(id, firstName, lastName, zipCode, CreatedAt, UpdatedAt);
+                Politician politician = new Politician(id, firstName, lastName, zipCode, email, phoneNumber, facebook, google, twitter, CreatedAt, UpdatedAt);
                 Politicians.add(politician);
             }
 
