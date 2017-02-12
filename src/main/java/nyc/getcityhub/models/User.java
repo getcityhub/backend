@@ -11,17 +11,18 @@ public class User {
     private short zipCode;
     private String[] languages;
     private String[] topics;
+    private String emailAddress;
     private String uniqueCode;
     private Date createdAt;
     private Date updatedAt;
 
-    public User(int id, String firstName, String lastName, boolean anonymous, short zipCode, String[] languages, String[] topics, String uniqueCode, Date createdAt, Date updatedAt) {
+    public User(int id, String firstName, String lastName, boolean anonymous, short zipCode, String[] languages, String emailAddress, String uniqueCode, Date createdAt, Date updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.anonymous = anonymous;
         this.languages = languages;
-        this.topics = topics;
+        this.emailAddress = emailAddress;
         this.uniqueCode = uniqueCode;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -52,9 +53,7 @@ public class User {
         return languages;
     }
 
-    public String[] getTopics() {
-        return topics;
-    }
+    public String getEmailAddress() { return emailAddress; }
 
     public String getUniqueCode() {
         return uniqueCode;

@@ -26,7 +26,7 @@ public class Main {
             Date date = Calendar.getInstance().getTime();
             String reportDate = df.format(date);
             logger.info(request.ip() + " [" + reportDate + "] \"" + request.requestMethod() + " " + request.uri() + " " + request.protocol() + "\"");
-            //need to add response status code later
+            //need to add response
         });
 
         post("/posts", (req, res) -> PostController.createPost(req), new JsonTransformer());
