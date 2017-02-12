@@ -26,7 +26,7 @@ CREATE TABLE users (
   anonymous TINYINT(1) NOT NULL,
   zip_code SMALLINT,
   languages TEXT NOT NULL,
-  topics text not null,
+  email TEXT NOT NULL,
   unique_code CHAR(8) NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

@@ -8,6 +8,7 @@ public class JsonTransformer implements ResponseTransformer {
 
     private Gson gson = new GsonBuilder()
             .disableHtmlEscaping()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             .create();
 
     @Override
