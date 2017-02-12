@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nyc.getcityhub.BadRequestException;
+import nyc.getcityhub.InternalServerException;
 import nyc.getcityhub.models.User;
 import spark.Request;
 
@@ -16,7 +17,7 @@ import java.util.Random;
  */
 public class UserController {
 
-    public static User createUser(Request request) throws BadRequestException {
+    public static User createUser(Request request) throws BadRequestException, InternalServerException {
         JsonParser parser = new JsonParser();
         JsonObject userObject = (JsonObject) parser.parse(request.body());
 
@@ -26,7 +27,7 @@ public class UserController {
                 || !userObject.has("zipCode")
                 || !userObject.has("languages")
                 || !userObject.has("topics")) {
-            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'languages', and 'topics' keys must be included in your request body.");
+            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipCode', 'languages', and 'topics' keys must be included in your request body.");
         }
 
         String firstName = userObject.get("firstName").getAsString();
@@ -101,6 +102,11 @@ public class UserController {
                 }
             }
         } catch (SQLException e) {
+            if(e.getErrorCode() == 1049)
+                throw new InternalServerException("The MySQL database doesn't exist");
+            else if(e.getErrorCode() == 1146)
+                throw new InternalServerException("The users table doesn't exist in the database");
+
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());

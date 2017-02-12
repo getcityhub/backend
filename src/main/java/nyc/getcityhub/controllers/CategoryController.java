@@ -1,5 +1,6 @@
 package nyc.getcityhub.controllers;
 
+import nyc.getcityhub.InternalServerException;
 import nyc.getcityhub.models.Category;
 import spark.Request;
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  */
 public class CategoryController {
 
-    public static Category[] retrieveCategories(Request request) {
+    public static Category[] retrieveCategories(Request request) throws InternalServerException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultset = null;
@@ -36,6 +37,11 @@ public class CategoryController {
 
             return categoriesArray;
         } catch (SQLException e) {
+            if (e.getErrorCode() == 1049)
+                throw new InternalServerException("The MySQL database doesn't exist.");
+            else if (e.getErrorCode() == 1146)
+                throw new InternalServerException("The categories table doesn't exist in the database.");
+
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());

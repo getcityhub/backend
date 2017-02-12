@@ -25,6 +25,14 @@ public class Main {
             response.body(transformer.render(error));
         });
 
+        exception(InternalServerException.class, (exception, request, response) -> {
+            ResponseError error = new ResponseError(500, exception.getMessage());
+            response.status(error.getStatusCode());
+
+            JsonTransformer transformer = new JsonTransformer();
+            response.body(transformer.render(error));
+        });
+
         System.out.println("Base URL: http://localhost:4567");
     }
 }

@@ -3,6 +3,7 @@ package nyc.getcityhub.controllers;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nyc.getcityhub.BadRequestException;
+import nyc.getcityhub.InternalServerException;
 import nyc.getcityhub.models.Post;
 import spark.Request;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  */
 public class PostController {
 
-    public static Post createPost(Request request) throws BadRequestException {
+    public static Post createPost(Request request) throws BadRequestException, InternalServerException{
         JsonParser parser = new JsonParser();
         JsonObject postObject =  (JsonObject) parser.parse(request.body());
 
@@ -70,6 +71,11 @@ public class PostController {
                 }
             }
         } catch (SQLException e) {
+            if(e.getErrorCode() == 1049)
+                throw new InternalServerException("The MySQL database doesn't exist");
+            else if(e.getErrorCode() == 1146)
+                throw new InternalServerException("The posts table doesn't exist in the database");
+
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
@@ -128,7 +134,7 @@ public class PostController {
         return null;
     }
 
-    public static Post[] retrievePosts(Request request){
+    public static Post[] retrievePosts(Request request) throws InternalServerException{
         Connection connection = null;
         Statement statement = null;
         ResultSet resultset = null;
@@ -158,7 +164,12 @@ public class PostController {
             postsArray = posts.toArray(postsArray);
 
             return postsArray;
-        } catch (SQLException e) {
+        } catch (SQLException e){
+            if(e.getErrorCode() == 1049)
+                throw new InternalServerException("The MySQL database doesn't exist");
+            else if(e.getErrorCode() == 1146)
+                throw new InternalServerException("The posts table doesn't exist in the database");
+
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
