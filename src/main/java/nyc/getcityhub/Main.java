@@ -1,6 +1,7 @@
 package nyc.getcityhub;
 
 import nyc.getcityhub.controllers.CategoryController;
+import nyc.getcityhub.controllers.PoliticianController;
 import nyc.getcityhub.controllers.PostController;
 import nyc.getcityhub.controllers.UserController;
 
@@ -16,6 +17,7 @@ public class Main {
 
         get("/categories", (req, res) -> CategoryController.retrieveCategories(req), new JsonTransformer());
         get("/posts",(req, res) -> PostController.retrievePosts(req), new JsonTransformer());
+        get("/politicians", (req, res) -> PoliticianController.retrievePolitician(req), new JsonTransformer());
 
         exception(BadRequestException.class, (exception, request, response) -> {
             ResponseError error = new ResponseError(400, exception.getMessage());
