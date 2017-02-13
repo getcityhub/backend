@@ -18,10 +18,14 @@ import java.util.Random;
 public class UserController {
 
     public static User createUser(Request request) throws BadRequestException, InternalServerException {
+        if (request.body().length() == 0) {
+            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipCode', 'languages', and 'email' keys must be included in your request body.");
+        }
+
         JsonParser parser = new JsonParser();
         JsonObject userObject = (JsonObject) parser.parse(request.body());
 
-        if(!userObject.has("firstName")
+        if (!userObject.has("firstName")
                 || !userObject.has("lastName")
                 || !userObject.has("anonymous")
                 || !userObject.has("zipCode")

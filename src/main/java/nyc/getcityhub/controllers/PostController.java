@@ -4,7 +4,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nyc.getcityhub.BadRequestException;
 import nyc.getcityhub.InternalServerException;
+import nyc.getcityhub.Main;
 import nyc.getcityhub.models.Post;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Request;
 
 import java.sql.*;
@@ -139,6 +142,9 @@ public class PostController {
         String language = request.queryParams("lang");
         String zipCode = request.queryParams("zip");
 
+        Logger logger = LoggerFactory.getLogger(PostController.class);
+        logger.debug("category id: " + categoryId);
+
         Connection connection = null;
         Statement statement = null;
         ResultSet resultset = null;
@@ -147,33 +153,41 @@ public class PostController {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
             statement = connection.createStatement();
 
-            String command = "SELECT * FROM posts WHERE category_id = " + categoryId + " AND language = '" + language + "'";
+            ArrayList<String> parts = new ArrayList<>();
 
-            if(categoryId.equals(null))
-                command = "SELECT * FROM posts WHERE language = " + language;
-            else if(language.equals(null))
-                command = "SELECT * FROM posts WHERE category_id = " + categoryId;
-            else if(categoryId.equals(null) && language.equals(null))
-                command = "SELECT * FROM posts";
+            if (categoryId != null) parts.add("category_id = " + categoryId);
+            if (language != null) parts.add("language = '" + language + "'");
+            //if (zipCode != null) parts.add("zip_code = " + zipCode);
+
+            String command = "SELECT * FROM posts";
+
+            if (parts.size() > 0) {
+                command += " WHERE ";
+
+                for (String part : parts) {
+                    command += part;
+
+                    if (!part.equals(parts.get(parts.size() - 1))) {
+                        command += " AND ";
+                    }
+                }
+            }
 
             resultset = statement.executeQuery(command);
-
             ArrayList<Post> posts = new ArrayList<>();
 
             while (resultset.next()) {
                 int id = resultset.getInt(1);
                 int authorId = resultset.getInt(2);
-                Date createdAt = resultset.getDate(3);
-                Date updatedAt = resultset.getDate(4);
-                String title = resultset.getString(5);
-                int postCategoryId = resultset.getInt(6);
-                String postLanguage = resultset.getString(7);
-                String text = resultset.getString(8);
+                String title = resultset.getString(3);
+                String text = resultset.getString(4);
+                int postCategoryId = resultset.getInt(5);
+                String postLanguage = resultset.getString(6);
+                Date createdAt = resultset.getDate(7);
+                Date updatedAt = resultset.getDate(8);
 
                 Post post = new Post(id, createdAt, updatedAt, authorId, title, text, postCategoryId, postLanguage);
                 posts.add(post);
-
-
             }
 
             Post[] postsArray = new Post[posts.size()];

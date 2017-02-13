@@ -7,7 +7,6 @@ import nyc.getcityhub.controllers.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,11 +22,9 @@ public class Main {
         before((request, response) -> response.type("application/json; charset=utf-8"));
 
         before((request, response) -> {
-            DateFormat df = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
-            Date date = Calendar.getInstance().getTime();
-            String reportDate = df.format(date);
+            DateFormat format = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+            String reportDate = format.format(new Date());
             logger.info(request.ip() + " [" + reportDate + "] \"" + request.requestMethod() + " " + request.uri() + " " + request.protocol() + "\"");
-            // need to add status code
         });
 
         post("/posts", (req, res) -> PostController.createPost(req), transformer);
