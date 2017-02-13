@@ -92,9 +92,9 @@ public class UserController {
                 }
             }
         } catch (SQLException e) {
-            if(e.getErrorCode() == 1049)
+            if (e.getErrorCode() == 1049)
                 throw new InternalServerException("The MySQL database doesn't exist");
-            else if(e.getErrorCode() == 1146)
+            else if (e.getErrorCode() == 1146)
                 throw new InternalServerException("The users table doesn't exist in the database");
 
             System.out.println("SQLException: " + e.getMessage());

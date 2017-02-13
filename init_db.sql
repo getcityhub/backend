@@ -38,6 +38,11 @@ CREATE TABLE politicians (
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   zip_code SMALLINT NOT NULL,
+  email TEXT,
+  phone_number TEXT,
+  facebook TEXT,
+  google TEXT,
+  twitter TEXT,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
