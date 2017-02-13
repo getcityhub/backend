@@ -4,7 +4,6 @@ import nyc.getcityhub.controllers.CategoryController;
 import nyc.getcityhub.controllers.PoliticianController;
 import nyc.getcityhub.controllers.PostController;
 import nyc.getcityhub.controllers.UserController;
-import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +17,7 @@ import static spark.Spark.*;
 public class Main {
 
     final private static Logger logger = LoggerFactory.getLogger(Main.class);
+    final private static JsonTransformer transformer = new JsonTransformer();
 
     public static void main(String[] args) {
         before((request, response) -> response.type("application/json; charset=utf-8"));
@@ -30,27 +30,33 @@ public class Main {
             // need to add status code
         });
 
-        post("/posts", (req, res) -> PostController.createPost(req), new JsonTransformer());
-        post("/users", (req, res) -> UserController.createUser(req), new JsonTransformer());
+        post("/posts", (req, res) -> PostController.createPost(req), transformer);
+        post("/users", (req, res) -> UserController.createUser(req), transformer);
 
-        get("/categories", (req, res) -> CategoryController.retrieveCategories(req), new JsonTransformer());
-        get("/posts", (req, res) -> PostController.retrievePosts(req), new JsonTransformer());
-        get("/politicians", (req, res) -> PoliticianController.retrievePolitician(req), new JsonTransformer());
+        get("/categories", (req, res) -> CategoryController.retrieveCategories(req), transformer);
+        get("/posts", (req, res) -> PostController.retrievePosts(req), transformer);
+        get("/politicians", (req, res) -> PoliticianController.retrievePolitician(req), transformer);
 
         exception(BadRequestException.class, (exception, request, response) -> {
             ResponseError error = new ResponseError(400, exception.getMessage());
             response.status(error.getStatusCode());
-
-            JsonTransformer transformer = new JsonTransformer();
             response.body(transformer.render(error));
         });
 
         exception(InternalServerException.class, (exception, request, response) -> {
             ResponseError error = new ResponseError(500, exception.getMessage());
             response.status(error.getStatusCode());
-
-            JsonTransformer transformer = new JsonTransformer();
             response.body(transformer.render(error));
+        });
+
+        notFound((request, response) -> {
+            ResponseError error = new ResponseError(404, "Not found");
+            return transformer.render(error);
+        });
+
+        internalServerError((request, response) -> {
+            ResponseError error = new ResponseError(500, "Internal server error");
+            return transformer.render(error);
         });
 
         logger.info("Base URL: http://localhost:4567");
