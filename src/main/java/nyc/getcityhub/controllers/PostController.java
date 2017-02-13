@@ -134,7 +134,11 @@ public class PostController {
         return null;
     }
 
-    public static Post[] retrievePosts(Request request) throws InternalServerException{
+    public static Post[] retrievePosts(Request request) throws InternalServerException {
+        String categoryId = request.queryParams("cid");
+        String language = request.queryParams("lang");
+        String zipCode = request.queryParams("zip");
+
         Connection connection = null;
         Statement statement = null;
         ResultSet resultset = null;
@@ -142,7 +146,17 @@ public class PostController {
         try{
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
             statement = connection.createStatement();
-            resultset = statement.executeQuery("SELECT * FROM posts");
+
+            String command = "SELECT * FROM posts WHERE category_id = " + categoryId + " AND language = '" + language + "'";
+
+            if(categoryId.equals(null))
+                command = "SELECT * FROM posts WHERE language = " + language;
+            else if(language.equals(null))
+                command = "SELECT * FROM posts WHERE category_id = " + categoryId;
+            else if(categoryId.equals(null) && language.equals(null))
+                command = "SELECT * FROM posts";
+
+            resultset = statement.executeQuery(command);
 
             ArrayList<Post> posts = new ArrayList<>();
 
@@ -158,6 +172,8 @@ public class PostController {
 
                 Post post = new Post(id, createdAt, updatedAt, authorId, title, text, categoryId, language);
                 posts.add(post);
+
+
             }
 
             Post[] postsArray = new Post[posts.size()];
