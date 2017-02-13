@@ -12,8 +12,8 @@ import java.util.ArrayList;
  * Created by stephanie on 2/12/17.
  */
 public class PoliticianController {
-    public static Politician[] retrievePolitician(Request request) throws InternalServerException{
 
+    public static Politician[] retrievePolitician(Request request) throws InternalServerException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultset = null;
@@ -90,4 +90,3 @@ public class PoliticianController {
         return null;
     }
 }
-

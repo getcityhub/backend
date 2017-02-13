@@ -6,6 +6,7 @@ import java.util.Date;
  * Created by stephanie on 2/12/17.
  */
 public class Politician {
+
     private int id;
     private String firstName;
     private String lastName;
@@ -18,7 +19,7 @@ public class Politician {
     private Date createdAt;
     private Date updatedAt;
 
-    public Politician(int id, String firstName, String lastName, short zipCode, String email, String phoneNumber, String facebook, String google, String twitter, Date createdAt, Date updatedAt){
+    public Politician(int id, String firstName, String lastName, short zipCode, String email, String phoneNumber, String facebook, String google, String twitter, Date createdAt, Date updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -31,6 +32,7 @@ public class Politician {
         this.google = google;
         this.twitter = twitter;
     }
+
     public int getId() {
         return id;
     }
@@ -55,16 +57,25 @@ public class Politician {
         return updatedAt;
     }
 
-    public String getEmail() { return email; }
+    public String getEmailAddress() {
+        return email;
+    }
 
-    public String getPhoneNumber() { return phoneNumber; }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-    public String getFacebook() { return facebook; }
+    public String getFacebook() {
+        return facebook;
+    }
 
-    public String getGoogle() { return google; }
+    public String getGooglePlus() {
+        return google;
+    }
 
-    public String getTwitter() { return twitter;}
-
+    public String getTwitter() {
+        return twitter;
+    }
 }
 
 

@@ -17,7 +17,7 @@ import static spark.Spark.*;
 
 public class Main {
 
-    final static Logger logger = LoggerFactory.getLogger(Main.class);
+    final private static Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
         before((request, response) -> response.type("application/json; charset=utf-8"));
@@ -27,7 +27,7 @@ public class Main {
             Date date = Calendar.getInstance().getTime();
             String reportDate = df.format(date);
             logger.info(request.ip() + " [" + reportDate + "] \"" + request.requestMethod() + " " + request.uri() + " " + request.protocol() + "\"");
-            //need to add response
+            // need to add status code
         });
 
         post("/posts", (req, res) -> PostController.createPost(req), new JsonTransformer());

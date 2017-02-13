@@ -10,7 +10,6 @@ public class User {
     private boolean anonymous;
     private short zipCode;
     private String[] languages;
-    private String[] topics;
     private String emailAddress;
     private String uniqueCode;
     private Date createdAt;

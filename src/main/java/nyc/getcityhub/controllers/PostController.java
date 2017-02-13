@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class PostController {
 
-    public static Post createPost(Request request) throws BadRequestException, InternalServerException{
+    public static Post createPost(Request request) throws BadRequestException, InternalServerException {
         JsonParser parser = new JsonParser();
         JsonObject postObject =  (JsonObject) parser.parse(request.body());
 
@@ -42,7 +42,7 @@ public class PostController {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
 
-            String query = "INSERT INTO posts (author_id, title, category_id, text, language) VALUES (?, ?, ?, ?, ?)"; //topic needs to be linked to categories
+            String query = "INSERT INTO posts (author_id, title, category_id, text, language) VALUES (?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setInt(1, authorId);
             statement.setString(2, title);
@@ -71,9 +71,9 @@ public class PostController {
                 }
             }
         } catch (SQLException e) {
-            if(e.getErrorCode() == 1049)
+            if (e.getErrorCode() == 1049)
                 throw new InternalServerException("The MySQL database doesn't exist");
-            else if(e.getErrorCode() == 1146)
+            else if (e.getErrorCode() == 1146)
                 throw new InternalServerException("The posts table doesn't exist in the database");
 
             System.out.println("SQLException: " + e.getMessage());
@@ -134,12 +134,12 @@ public class PostController {
         return null;
     }
 
-    public static Post[] retrievePosts(Request request) throws InternalServerException{
+    public static Post[] retrievePosts(Request request) throws InternalServerException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultset = null;
 
-        try{
+        try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
             statement = connection.createStatement();
             resultset = statement.executeQuery("SELECT * FROM posts");
@@ -164,10 +164,10 @@ public class PostController {
             postsArray = posts.toArray(postsArray);
 
             return postsArray;
-        } catch (SQLException e){
-            if(e.getErrorCode() == 1049)
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 1049)
                 throw new InternalServerException("The MySQL database doesn't exist");
-            else if(e.getErrorCode() == 1146)
+            else if (e.getErrorCode() == 1146)
                 throw new InternalServerException("The posts table doesn't exist in the database");
 
             System.out.println("SQLException: " + e.getMessage());
