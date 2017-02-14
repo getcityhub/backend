@@ -7,6 +7,7 @@ import nyc.getcityhub.controllers.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,11 @@ public class Main {
     final private static JsonTransformer transformer = new JsonTransformer();
 
     public static void main(String[] args) {
+        // -p = production
+        if (Arrays.asList(args).contains("-p")) {
+            port(80);
+        }
+
         before((request, response) -> response.type("application/json; charset=utf-8"));
 
         before((request, response) -> {
@@ -55,7 +61,5 @@ public class Main {
             ResponseError error = new ResponseError(500, "Internal server error");
             return transformer.render(error);
         });
-
-        logger.info("Base URL: http://localhost:4567");
     }
 }
