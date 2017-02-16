@@ -19,7 +19,7 @@ public class UserController {
 
     public static User createUser(Request request) throws BadRequestException, InternalServerException {
         if (request.body().length() == 0) {
-            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipCode', 'languages', and 'email' keys must be included in your request body.");
+            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', and 'email' keys must be included in your request body.");
         }
 
         JsonParser parser = new JsonParser();
@@ -28,16 +28,16 @@ public class UserController {
         if (!userObject.has("firstName")
                 || !userObject.has("lastName")
                 || !userObject.has("anonymous")
-                || !userObject.has("zipCode")
+                || !userObject.has("zipcode")
                 || !userObject.has("languages")
                 || !userObject.has("email")) {
-            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipCode', 'languages', and 'email' keys must be included in your request body.");
+            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', and 'email' keys must be included in your request body.");
         }
 
         String firstName = userObject.get("firstName").getAsString();
         String lastName = userObject.get("lastName").getAsString();
         boolean anonymous = userObject.get("anonymous").getAsBoolean();
-        short zipCode = userObject.get("zipCode").getAsShort();
+        short zipcode = userObject.get("zipcode").getAsShort();
         String emailAddress = userObject.get("email").getAsString();
 
         JsonArray languages = userObject.get("languages").getAsJsonArray();
@@ -60,12 +60,12 @@ public class UserController {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
 
-            String query = "INSERT INTO users (first_name, last_name, anonymous, zip_code, languages, email, unique_code) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (first_name, last_name, anonymous, zipcode, languages, email, unique_code) VALUES (?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, firstName);
             statement.setString(2, lastName);
             statement.setBoolean(3, anonymous);
-            statement.setShort(4, zipCode);
+            statement.setShort(4, zipcode);
             statement.setString(5, languagesString);
             statement.setString(6, emailAddress);
             statement.setString(7, randomCode);
@@ -82,7 +82,7 @@ public class UserController {
                     String userFirstName = userResultSet.getString(2);
                     String userLastName = userResultSet.getString(3);
                     boolean userAnonymous = userResultSet.getBoolean(4);
-                    short userZipCode = userResultSet.getShort(5);
+                    short userZipcode = userResultSet.getShort(5);
 
                     String userLanguages = userResultSet.getString(6);
                     String[] userLanguagesArray = userLanguages.split(",");
@@ -92,7 +92,7 @@ public class UserController {
                     Date userCreatedAt = userResultSet.getDate(9);
                     Date userUpdatedAt = userResultSet.getDate(10);
 
-                    return new User(id, userFirstName, userLastName, userAnonymous, userZipCode, userLanguagesArray, userEmailAddress, userUniqueCode, userCreatedAt, userUpdatedAt);
+                    return new User(id, userFirstName, userLastName, userAnonymous, userZipcode, userLanguagesArray, userEmailAddress, userUniqueCode, userCreatedAt, userUpdatedAt);
                 }
             }
         } catch (SQLException e) {
