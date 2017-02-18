@@ -57,6 +57,7 @@ public class PoliticianController {
                 Date updatedAt = resultset.getDate(14);
 
                 Politician politician = new Politician(id, name, zipcodes, position, party, email, phone, website, facebook, googleplus, twitter, youtube, createdAt, updatedAt);
+                politician.prepareForRequest();
                 Politicians.add(politician);
             }
 

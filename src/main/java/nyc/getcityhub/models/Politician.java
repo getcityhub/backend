@@ -39,6 +39,11 @@ public class Politician {
         this.updatedAt = updatedAt;
     }
 
+    public void prepareForRequest() {
+        // setting to null hides it from JSON
+        zipcodes = null;
+    }
+
     public int getId() {
         return id;
     }
