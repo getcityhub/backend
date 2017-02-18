@@ -9,7 +9,7 @@ public class Politician {
 
     private int id;
     private String name;
-    private int[] zipcodes;
+    private transient int[] zipcodes;
     private String position;
     private String party;
     private String email;
@@ -37,11 +37,6 @@ public class Politician {
         this.youtube = youtube;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-    }
-
-    public void prepareForRequest() {
-        // setting to null hides it from JSON
-        zipcodes = null;
     }
 
     public int getId() {
