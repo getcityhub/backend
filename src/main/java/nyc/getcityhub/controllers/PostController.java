@@ -19,6 +19,10 @@ import java.util.ArrayList;
 public class PostController {
 
     public static Post createPost(Request request) throws BadRequestException, InternalServerException {
+        if (request.body().length() == 0) {
+            throw new BadRequestException("The 'authorId', 'title', 'categoryId', 'language', and 'text' keys must be included in your request body.");
+        }
+
         JsonParser parser = new JsonParser();
         JsonObject postObject =  (JsonObject) parser.parse(request.body());
 
