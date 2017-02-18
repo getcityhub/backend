@@ -14,14 +14,22 @@ import java.util.ArrayList;
 public class PoliticianController {
 
     public static Politician[] retrievePolitician(Request request) throws InternalServerException {
+        String zipcode = request.queryParams("zip");
+
         Connection connection = null;
         Statement statement = null;
         ResultSet resultset = null;
 
         try {
+            String command = "SELECT * FROM politicians";
+
+            if (zipcode != null && zipcode.matches("[0-9]{5}")) {
+                command = "SELECT * FROM politicians WHERE zipcodes LIKE '%" + zipcode + "%'";
+            }
+
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
             statement = connection.createStatement();
-            resultset = statement.executeQuery("SELECT * FROM politicians");
+            resultset = statement.executeQuery(command);
 
             ArrayList<Politician> Politicians = new ArrayList<Politician>();
 

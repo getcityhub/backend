@@ -6,8 +6,6 @@ import nyc.getcityhub.BadRequestException;
 import nyc.getcityhub.InternalServerException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Post;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import spark.Request;
 
 import java.sql.*;
@@ -149,9 +147,6 @@ public class PostController {
         String categoryId = request.queryParams("cid");
         String language = request.queryParams("lang");
         String zipcode = request.queryParams("zip");
-
-        Logger logger = LoggerFactory.getLogger(PostController.class);
-        logger.debug("category id: " + categoryId);
 
         Connection connection = null;
         Statement statement = null;
