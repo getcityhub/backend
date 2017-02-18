@@ -8,14 +8,14 @@ public class User {
     private String firstName;
     private String lastName;
     private boolean anonymous;
-    private short zipCode;
+    private short zipcode;
     private String[] languages;
     private String emailAddress;
     private String uniqueCode;
     private Date createdAt;
     private Date updatedAt;
 
-    public User(int id, String firstName, String lastName, boolean anonymous, short zipCode, String[] languages, String emailAddress, String uniqueCode, Date createdAt, Date updatedAt) {
+    public User(int id, String firstName, String lastName, boolean anonymous, short zipcode, String[] languages, String emailAddress, String uniqueCode, Date createdAt, Date updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,14 +25,16 @@ public class User {
         this.uniqueCode = uniqueCode;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.zipCode = zipCode;
+        this.zipcode = zipcode;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getFirstName() { return firstName;}
+    public String getFirstName() {
+        return firstName;
+    }
 
     public String getLastName() {
         return lastName;
@@ -42,8 +44,8 @@ public class User {
         return anonymous;
     }
 
-    public short getZipCode() {
-        return zipCode;
+    public short getZipcode() {
+        return zipcode;
     }
 
     public String[] getLanguages()  {

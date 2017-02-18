@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nyc.getcityhub.BadRequestException;
 import nyc.getcityhub.InternalServerException;
-import nyc.getcityhub.Main;
+import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +39,10 @@ public class PostController {
         int categoryId = postObject.get("categoryId").getAsInt();
         String text = postObject.get("text").getAsString();
         String language = postObject.get("language").getAsString();
+
+        if (!Language.isLanguageSupported(language)) {
+            throw new BadRequestException("The language '" + language + "' is not supported at this time.");
+        }
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -144,7 +148,7 @@ public class PostController {
     public static Post[] retrievePosts(Request request) throws InternalServerException {
         String categoryId = request.queryParams("cid");
         String language = request.queryParams("lang");
-        String zipCode = request.queryParams("zip");
+        String zipcode = request.queryParams("zip");
 
         Logger logger = LoggerFactory.getLogger(PostController.class);
         logger.debug("category id: " + categoryId);

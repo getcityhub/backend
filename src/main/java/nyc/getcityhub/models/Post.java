@@ -6,6 +6,7 @@ import java.util.Date;
  * Created by carol on 2/5/17.
  */
 public class Post {
+
     private int id;
     private Date createdAt;
     private Date updatedAt;

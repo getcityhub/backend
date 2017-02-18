@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nyc.getcityhub.BadRequestException;
 import nyc.getcityhub.InternalServerException;
+import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.User;
 import spark.Request;
 
@@ -44,7 +45,13 @@ public class UserController {
         String languagesString = "";
 
         for (JsonElement element : languages) {
-            languagesString += element.getAsString() + ",";
+            String id = element.getAsString();
+
+            if (!Language.isLanguageSupported(id)) {
+                throw new BadRequestException("The language '" + id + "' is not supported at this time.");
+            }
+
+            languagesString += id + ",";
         }
 
         languagesString = languagesString.substring(0, languagesString.length() - 1);
