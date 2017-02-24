@@ -1,5 +1,6 @@
 package nyc.getcityhub.models;
 
+import java.sql.*;
 import java.util.Date;
 
 /**
@@ -61,4 +62,67 @@ public class Post {
     }
 
     public User getAuthor(){ return author; }
+
+    public static Post getPostById(int id) {
+        String command = "SELECT * FROM posts WHERE id = " + id;
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(command);
+
+            if (resultSet.next()) {
+                int authorId = resultSet.getInt(2);
+                String title = resultSet.getString(3);
+                String text = resultSet.getString(4);
+                int topicId = resultSet.getInt(5);
+                String language = resultSet.getString(6);
+                java.sql.Date createdAt = resultSet.getDate(7);
+                java.sql.Date updatedAt = resultSet.getDate(8);
+
+                return new Post(id, createdAt, updatedAt, authorId, title, text, topicId, language);
+            }
+        }catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+
+            return null;
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                resultSet = null;
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                statement = null;
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                connection = null;
+            }
+        }
+
+        return null;
+    }
 }

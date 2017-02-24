@@ -64,21 +64,7 @@ public class PostController {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 int id = resultSet.getInt(1);
-
-                postStatement = connection.createStatement();
-                postResultSet = postStatement.executeQuery("SELECT * FROM posts WHERE id = " + id);
-
-                if (postResultSet.next()) {
-                    int postAuthorId = postResultSet.getInt(2);
-                    String postTitle = postResultSet.getString(3);
-                    String postText = postResultSet.getString(4);
-                    int postTopicId = postResultSet.getInt(5);
-                    String postLanguage = postResultSet.getString(6);
-                    Date postCreatedAt = postResultSet.getDate(7);
-                    Date postUpdatedAt = postResultSet.getDate(8);
-
-                    return new Post(id, postCreatedAt, postUpdatedAt, postAuthorId, postTitle, postText, postTopicId, postLanguage);
-                }
+                return Post.getPostById(id);
             }
         } catch (SQLException e) {
             if (e.getErrorCode() == 1049)

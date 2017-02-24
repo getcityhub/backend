@@ -81,20 +81,20 @@
                 resultSet = statement.executeQuery(command);
 
                 if (resultSet.next()) {
-                    String userFirstName = resultSet.getString(2);
-                    String userLastName = resultSet.getString(3);
-                    boolean userAnonymous = resultSet.getBoolean(4);
-                    short userZipcode = resultSet.getShort(5);
+                    String firstName = resultSet.getString(2);
+                    String lastName = resultSet.getString(3);
+                    boolean anonymous = resultSet.getBoolean(4);
+                    short zipcode = resultSet.getShort(5);
 
-                    String userLanguages = resultSet.getString(6);
-                    String[] userLanguagesArray = userLanguages.split(",");
+                    String languages = resultSet.getString(6);
+                    String[] languagesArray = languages.split(",");
 
-                    String userEmailAddress = resultSet.getString(7);
-                    String userUniqueCode = resultSet.getString(8);
-                    java.sql.Date userCreatedAt = resultSet.getDate(9);
-                    java.sql.Date userUpdatedAt = resultSet.getDate(10);
+                    String emailAddress = resultSet.getString(7);
+                    String uniqueCode = resultSet.getString(8);
+                    java.sql.Date createdAt = resultSet.getDate(9);
+                    java.sql.Date updatedAt = resultSet.getDate(10);
 
-                    return new User(id, userFirstName, userLastName, userAnonymous, userZipcode, userLanguagesArray, userEmailAddress, userUniqueCode, userCreatedAt, userUpdatedAt);
+                    return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, uniqueCode, createdAt, updatedAt);
                 }
             }catch (SQLException e) {
                     System.out.println("SQLException: " + e.getMessage());
@@ -102,38 +102,38 @@
                     System.out.println("VendorError: " + e.getErrorCode());
 
                     return null;
-                } finally {
-                    if (resultSet != null) {
-                        try {
-                            resultSet.close();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-
-                        resultSet = null;
+            } finally {
+                if (resultSet != null) {
+                    try {
+                        resultSet.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
 
-                    if (statement != null) {
-                        try {
-                            statement.close();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-
-                        statement = null;
-                    }
-
-                    if (connection != null) {
-                        try {
-                            connection.close();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-
-                        connection = null;
-                    }
+                    resultSet = null;
                 }
 
-                return null;
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    statement = null;
+                }
+
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    connection = null;
+                }
+            }
+
+            return null;
         }
     }
