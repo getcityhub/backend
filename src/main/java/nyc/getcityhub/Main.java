@@ -4,6 +4,7 @@ import nyc.getcityhub.controllers.TopicController;
 import nyc.getcityhub.controllers.PoliticianController;
 import nyc.getcityhub.controllers.PostController;
 import nyc.getcityhub.controllers.UserController;
+import nyc.getcityhub.models.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

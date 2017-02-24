@@ -18,8 +18,14 @@ public enum Language {
         this.id = id;
     }
 
-    public static boolean isLanguageSupported(String string) {
-        return Arrays.asList(Language.values()).contains(string);
+    public static boolean isLanguageSupported(String id) {
+        for (Language language : Language.values()) {
+            if (language.getId().equals(id)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public String getId() {
