@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public enum Language {
     CHINESE_SIMPLIFIED("zh-Hans"),
-    CHINESE_TRADITIONAL("zh-TW"),
+    CHINESE_TRADITIONAL("zh-Hant"),
     ENGLISH("en-US"),
     FRENCH("fr-FR"),
     SPANISH("es-ES");

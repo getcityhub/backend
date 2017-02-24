@@ -17,4 +17,5 @@ public class Topic {
     public String getName() {
         return name;
     }
+
 }

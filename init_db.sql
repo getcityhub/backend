@@ -4,6 +4,10 @@ USE cityhub;
 CREATE TABLE topics (
   id INT NOT NULL AUTO_INCREMENT,
   name TEXT NOT NULL,
+  spanish TEXT,
+  french TEXT,
+  simplified TEXT,
+  traditional TEXT,
   PRIMARY KEY (id)
 );
 
