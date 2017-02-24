@@ -1,9 +1,8 @@
 package nyc.getcityhub.controllers;
 
 import nyc.getcityhub.InternalServerException;
-import nyc.getcityhub.models.Category;
+import nyc.getcityhub.models.Topic;
 import spark.Request;
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -12,7 +11,7 @@ import java.util.ArrayList;
  */
 public class TopicController {
 
-    public static Category[] retrieveCategories(Request request) throws InternalServerException {
+    public static Topic[] retrieveTopics(Request request) throws InternalServerException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultset = null;
@@ -20,27 +19,27 @@ public class TopicController {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
             statement = connection.createStatement();
-            resultset = statement.executeQuery("SELECT * FROM categories");
+            resultset = statement.executeQuery("SELECT * FROM topics");
 
-            ArrayList<Category> categories = new ArrayList<Category>();
+            ArrayList<Topic> topics = new ArrayList<Topic>();
 
             while (resultset.next()) {
                 int id = resultset.getInt(1);
                 String name = resultset.getString(2);
 
-                Category category = new Category(id, name);
-                categories.add(category);
+                Topic topic = new Topic(id, name);
+                topics.add(topic);
             }
 
-            Category[] categoriesArray = new Category[categories.size()];
-            categoriesArray = categories.toArray(categoriesArray);
+            Topic[] topicsArray = new Topic[topics.size()];
+            topicsArray = topics.toArray(topicsArray);
 
-            return categoriesArray;
+            return topicsArray;
         } catch (SQLException e) {
             if (e.getErrorCode() == 1049)
                 throw new InternalServerException("The MySQL database doesn't exist.");
             else if (e.getErrorCode() == 1146)
-                throw new InternalServerException("The categories table doesn't exist in the database.");
+                throw new InternalServerException("The topics table doesn't exist in the database.");
 
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());

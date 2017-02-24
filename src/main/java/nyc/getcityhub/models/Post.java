@@ -13,17 +13,17 @@ public class Post {
     private int authorId;
     private String title;
     private String text;
-    private int categoryId;
+    private int topicId;
     private String language;
 
-    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, int categoryId, String language) {
+    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, int topicId, String language) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.authorId = authorId;
         this.title = title;
         this.text = text;
-        this.categoryId = categoryId;
+        this.topicId = topicId;
         this.language = language;
     }
 
@@ -53,7 +53,7 @@ public class Post {
         return language;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public int getTopicId() {
+        return topicId;
     }
 }

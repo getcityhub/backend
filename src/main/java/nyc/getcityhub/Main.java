@@ -1,6 +1,6 @@
 package nyc.getcityhub;
 
-import nyc.getcityhub.controllers.CategoryController;
+import nyc.getcityhub.controllers.TopicController;
 import nyc.getcityhub.controllers.PoliticianController;
 import nyc.getcityhub.controllers.PostController;
 import nyc.getcityhub.controllers.UserController;
@@ -36,7 +36,7 @@ public class Main {
         post("/posts", (req, res) -> PostController.createPost(req), transformer);
         post("/users", (req, res) -> UserController.createUser(req), transformer);
 
-        get("/categories", (req, res) -> CategoryController.retrieveCategories(req), transformer);
+        get("/topics", (req, res) -> TopicController.retrieveTopics(req), transformer);
         get("/posts", (req, res) -> PostController.retrievePosts(req), transformer);
         get("/politicians", (req, res) -> PoliticianController.retrievePolitician(req), transformer);
 

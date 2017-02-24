@@ -18,7 +18,7 @@ public class PostController {
 
     public static Post createPost(Request request) throws BadRequestException, InternalServerException {
         if (request.body().length() == 0) {
-            throw new BadRequestException("The 'authorId', 'title', 'categoryId', 'language', and 'text' keys must be included in your request body.");
+            throw new BadRequestException("The 'authorId', 'title', 'topicId', 'language', and 'text' keys must be included in your request body.");
         }
 
         JsonParser parser = new JsonParser();
@@ -26,15 +26,15 @@ public class PostController {
 
         if (!postObject.has("authorId")
                 || !postObject.has("title")
-                || !postObject.has("categoryId")
+                || !postObject.has("topicId")
                 || !postObject.has("text")
                 || !postObject.has("language")) {
-            throw new BadRequestException("The 'authorId', 'title', 'categoryId', 'language', and 'text' keys must be included in your request body.");
+            throw new BadRequestException("The 'authorId', 'title', 'topicId', 'language', and 'text' keys must be included in your request body.");
         }
 
         int authorId = postObject.get("authorId").getAsInt();
         String title = postObject.get("title").getAsString();
-        int categoryId = postObject.get("categoryId").getAsInt();
+        int topicId = postObject.get("topicId").getAsInt();
         String text = postObject.get("text").getAsString();
         String language = postObject.get("language").getAsString();
 
@@ -51,11 +51,11 @@ public class PostController {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
 
-            String query = "INSERT INTO posts (author_id, title, category_id, text, language) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO posts (author_id, title, topic_id, text, language) VALUES (?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setInt(1, authorId);
             statement.setString(2, title);
-            statement.setInt(3, categoryId);
+            statement.setInt(3, topicId);
             statement.setString(4, text);
             statement.setString(5, language);
             statement.executeUpdate();
@@ -71,12 +71,12 @@ public class PostController {
                     int postAuthorId = postResultSet.getInt(2);
                     String postTitle = postResultSet.getString(3);
                     String postText = postResultSet.getString(4);
-                    int postCategoryId = postResultSet.getInt(5);
+                    int postTopicId = postResultSet.getInt(5);
                     String postLanguage = postResultSet.getString(6);
                     Date postCreatedAt = postResultSet.getDate(7);
                     Date postUpdatedAt = postResultSet.getDate(8);
 
-                    return new Post(id, postCreatedAt, postUpdatedAt, postAuthorId, postTitle, postText, postCategoryId, postLanguage);
+                    return new Post(id, postCreatedAt, postUpdatedAt, postAuthorId, postTitle, postText, postTopicId, postLanguage);
                 }
             }
         } catch (SQLException e) {
@@ -144,7 +144,7 @@ public class PostController {
     }
 
     public static Post[] retrievePosts(Request request) throws InternalServerException {
-        String categoryId = request.queryParams("cid");
+        String topicId = request.queryParams("cid");
         String language = request.queryParams("lang");
         String zipcode = request.queryParams("zip");
 
@@ -158,7 +158,7 @@ public class PostController {
 
             ArrayList<String> parts = new ArrayList<>();
 
-            if (categoryId != null) parts.add("category_id = " + categoryId);
+            if (topicId != null) parts.add("topic_id = " + topicId);
             if (language != null) parts.add("language = '" + language + "'");
             //if (zipCode != null) parts.add("zip_code = " + zipCode);
 
@@ -184,12 +184,12 @@ public class PostController {
                 int authorId = resultset.getInt(2);
                 String title = resultset.getString(3);
                 String text = resultset.getString(4);
-                int postCategoryId = resultset.getInt(5);
+                int postTopicId = resultset.getInt(5);
                 String postLanguage = resultset.getString(6);
                 Date createdAt = resultset.getDate(7);
                 Date updatedAt = resultset.getDate(8);
 
-                Post post = new Post(id, createdAt, updatedAt, authorId, title, text, postCategoryId, postLanguage);
+                Post post = new Post(id, createdAt, updatedAt, authorId, title, text, postTopicId, postLanguage);
                 posts.add(post);
             }
 
