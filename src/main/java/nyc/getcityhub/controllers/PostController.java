@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nyc.getcityhub.BadRequestException;
 import nyc.getcityhub.InternalServerException;
+import nyc.getcityhub.NotFoundException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Post;
 import nyc.getcityhub.models.User;
@@ -128,6 +129,30 @@ public class PostController {
         }
 
         return null;
+    }
+
+    public static Post retrievePost(Request request) throws BadRequestException, NotFoundException {
+        String idString = request.params(":id");
+        int id = 0;
+        try{
+            id = Integer.parseInt(idString);
+        }
+        catch( NumberFormatException e ) {
+            throw new BadRequestException(idString + " is not a valid post id.");
+        }
+
+        if (id<=0){
+            throw new BadRequestException(idString + " is not a valid post id.");
+        }
+
+        Post post = Post.getPostById(id);
+
+        if (post == null) {
+            throw new NotFoundException("The post requested does not exist");
+        }
+        else {
+             return post;
+        }
     }
 
     public static Post[] retrievePosts(Request request) throws InternalServerException {

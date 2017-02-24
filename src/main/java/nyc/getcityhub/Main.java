@@ -39,6 +39,7 @@ public class Main {
 
         get("/topics", (req, res) -> TopicController.retrieveTopics(req), transformer);
         get("/posts", (req, res) -> PostController.retrievePosts(req), transformer);
+        get("/posts/:id", (req, res) -> PostController.retrievePost(req), transformer);
         get("/politicians", (req, res) -> PoliticianController.retrievePolitician(req), transformer);
 
         exception(BadRequestException.class, (exception, request, response) -> {
