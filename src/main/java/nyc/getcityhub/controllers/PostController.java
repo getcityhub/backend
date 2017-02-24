@@ -6,6 +6,7 @@ import nyc.getcityhub.BadRequestException;
 import nyc.getcityhub.InternalServerException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Post;
+import nyc.getcityhub.models.User;
 import spark.Request;
 
 import java.sql.*;
@@ -190,6 +191,7 @@ public class PostController {
                 Date updatedAt = resultset.getDate(8);
 
                 Post post = new Post(id, createdAt, updatedAt, authorId, title, text, postTopicId, postLanguage);
+                post.setAuthor(User.getUserById(authorId));
                 posts.add(post);
             }
 

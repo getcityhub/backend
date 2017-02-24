@@ -81,26 +81,7 @@ public class UserController {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 int id = resultSet.getInt(1);
-
-                userStatement = connection.createStatement();
-                userResultSet = userStatement.executeQuery("SELECT * FROM users WHERE id = " + id);
-
-                if (userResultSet.next()) {
-                    String userFirstName = userResultSet.getString(2);
-                    String userLastName = userResultSet.getString(3);
-                    boolean userAnonymous = userResultSet.getBoolean(4);
-                    short userZipcode = userResultSet.getShort(5);
-
-                    String userLanguages = userResultSet.getString(6);
-                    String[] userLanguagesArray = userLanguages.split(",");
-
-                    String userEmailAddress = userResultSet.getString(7);
-                    String userUniqueCode = userResultSet.getString(8);
-                    Date userCreatedAt = userResultSet.getDate(9);
-                    Date userUpdatedAt = userResultSet.getDate(10);
-
-                    return new User(id, userFirstName, userLastName, userAnonymous, userZipcode, userLanguagesArray, userEmailAddress, userUniqueCode, userCreatedAt, userUpdatedAt);
-                }
+                return User.getUserById(id);
             }
         } catch (SQLException e) {
             if (e.getErrorCode() == 1049)

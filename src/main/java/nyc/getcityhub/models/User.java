@@ -1,68 +1,139 @@
-package nyc.getcityhub.models;
+    package nyc.getcityhub.models;
 
-import java.util.Date;
+    import nyc.getcityhub.InternalServerException;
 
-public class User {
+    import java.sql.*;
+    import java.util.Date;
 
-    private int id;
-    private String firstName;
-    private String lastName;
-    private boolean anonymous;
-    private short zipcode;
-    private String[] languages;
-    private String emailAddress;
-    private String uniqueCode;
-    private Date createdAt;
-    private Date updatedAt;
+    public class User {
 
-    public User(int id, String firstName, String lastName, boolean anonymous, short zipcode, String[] languages, String emailAddress, String uniqueCode, Date createdAt, Date updatedAt) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.anonymous = anonymous;
-        this.languages = languages;
-        this.emailAddress = emailAddress;
-        this.uniqueCode = uniqueCode;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.zipcode = zipcode;
+        private int id;
+        private String firstName;
+        private String lastName;
+        private boolean anonymous;
+        private short zipcode;
+        private String[] languages;
+        private String emailAddress;
+        private String uniqueCode;
+        private Date createdAt;
+        private Date updatedAt;
+
+        public User(int id, String firstName, String lastName, boolean anonymous, short zipcode, String[] languages, String emailAddress, String uniqueCode, Date createdAt, Date updatedAt) {
+            this.id = id;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.anonymous = anonymous;
+            this.languages = languages;
+            this.emailAddress = emailAddress;
+            this.uniqueCode = uniqueCode;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+            this.zipcode = zipcode;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public boolean isAnonymous() {
+            return anonymous;
+        }
+
+        public short getZipcode() {
+            return zipcode;
+        }
+
+        public String[] getLanguages()  {
+            return languages;
+        }
+
+        public String getEmailAddress() { return emailAddress; }
+
+        public String getUniqueCode() {
+            return uniqueCode;
+        }
+
+        public Date getCreatedAt() {
+            return createdAt;
+        }
+
+        public Date getUpdatedAt() {
+            return updatedAt;
+        }
+
+        public static User getUserById(int id) {
+            String command = "SELECT * FROM users WHERE id = " + id;
+            Connection connection = null;
+            Statement statement = null;
+            ResultSet resultSet = null;
+
+            try {
+                connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
+                statement = connection.createStatement();
+                resultSet = statement.executeQuery(command);
+
+                if (resultSet.next()) {
+                    String userFirstName = resultSet.getString(2);
+                    String userLastName = resultSet.getString(3);
+                    boolean userAnonymous = resultSet.getBoolean(4);
+                    short userZipcode = resultSet.getShort(5);
+
+                    String userLanguages = resultSet.getString(6);
+                    String[] userLanguagesArray = userLanguages.split(",");
+
+                    String userEmailAddress = resultSet.getString(7);
+                    String userUniqueCode = resultSet.getString(8);
+                    java.sql.Date userCreatedAt = resultSet.getDate(9);
+                    java.sql.Date userUpdatedAt = resultSet.getDate(10);
+
+                    return new User(id, userFirstName, userLastName, userAnonymous, userZipcode, userLanguagesArray, userEmailAddress, userUniqueCode, userCreatedAt, userUpdatedAt);
+                }
+            }catch (SQLException e) {
+                    System.out.println("SQLException: " + e.getMessage());
+                    System.out.println("SQLState: " + e.getSQLState());
+                    System.out.println("VendorError: " + e.getErrorCode());
+
+                    return null;
+                } finally {
+                    if (resultSet != null) {
+                        try {
+                            resultSet.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        resultSet = null;
+                    }
+
+                    if (statement != null) {
+                        try {
+                            statement.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        statement = null;
+                    }
+
+                    if (connection != null) {
+                        try {
+                            connection.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        connection = null;
+                    }
+                }
+
+                return null;
+        }
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public boolean isAnonymous() {
-        return anonymous;
-    }
-
-    public short getZipcode() {
-        return zipcode;
-    }
-
-    public String[] getLanguages()  {
-        return languages;
-    }
-
-    public String getEmailAddress() { return emailAddress; }
-
-    public String getUniqueCode() {
-        return uniqueCode;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-}

@@ -10,11 +10,12 @@ public class Post {
     private int id;
     private Date createdAt;
     private Date updatedAt;
-    private int authorId;
+    private transient int authorId;
     private String title;
     private String text;
     private int topicId;
     private String language;
+    private User author;
 
     public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, int topicId, String language) {
         this.id = id;
@@ -26,6 +27,8 @@ public class Post {
         this.topicId = topicId;
         this.language = language;
     }
+
+    public void setAuthor(User author){ this.author = author; }
 
     public int getId() {
         return id;
@@ -56,4 +59,6 @@ public class Post {
     public int getTopicId() {
         return topicId;
     }
+
+    public User getAuthor(){ return author; }
 }
