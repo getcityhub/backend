@@ -47,6 +47,12 @@ public class Main {
             response.body(transformer.render(error));
         });
 
+        exception(NotFoundException.class, (exception, request, response) -> {
+            ResponseError error = new ResponseError(404, exception.getMessage());
+            response.status(error.getStatusCode());
+            response.body(transformer.render(error));
+        });
+
         exception(InternalServerException.class, (exception, request, response) -> {
             ResponseError error = new ResponseError(500, exception.getMessage());
             response.status(error.getStatusCode());
