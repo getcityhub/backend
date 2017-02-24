@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by jackcook on 06/02/2017.
  */
-public class CategoryController {
+public class TopicController {
 
     public static Category[] retrieveCategories(Request request) throws InternalServerException {
         Connection connection = null;
