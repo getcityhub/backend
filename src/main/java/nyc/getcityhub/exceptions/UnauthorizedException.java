@@ -1,4 +1,4 @@
-package nyc.getcityhub;
+package nyc.getcityhub.exceptions;
 
 /**
  * Created by v-jacco on 2/25/17.

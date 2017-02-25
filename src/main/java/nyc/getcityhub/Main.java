@@ -4,6 +4,10 @@ import nyc.getcityhub.controllers.TopicController;
 import nyc.getcityhub.controllers.PoliticianController;
 import nyc.getcityhub.controllers.PostController;
 import nyc.getcityhub.controllers.UserController;
+import nyc.getcityhub.exceptions.BadRequestException;
+import nyc.getcityhub.exceptions.InternalServerException;
+import nyc.getcityhub.exceptions.NotFoundException;
+import nyc.getcityhub.exceptions.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

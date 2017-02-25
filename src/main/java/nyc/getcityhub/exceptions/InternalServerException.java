@@ -1,4 +1,4 @@
-package nyc.getcityhub;
+package nyc.getcityhub.exceptions;
 
 import java.sql.SQLException;
 

@@ -1,6 +1,6 @@
 package nyc.getcityhub.controllers;
 
-import nyc.getcityhub.InternalServerException;
+import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.models.Politician;
 import spark.Request;
 

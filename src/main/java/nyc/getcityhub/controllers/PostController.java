@@ -2,10 +2,10 @@ package nyc.getcityhub.controllers;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import nyc.getcityhub.BadRequestException;
-import nyc.getcityhub.InternalServerException;
-import nyc.getcityhub.NotFoundException;
-import nyc.getcityhub.UnauthorizedException;
+import nyc.getcityhub.exceptions.BadRequestException;
+import nyc.getcityhub.exceptions.InternalServerException;
+import nyc.getcityhub.exceptions.NotFoundException;
+import nyc.getcityhub.exceptions.UnauthorizedException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Post;
 import nyc.getcityhub.models.User;
