@@ -11,14 +11,14 @@
         private String firstName;
         private String lastName;
         private boolean anonymous;
-        private short zipcode;
+        private int zipcode;
         private String[] languages;
         private String emailAddress;
         private String uniqueCode;
         private Date createdAt;
         private Date updatedAt;
 
-        public User(int id, String firstName, String lastName, boolean anonymous, short zipcode, String[] languages, String emailAddress, String uniqueCode, Date createdAt, Date updatedAt) {
+        public User(int id, String firstName, String lastName, boolean anonymous, int zipcode, String[] languages, String emailAddress, String uniqueCode, Date createdAt, Date updatedAt) {
             this.id = id;
             this.firstName = firstName;
             this.lastName = lastName;
@@ -47,7 +47,7 @@
             return anonymous;
         }
 
-        public short getZipcode() {
+        public int getZipcode() {
             return zipcode;
         }
 
@@ -84,15 +84,15 @@
                     String firstName = resultSet.getString(2);
                     String lastName = resultSet.getString(3);
                     boolean anonymous = resultSet.getBoolean(4);
-                    short zipcode = resultSet.getShort(5);
+                    int zipcode = resultSet.getInt(5);
 
                     String languages = resultSet.getString(6);
                     String[] languagesArray = languages.split(",");
 
                     String emailAddress = resultSet.getString(7);
                     String uniqueCode = resultSet.getString(8);
-                    java.sql.Date createdAt = resultSet.getDate(9);
-                    java.sql.Date updatedAt = resultSet.getDate(10);
+                    Date createdAt = new Date(resultSet.getTimestamp(9).getTime());
+                    Date updatedAt = new Date(resultSet.getTimestamp(10).getTime());
 
                     return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, uniqueCode, createdAt, updatedAt);
                 }

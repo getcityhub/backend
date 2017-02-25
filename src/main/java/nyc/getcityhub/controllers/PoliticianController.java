@@ -17,7 +17,7 @@ public class PoliticianController {
 
         Connection connection = null;
         Statement statement = null;
-        ResultSet resultset = null;
+        ResultSet resultSet = null;
 
         try {
             String command = "SELECT * FROM politicians";
@@ -28,32 +28,32 @@ public class PoliticianController {
 
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
             statement = connection.createStatement();
-            resultset = statement.executeQuery(command);
+            resultSet = statement.executeQuery(command);
 
             ArrayList<Politician> Politicians = new ArrayList<Politician>();
 
-            while (resultset.next()) {
-                int id = resultset.getInt(1);
-                String name = resultset.getString(2);
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String name = resultSet.getString(2);
 
-                String[] zipcodesArray = resultset.getString(3).split(",");
+                String[] zipcodesArray = resultSet.getString(3).split(",");
                 int[] zipcodes = new int[zipcodesArray.length];
 
                 for (int i = 0; i < zipcodesArray.length; i++) {
                     zipcodes[i] = Integer.parseInt(zipcodesArray[i]);
                 }
 
-                String position = resultset.getString(4);
-                String party = resultset.getString(5);
-                String email = resultset.getString(6);
-                String phone = resultset.getString(7);
-                String website = resultset.getString(8);
-                String facebook = resultset.getString(9);
-                String googleplus = resultset.getString(10);
-                String twitter = resultset.getString(11);
-                String youtube = resultset.getString(12);
-                Date createdAt = resultset.getDate(13);
-                Date updatedAt = resultset.getDate(14);
+                String position = resultSet.getString(4);
+                String party = resultSet.getString(5);
+                String email = resultSet.getString(6);
+                String phone = resultSet.getString(7);
+                String website = resultSet.getString(8);
+                String facebook = resultSet.getString(9);
+                String googleplus = resultSet.getString(10);
+                String twitter = resultSet.getString(11);
+                String youtube = resultSet.getString(12);
+                Date createdAt = new Date(resultSet.getTimestamp(13).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(14).getTime());
 
                 Politician politician = new Politician(id, name, zipcodes, position, party, email, phone, website, facebook, googleplus, twitter, youtube, createdAt, updatedAt);
                 Politicians.add(politician);
@@ -70,14 +70,14 @@ public class PoliticianController {
 
             throw new InternalServerException(e);
         } finally {
-            if (resultset != null) {
+            if (resultSet != null) {
                 try {
-                    resultset.close();
+                    resultSet.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
-                resultset = null;
+                resultSet = null;
             }
 
             if (statement != null) {

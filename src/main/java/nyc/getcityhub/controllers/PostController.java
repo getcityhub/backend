@@ -148,7 +148,7 @@ public class PostController {
 
         Connection connection = null;
         Statement statement = null;
-        ResultSet resultset = null;
+        ResultSet resultSet = null;
 
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
@@ -174,18 +174,18 @@ public class PostController {
                 }
             }
 
-            resultset = statement.executeQuery(command);
+            resultSet = statement.executeQuery(command);
             ArrayList<Post> posts = new ArrayList<>();
 
-            while (resultset.next()) {
-                int id = resultset.getInt(1);
-                int authorId = resultset.getInt(2);
-                String title = resultset.getString(3);
-                String text = resultset.getString(4);
-                int postTopicId = resultset.getInt(5);
-                String postLanguage = resultset.getString(6);
-                Date createdAt = resultset.getDate(7);
-                Date updatedAt = resultset.getDate(8);
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                int authorId = resultSet.getInt(2);
+                String title = resultSet.getString(3);
+                String text = resultSet.getString(4);
+                int postTopicId = resultSet.getInt(5);
+                String postLanguage = resultSet.getString(6);
+                Date createdAt = new Date(resultSet.getTimestamp(7).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(8).getTime());
 
                 Post post = new Post(id, createdAt, updatedAt, authorId, title, text, postTopicId, postLanguage);
                 post.setAuthor(User.getUserById(authorId));
@@ -203,14 +203,14 @@ public class PostController {
 
             throw new InternalServerException(e);
         } finally {
-            if (resultset != null) {
+            if (resultSet != null) {
                 try {
-                    resultset.close();
+                    resultSet.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
-                resultset = null;
+                resultSet = null;
             }
 
             if (statement != null) {

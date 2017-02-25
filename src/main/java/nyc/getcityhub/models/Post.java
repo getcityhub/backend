@@ -80,8 +80,8 @@ public class Post {
                 String text = resultSet.getString(4);
                 int topicId = resultSet.getInt(5);
                 String language = resultSet.getString(6);
-                java.sql.Date createdAt = resultSet.getDate(7);
-                java.sql.Date updatedAt = resultSet.getDate(8);
+                Date createdAt = new Date(resultSet.getTimestamp(7).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(8).getTime());
 
                 return new Post(id, createdAt, updatedAt, authorId, title, text, topicId, language);
             }
