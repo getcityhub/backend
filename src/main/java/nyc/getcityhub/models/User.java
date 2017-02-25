@@ -96,12 +96,12 @@
 
                     return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, uniqueCode, createdAt, updatedAt);
                 }
-            }catch (SQLException e) {
-                    System.out.println("SQLException: " + e.getMessage());
-                    System.out.println("SQLState: " + e.getSQLState());
-                    System.out.println("VendorError: " + e.getErrorCode());
+            } catch (SQLException e) {
+                System.out.println("SQLException: " + e.getMessage());
+                System.out.println("SQLState: " + e.getSQLState());
+                System.out.println("VendorError: " + e.getErrorCode());
 
-                    return null;
+                return null;
             } finally {
                 if (resultSet != null) {
                     try {

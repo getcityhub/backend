@@ -6,9 +6,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nyc.getcityhub.BadRequestException;
 import nyc.getcityhub.InternalServerException;
+import nyc.getcityhub.UnauthorizedException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.User;
 import spark.Request;
+import spark.Response;
 
 import java.sql.*;
 import java.util.Random;
@@ -155,5 +157,104 @@ public class UserController {
         for (int i = 0; i < 8; i++)
             s += Character.toString(base.charAt(random.nextInt(base.length())));
         return s;
+    }
+
+    public static User retrieveCurrentUser(Request request) throws UnauthorizedException {
+        User user = request.session().attribute("user");
+
+        if (user == null) {
+            throw new UnauthorizedException("You are not currently logged in");
+        } else {
+            return user;
+        }
+    }
+
+    public static User loginUser(Request request) throws BadRequestException, UnauthorizedException, InternalServerException {
+        if (request.body().length() == 0) {
+            throw new BadRequestException("The 'email' and 'password' keys must be included in your request body.");
+        }
+
+        JsonParser parser = new JsonParser();
+        JsonObject loginObject = (JsonObject) parser.parse(request.body());
+
+        if (!loginObject.has("email")
+                || !loginObject.has("password")) {
+            throw new BadRequestException("The 'email' and 'password' keys must be included in your request body.");
+        }
+
+        String email = loginObject.get("email").getAsString();
+        String password = loginObject.get("password").getAsString();
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
+
+            String query = "SELECT * FROM users WHERE email = ? AND unique_code = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            statement.setString(2, password);
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                User user = User.getUserById(id);
+
+                request.session(true).attribute("user", user);
+                return user;
+            } else {
+                throw new UnauthorizedException("Invalid email or password");
+            }
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 1049)
+                throw new InternalServerException("The MySQL database doesn't exist");
+            else if (e.getErrorCode() == 1146)
+                throw new InternalServerException("The users table doesn't exist in the database");
+
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                resultSet = null;
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                statement = null;
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                connection = null;
+            }
+        }
+
+        return null;
+    }
+
+    public static int logoutUser(Request request, Response response) {
+        request.session().removeAttribute("user");
+        response.status(204);
+
+        return 0;
     }
 }

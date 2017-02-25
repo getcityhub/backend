@@ -4,7 +4,6 @@ import nyc.getcityhub.controllers.TopicController;
 import nyc.getcityhub.controllers.PoliticianController;
 import nyc.getcityhub.controllers.PostController;
 import nyc.getcityhub.controllers.UserController;
-import nyc.getcityhub.models.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +33,12 @@ public class Main {
             logger.info(request.ip() + " [" + reportDate + "] \"" + request.requestMethod() + " " + request.uri() + " " + request.protocol() + "\"");
         });
 
+        delete("/users/current", UserController::logoutUser);
+        get("/users/current", (req, res) -> UserController.retrieveCurrentUser(req), transformer);
+
         post("/posts", (req, res) -> PostController.createPost(req), transformer);
         post("/users", (req, res) -> UserController.createUser(req), transformer);
+        post("/users/login", (req, res) -> UserController.loginUser(req), transformer);
 
         get("/topics", (req, res) -> TopicController.retrieveTopics(req), transformer);
         get("/posts", (req, res) -> PostController.retrievePosts(req), transformer);
@@ -44,6 +47,12 @@ public class Main {
 
         exception(BadRequestException.class, (exception, request, response) -> {
             ResponseError error = new ResponseError(400, exception.getMessage());
+            response.status(error.getStatusCode());
+            response.body(transformer.render(error));
+        });
+
+        exception(UnauthorizedException.class, (exception, request, response) -> {
+            ResponseError error = new ResponseError(401, exception.getMessage());
             response.status(error.getStatusCode());
             response.body(transformer.render(error));
         });
