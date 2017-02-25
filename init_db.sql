@@ -4,10 +4,6 @@ USE cityhub;
 CREATE TABLE topics (
   id INT NOT NULL AUTO_INCREMENT,
   name TEXT NOT NULL,
-  spanish TEXT,
-  french TEXT,
-  simplified TEXT,
-  traditional TEXT,
   PRIMARY KEY (id)
 );
 
@@ -54,4 +50,12 @@ CREATE TABLE politicians (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
+);
+
+CREATE TABLE translations (
+  english TEXT NOT NULL,
+  spanish TEXT,
+  french TEXT,
+  simplified TEXT,
+  traditional TEXT
 );

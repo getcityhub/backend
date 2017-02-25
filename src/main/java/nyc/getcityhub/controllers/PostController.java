@@ -142,8 +142,9 @@ public class PostController {
     }
 
     public static Post[] retrievePosts(Request request) throws InternalServerException {
+        String language = Language.fromId(request.headers("Accept-Language")).getId();
+
         String topicId = request.queryParams("cid");
-        String language = request.queryParams("lang");
         String zipcode = request.queryParams("zip");
 
         Connection connection = null;

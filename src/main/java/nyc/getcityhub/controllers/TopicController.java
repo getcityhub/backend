@@ -3,6 +3,7 @@ package nyc.getcityhub.controllers;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Topic;
+import nyc.getcityhub.models.Translation;
 import spark.Request;
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,25 +14,7 @@ import java.util.ArrayList;
 public class TopicController {
 
     public static Topic[] retrieveTopics(Request request) throws InternalServerException {
-        String language = request.queryParams("lang");
-        int column = 2;  // 2 = english
-
-        if (Language.isLanguageSupported(language)) {
-            switch(language) {
-                case "es-ES":
-                    column = 3;
-                    break;
-                case "fr-FR":
-                    column = 4;
-                    break;
-                case "zh-Hans":
-                    column = 5;
-                    break;
-                case "zh-Hant":
-                    column = 6;
-                    break;
-            }
-        }
+        Language language = Language.fromId(request.headers("Accept-Language"));
 
         Connection connection = null;
         Statement statement = null;
@@ -46,7 +29,7 @@ public class TopicController {
 
             while (resultSet.next()) {
                 int id = resultSet.getInt(1);
-                String name = resultSet.getString(column);
+                String name = Translation.getTranslation(resultSet.getString(2), language);
 
                 Topic topic = new Topic(id, name);
                 topics.add(topic);

@@ -20,24 +20,9 @@ public class Topic {
         return name;
     }
 
-    public Topic getTopicById(int id, Language lang) {
+    public Topic getTopicById(int id, Language language) {
         String command = "SELECT * FROM topics WHERE id = " + id;
-        int column = 2;
 
-        switch(lang) {
-            case SPANISH:
-                column = 3;
-                break;
-            case FRENCH:
-                column = 4;
-                break;
-            case CHINESE_SIMPLIFIED:
-                column = 5;
-                break;
-            case CHINESE_TRADITIONAL:
-                column = 6;
-                break;
-        }
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -48,11 +33,10 @@ public class Topic {
             resultSet = statement.executeQuery(command);
 
             if (resultSet.next()) {
-                String name = resultSet.getString(column);
-
+                String name = Translation.getTranslation(resultSet.getString(2), language);
                 return new Topic(id, name);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());

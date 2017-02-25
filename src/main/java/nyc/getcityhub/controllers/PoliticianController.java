@@ -1,7 +1,9 @@
 package nyc.getcityhub.controllers;
 
 import nyc.getcityhub.exceptions.InternalServerException;
+import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Politician;
+import nyc.getcityhub.models.Translation;
 import spark.Request;
 
 import java.sql.*;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 public class PoliticianController {
 
     public static Politician[] retrievePolitician(Request request) throws InternalServerException {
+        Language language = Language.fromId(request.headers("Accept-Language"));
         String zipcode = request.queryParams("zip");
 
         Connection connection = null;
@@ -43,8 +46,8 @@ public class PoliticianController {
                     zipcodes[i] = Integer.parseInt(zipcodesArray[i]);
                 }
 
-                String position = resultSet.getString(4);
-                String party = resultSet.getString(5);
+                String position = Translation.getTranslation(resultSet.getString(4), language);
+                String party = Translation.getTranslation(resultSet.getString(5), language);
                 String photo = resultSet.getString(6);
                 String email = resultSet.getString(7);
                 String phone = resultSet.getString(8);
