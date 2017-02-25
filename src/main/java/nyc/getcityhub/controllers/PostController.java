@@ -71,41 +71,19 @@ public class PostController {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 int id = resultSet.getInt(1);
+
                 Post post = Post.getPostById(id);
                 post.setAuthor(User.getUserById(authorId));
 
                 return post;
             }
         } catch (SQLException e) {
-            if (e.getErrorCode() == 1049)
-                throw new InternalServerException("The MySQL database doesn't exist");
-            else if (e.getErrorCode() == 1146)
-                throw new InternalServerException("The posts table doesn't exist in the database");
-
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
+
+            throw new InternalServerException(e);
         } finally {
-            if (postResultSet != null) {
-                try {
-                    postResultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-                postResultSet = null;
-            }
-
-            if (postStatement != null) {
-                try {
-                    postStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-                postStatement = null;
-            }
-
             if (resultSet != null) {
                 try {
                     resultSet.close();
@@ -142,15 +120,15 @@ public class PostController {
 
     public static Post retrievePost(Request request) throws BadRequestException, NotFoundException {
         String idString = request.params(":id");
-        int id = 0;
-        try{
+        int id;
+
+        try {
             id = Integer.parseInt(idString);
-        }
-        catch( NumberFormatException e ) {
+        } catch(NumberFormatException e) {
             throw new BadRequestException(idString + " is not a valid post id.");
         }
 
-        if (id<=0){
+        if (id <= 0) {
             throw new BadRequestException(idString + " is not a valid post id.");
         }
 
@@ -158,9 +136,8 @@ public class PostController {
 
         if (post == null) {
             throw new NotFoundException("The post requested does not exist");
-        }
-        else {
-             return post;
+        } else {
+            return post;
         }
     }
 
@@ -220,14 +197,11 @@ public class PostController {
 
             return postsArray;
         } catch (SQLException e) {
-            if (e.getErrorCode() == 1049)
-                throw new InternalServerException("The MySQL database doesn't exist");
-            else if (e.getErrorCode() == 1146)
-                throw new InternalServerException("The posts table doesn't exist in the database");
-
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
+
+            throw new InternalServerException(e);
         } finally {
             if (resultset != null) {
                 try {
@@ -259,6 +233,5 @@ public class PostController {
                 connection = null;
             }
         }
-        return null;
     }
 }

@@ -89,14 +89,11 @@ public class UserController {
                 return user;
             }
         } catch (SQLException e) {
-            if (e.getErrorCode() == 1049)
-                throw new InternalServerException("The MySQL database doesn't exist");
-            else if (e.getErrorCode() == 1146)
-                throw new InternalServerException("The users table doesn't exist in the database");
-
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
+
+            throw new InternalServerException(e);
         } finally {
             if (userResultSet != null) {
                 try {
@@ -211,14 +208,11 @@ public class UserController {
                 throw new UnauthorizedException("Invalid email or password");
             }
         } catch (SQLException e) {
-            if (e.getErrorCode() == 1049)
-                throw new InternalServerException("The MySQL database doesn't exist");
-            else if (e.getErrorCode() == 1146)
-                throw new InternalServerException("The users table doesn't exist in the database");
-
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
+
+            throw new InternalServerException(e);
         } finally {
             if (resultSet != null) {
                 try {
@@ -250,8 +244,6 @@ public class UserController {
                 connection = null;
             }
         }
-
-        return null;
     }
 
     public static int logoutUser(Request request, Response response) {

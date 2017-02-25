@@ -14,7 +14,7 @@ public class TopicController {
 
     public static Topic[] retrieveTopics(Request request) throws InternalServerException {
         String language = request.queryParams("lang");
-        int column = 2;  //2 equals english
+        int column = 2;  // 2 = english
 
         if (Language.isLanguageSupported(language)) {
             switch(language) {
@@ -35,18 +35,18 @@ public class TopicController {
 
         Connection connection = null;
         Statement statement = null;
-        ResultSet resultset = null;
+        ResultSet resultSet = null;
 
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
             statement = connection.createStatement();
-            resultset = statement.executeQuery("SELECT * FROM topics");
+            resultSet = statement.executeQuery("SELECT * FROM topics");
 
             ArrayList<Topic> topics = new ArrayList<Topic>();
 
-            while (resultset.next()) {
-                int id = resultset.getInt(1);
-                String name = resultset.getString(column);
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String name = resultSet.getString(column);
 
                 Topic topic = new Topic(id, name);
                 topics.add(topic);
@@ -57,23 +57,20 @@ public class TopicController {
 
             return topicsArray;
         } catch (SQLException e) {
-            if (e.getErrorCode() == 1049)
-                throw new InternalServerException("The MySQL database doesn't exist.");
-            else if (e.getErrorCode() == 1146)
-                throw new InternalServerException("The topics table doesn't exist in the database.");
-
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
+
+            throw new InternalServerException(e);
         } finally {
-            if (resultset != null) {
+            if (resultSet != null) {
                 try {
-                    resultset.close();
+                    resultSet.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
-                resultset = null;
+                resultSet = null;
             }
 
             if (statement != null) {
@@ -96,7 +93,5 @@ public class TopicController {
                 connection = null;
             }
         }
-
-        return null;
     }
 }

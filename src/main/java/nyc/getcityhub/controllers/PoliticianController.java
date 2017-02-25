@@ -5,7 +5,6 @@ import nyc.getcityhub.models.Politician;
 import spark.Request;
 
 import java.sql.*;
-import java.sql.Date;
 import java.util.ArrayList;
 
 /**
@@ -65,14 +64,11 @@ public class PoliticianController {
 
             return politicianArray;
         } catch (SQLException e) {
-            if (e.getErrorCode() == 1049)
-                throw new InternalServerException("The MySQL database doesn't exist.");
-            else if (e.getErrorCode() == 1146)
-                throw new InternalServerException("The politicians table doesn't exist in the database.");
-
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
+
+            throw new InternalServerException(e);
         } finally {
             if (resultset != null) {
                 try {
@@ -104,7 +100,5 @@ public class PoliticianController {
                 connection = null;
             }
         }
-
-        return null;
     }
 }
