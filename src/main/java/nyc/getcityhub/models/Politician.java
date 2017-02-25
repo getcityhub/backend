@@ -12,6 +12,7 @@ public class Politician {
     private transient int[] zipcodes;
     private String position;
     private String party;
+    private String photoUrl;
     private String email;
     private String phone;
     private String website;
@@ -22,12 +23,13 @@ public class Politician {
     private Date createdAt;
     private Date updatedAt;
 
-    public Politician(int id, String name, int[] zipcodes, String position, String party, String email, String phone, String website, String facebook, String googleplus, String twitter, String youtube, Date createdAt, Date updatedAt) {
+    public Politician(int id, String name, int[] zipcodes, String position, String party, String photoUrl, String email, String phone, String website, String facebook, String googleplus, String twitter, String youtube, Date createdAt, Date updatedAt) {
         this.id = id;
         this.name = name;
         this.zipcodes = zipcodes;
         this.position = position;
         this.party = party;
+        this.photoUrl = photoUrl;
         this.email = email;
         this.phone = phone;
         this.website = website;
@@ -57,6 +59,10 @@ public class Politician {
 
     public String getParty() {
         return party;
+    }
+
+    public String getPhotoURL() {
+        return photoUrl;
     }
 
     public String getEmailAddress() {

@@ -45,17 +45,18 @@ public class PoliticianController {
 
                 String position = resultSet.getString(4);
                 String party = resultSet.getString(5);
-                String email = resultSet.getString(6);
-                String phone = resultSet.getString(7);
-                String website = resultSet.getString(8);
-                String facebook = resultSet.getString(9);
-                String googleplus = resultSet.getString(10);
-                String twitter = resultSet.getString(11);
-                String youtube = resultSet.getString(12);
-                Date createdAt = new Date(resultSet.getTimestamp(13).getTime());
-                Date updatedAt = new Date(resultSet.getTimestamp(14).getTime());
+                String photo = resultSet.getString(6);
+                String email = resultSet.getString(7);
+                String phone = resultSet.getString(8);
+                String website = resultSet.getString(9);
+                String facebook = resultSet.getString(10);
+                String googleplus = resultSet.getString(11);
+                String twitter = resultSet.getString(12);
+                String youtube = resultSet.getString(13);
+                Date createdAt = new Date(resultSet.getTimestamp(14).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(15).getTime());
 
-                Politician politician = new Politician(id, name, zipcodes, position, party, email, phone, website, facebook, googleplus, twitter, youtube, createdAt, updatedAt);
+                Politician politician = new Politician(id, name, zipcodes, position, party, photo, email, phone, website, facebook, googleplus, twitter, youtube, createdAt, updatedAt);
                 Politicians.add(politician);
             }
 

@@ -43,6 +43,7 @@ CREATE TABLE politicians (
   zipcodes TEXT NOT NULL,
   position TEXT,
   party TEXT,
+  photo_url TEXT,
   email TEXT,
   phone TEXT,
   website TEXT,
