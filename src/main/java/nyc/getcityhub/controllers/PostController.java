@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import nyc.getcityhub.BadRequestException;
 import nyc.getcityhub.InternalServerException;
 import nyc.getcityhub.NotFoundException;
+import nyc.getcityhub.UnauthorizedException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Post;
 import nyc.getcityhub.models.User;
@@ -18,23 +19,28 @@ import java.util.ArrayList;
  */
 public class PostController {
 
-    public static Post createPost(Request request) throws BadRequestException, InternalServerException {
+    public static Post createPost(Request request) throws BadRequestException, UnauthorizedException, InternalServerException {
         if (request.body().length() == 0) {
-            throw new BadRequestException("The 'authorId', 'title', 'topicId', 'language', and 'text' keys must be included in your request body.");
+            throw new BadRequestException("The 'title', 'topicId', 'language', and 'text' keys must be included in your request body.");
+        }
+
+        User user = request.session().attribute("user");
+
+        if (user == null) {
+            throw new UnauthorizedException("You must be logged in to create posts");
         }
 
         JsonParser parser = new JsonParser();
         JsonObject postObject =  (JsonObject) parser.parse(request.body());
 
-        if (!postObject.has("authorId")
-                || !postObject.has("title")
+        if (!postObject.has("title")
                 || !postObject.has("topicId")
                 || !postObject.has("text")
                 || !postObject.has("language")) {
-            throw new BadRequestException("The 'authorId', 'title', 'topicId', 'language', and 'text' keys must be included in your request body.");
+            throw new BadRequestException("The 'title', 'topicId', 'language', and 'text' keys must be included in your request body.");
         }
 
-        int authorId = postObject.get("authorId").getAsInt();
+        int authorId = user.getId();
         String title = postObject.get("title").getAsString();
         int topicId = postObject.get("topicId").getAsInt();
         String text = postObject.get("text").getAsString();
@@ -65,7 +71,10 @@ public class PostController {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 int id = resultSet.getInt(1);
-                return Post.getPostById(id);
+                Post post = Post.getPostById(id);
+                post.setAuthor(User.getUserById(authorId));
+
+                return post;
             }
         } catch (SQLException e) {
             if (e.getErrorCode() == 1049)

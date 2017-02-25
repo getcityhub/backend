@@ -83,7 +83,10 @@ public class UserController {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 int id = resultSet.getInt(1);
-                return User.getUserById(id);
+                User user = User.getUserById(id);
+
+                request.session(true).attribute("user", user);
+                return user;
             }
         } catch (SQLException e) {
             if (e.getErrorCode() == 1049)
