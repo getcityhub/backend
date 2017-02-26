@@ -11,6 +11,9 @@ import nyc.getcityhub.exceptions.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
 import java.text.DateFormat;
@@ -27,6 +30,14 @@ public class Main {
         // -p = production
         if (Arrays.asList(args).contains("-p")) {
             port(80);
+
+            try {
+                String keypass = new String(Files.readAllBytes(Paths.get("keypass.txt"))).replace("\n", "");
+                secure("keystore.jks", keypass, null, null);
+            } catch (IOException e) {
+                System.out.println("Error reading keystore password:");
+                e.printStackTrace();
+            }
         }
 
         before((request, response) -> response.type("application/json; charset=utf-8"));
