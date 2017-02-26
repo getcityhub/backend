@@ -44,8 +44,6 @@ public class Main {
             }
         }
 
-        System.out.println(PRODUCTION);
-
         before((request, response) -> response.type("application/json; charset=utf-8"));
 
         before((request, response) -> {
