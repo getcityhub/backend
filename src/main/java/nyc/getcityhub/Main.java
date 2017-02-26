@@ -52,17 +52,21 @@ public class Main {
             logger.info(request.ip() + " [" + reportDate + "] \"" + request.requestMethod() + " " + request.uri() + " " + request.protocol() + "\"");
         });
 
-        delete("/users/current", UserController::logoutUser);
-        get("/users/current", (req, res) -> UserController.retrieveCurrentUser(req), transformer);
+        path("/posts", () -> {
+            get("", (req, res) -> PostController.retrievePosts(req), transformer);
+            get(":id", (req, res) -> PostController.retrievePost(req), transformer);
+            post("", (req, res) -> PostController.createPost(req), transformer);
+        });
 
-        post("/posts", (req, res) -> PostController.createPost(req), transformer);
-        post("/users", (req, res) -> UserController.createUser(req), transformer);
-        post("/users/login", (req, res) -> UserController.loginUser(req), transformer);
+        path("/users", () -> {
+            delete("/current", UserController::logoutUser);
+            get("/current", (req, res) -> UserController.retrieveCurrentUser(req), transformer);
+            post("", (req, res) -> UserController.createUser(req), transformer);
+            post("/login", (req, res) -> UserController.loginUser(req), transformer);
+        });
 
-        get("/topics", (req, res) -> TopicController.retrieveTopics(req), transformer);
-        get("/posts", (req, res) -> PostController.retrievePosts(req), transformer);
-        get("/posts/:id", (req, res) -> PostController.retrievePost(req), transformer);
         get("/politicians", (req, res) -> PoliticianController.retrievePolitician(req), transformer);
+        get("/topics", (req, res) -> TopicController.retrieveTopics(req), transformer);
 
         exception(BadRequestException.class, (exception, request, response) -> {
             ResponseError error = new ResponseError(400, exception.getMessage());
