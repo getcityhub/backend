@@ -26,10 +26,14 @@ public class Main {
     final private static Logger logger = LoggerFactory.getLogger(Main.class);
     final private static JsonTransformer transformer = new JsonTransformer();
 
+    public static boolean PRODUCTION = false;
+
     public static void main(String[] args) {
         // -p = production
         if (Arrays.asList(args).contains("-p")) {
-            port(80);
+            PRODUCTION = true;
+
+            port(443);
 
             try {
                 String keypass = new String(Files.readAllBytes(Paths.get("keypass.txt"))).replace("\n", "");
@@ -39,6 +43,8 @@ public class Main {
                 e.printStackTrace();
             }
         }
+
+        System.out.println(PRODUCTION);
 
         before((request, response) -> response.type("application/json; charset=utf-8"));
 

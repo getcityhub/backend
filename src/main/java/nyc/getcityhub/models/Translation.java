@@ -1,5 +1,7 @@
 package nyc.getcityhub.models;
 
+import nyc.getcityhub.Main;
+
 import java.sql.*;
 import java.util.Date;
 
@@ -48,7 +50,7 @@ public class Translation {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
 
             String command = "SELECT * FROM translations WHERE english = ?";
             statement = connection.prepareStatement(command);

@@ -1,5 +1,6 @@
 package nyc.getcityhub.controllers;
 
+import nyc.getcityhub.Main;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Topic;
@@ -21,7 +22,7 @@ public class TopicController {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM topics");
 

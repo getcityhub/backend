@@ -1,5 +1,6 @@
 package nyc.getcityhub.controllers;
 
+import nyc.getcityhub.Main;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Politician;
@@ -29,7 +30,7 @@ public class PoliticianController {
                 command = "SELECT * FROM politicians WHERE zipcodes LIKE '%" + zipcode + "%'";
             }
 
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 

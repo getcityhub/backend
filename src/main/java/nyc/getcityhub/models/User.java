@@ -1,5 +1,7 @@
 package nyc.getcityhub.models;
 
+import nyc.getcityhub.Main;
+
 import java.sql.*;
 import java.util.Date;
 
@@ -74,7 +76,7 @@ public class User {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=false");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 
