@@ -10,11 +10,11 @@ import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.User;
+import org.mindrot.jbcrypt.BCrypt;
 import spark.Request;
 import spark.Response;
 
 import java.sql.*;
-import java.util.Random;
 
 /**
  * Created by jackcook on 06/02/2017.
@@ -23,7 +23,7 @@ public class UserController {
 
     public static User createUser(Request request) throws BadRequestException, InternalServerException {
         if (request.body().length() == 0) {
-            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', and 'email' keys must be included in your request body.");
+            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', 'password', and 'email' keys must be included in your request body.");
         }
 
         JsonParser parser = new JsonParser();
@@ -34,14 +34,16 @@ public class UserController {
                 || !userObject.has("anonymous")
                 || !userObject.has("zipcode")
                 || !userObject.has("languages")
+                || !userObject.has("password")
                 || !userObject.has("email")) {
-            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', and 'email' keys must be included in your request body.");
+            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', 'password', and 'email' keys must be included in your request body.");
         }
 
         String firstName = userObject.get("firstName").getAsString();
         String lastName = userObject.get("lastName").getAsString();
         boolean anonymous = userObject.get("anonymous").getAsBoolean();
         short zipcode = userObject.get("zipcode").getAsShort();
+        String password = userObject.get("password").getAsString();
         String emailAddress = userObject.get("email").getAsString();
 
         JsonArray languages = userObject.get("languages").getAsJsonArray();
@@ -59,18 +61,14 @@ public class UserController {
 
         languagesString = languagesString.substring(0, languagesString.length() - 1);
 
-        String randomCode = generateRandomCode();
-
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Statement userStatement = null;
-        ResultSet userResultSet = null;
 
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
 
-            String query = "INSERT INTO users (first_name, last_name, anonymous, zipcode, languages, email, unique_code) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (first_name, last_name, anonymous, zipcode, languages, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, firstName);
             statement.setString(2, lastName);
@@ -78,7 +76,7 @@ public class UserController {
             statement.setShort(4, zipcode);
             statement.setString(5, languagesString);
             statement.setString(6, emailAddress);
-            statement.setString(7, randomCode);
+            statement.setString(7, BCrypt.hashpw(password, BCrypt.gensalt(10)));
             statement.executeUpdate();
 
             resultSet = statement.getGeneratedKeys();
@@ -96,26 +94,6 @@ public class UserController {
 
             throw new InternalServerException(e);
         } finally {
-            if (userResultSet != null) {
-                try {
-                    userResultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-                userResultSet = null;
-            }
-
-            if (userStatement != null) {
-                try {
-                    userStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-                userStatement = null;
-            }
-
             if (resultSet != null) {
                 try {
                     resultSet.close();
@@ -148,16 +126,6 @@ public class UserController {
         }
 
         return null;
-    }
-
-    private static String generateRandomCode() {
-        String base = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789";
-        //deleted O, 0, I, l to avoid confusion
-        String s = "";
-        Random random = new Random();
-        for (int i = 0; i < 8; i++)
-            s += Character.toString(base.charAt(random.nextInt(base.length())));
-        return s;
     }
 
     public static User retrieveCurrentUser(Request request) throws UnauthorizedException {
@@ -193,21 +161,24 @@ public class UserController {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
 
-            String query = "SELECT * FROM users WHERE email = ? AND unique_code = ?";
+            String query = "SELECT * FROM users WHERE email = ?";
             statement = connection.prepareStatement(query);
             statement.setString(1, email);
-            statement.setString(2, password);
             resultSet = statement.executeQuery();
 
-            if (resultSet.next()) {
-                int id = resultSet.getInt(1);
-                User user = User.getUserById(id);
+            while (resultSet.next()) {
+                String passwordHash = resultSet.getString(8);
 
-                request.session(true).attribute("user", user);
-                return user;
-            } else {
-                throw new UnauthorizedException("Invalid email or password");
+                if (BCrypt.checkpw(password, passwordHash)) {
+                    int id = resultSet.getInt(1);
+                    User user = User.getUserById(id);
+
+                    request.session(true).attribute("user", user);
+                    return user;
+                }
             }
+
+            throw new UnauthorizedException("Invalid email or password");
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
