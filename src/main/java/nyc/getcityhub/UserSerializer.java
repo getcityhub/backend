@@ -17,7 +17,6 @@ public class UserSerializer implements JsonSerializer<User> {
 
         object.remove("anonymous");
         object.remove("emailAddress");
-        object.remove("uniqueCode");
 
         if (user.isAnonymous()) {
             object.remove("firstName");
