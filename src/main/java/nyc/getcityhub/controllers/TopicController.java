@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class TopicController {
 
-    public static Topic retrieveTopic(Request request) throws BadRequestException, NotFoundException {
+    public static Topic retrieveTopic(Request request, Response response) throws BadRequestException, NotFoundException {
         Language language = Language.fromId(request.headers("Accept-Language"));
         String idString = request.params(":id");
         int id;
@@ -42,7 +42,7 @@ public class TopicController {
         }
     }
 
-    public static Topic[] retrieveTopics(Request request) throws InternalServerException {
+    public static Topic[] retrieveTopics(Request request, Response response) throws InternalServerException {
         Language language = Language.fromId(request.headers("Accept-Language"));
 
         Connection connection = null;

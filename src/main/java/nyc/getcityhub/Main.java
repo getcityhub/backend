@@ -68,12 +68,12 @@ public class Main {
 
         path("/politicians", () -> {
             get("", PoliticianController::retrievePoliticians, transformer);
-            get(":id", (req,res) -> PoliticianController.retrievePolitician(req), transformer);
+            get(":id", PoliticianController::retrievePolitician, transformer);
         });
 
         path("/topics", () -> {
-            get("", (req, res) -> TopicController.retrieveTopics(req), transformer);
-            get(":id", (req, res) -> TopicController.retrieveTopic(req), transformer);
+            get("", TopicController::retrieveTopics, transformer);
+            get(":id",TopicController::retrieveTopic, transformer);
         });
 
         exception(BadRequestException.class, (exception, request, response) -> {
