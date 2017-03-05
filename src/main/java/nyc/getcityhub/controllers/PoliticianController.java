@@ -1,9 +1,12 @@
 package nyc.getcityhub.controllers;
 
 import nyc.getcityhub.Main;
+import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
+import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Politician;
+import nyc.getcityhub.models.Post;
 import nyc.getcityhub.models.Translation;
 import spark.Request;
 
@@ -15,7 +18,31 @@ import java.util.ArrayList;
  */
 public class PoliticianController {
 
-    public static Politician[] retrievePolitician(Request request) throws InternalServerException {
+    public static Politician retrievePolitician(Request request) throws BadRequestException, NotFoundException {
+        Language language = Language.fromId(request.headers("Accept-Language"));
+        String idString = request.params(":id");
+        int id;
+
+        try {
+            id = Integer.parseInt(idString);
+        } catch(NumberFormatException e) {
+            throw new BadRequestException(idString + " is not a valid politician id.");
+        }
+
+        if (id <= 0) {
+            throw new BadRequestException(idString + " is not a valid politician id.");
+        }
+
+        Politician politician = Politician.getPoliticianById(id, language);
+
+        if (politician == null) {
+            throw new NotFoundException("The politician requested does not exist");
+        } else {
+            return politician;
+        }
+    }
+
+    public static Politician[] retrievePoliticians(Request request) throws InternalServerException {
         Language language = Language.fromId(request.headers("Accept-Language"));
         String zipcode = request.queryParams("zip");
 
