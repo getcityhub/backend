@@ -1,5 +1,9 @@
 package nyc.getcityhub.controllers;
 
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
+import com.amazonaws.services.simpleemail.model.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -134,6 +138,20 @@ public class UserController {
 
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
+                Destination destination = new Destination().withToAddresses(emailAddress);
+
+                Content subject = new Content().withData("This is my subject");
+                Content textBody = new Content().withData("This is my body");
+                Body body = new Body().withText(textBody);
+
+                Message message = new Message().withSubject(subject).withBody(body);
+                SendEmailRequest emailRequest = new SendEmailRequest().withSource("jack@jackcook.nyc").withDestination(destination).withMessage(message);
+
+                AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
+                Region region = Region.getRegion(Regions.US_EAST_1);
+                client.setRegion(region);
+                client.sendEmail(emailRequest);
+
                 int id = resultSet.getInt(1);
                 User user = User.getUserById(id);
 
