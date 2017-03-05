@@ -53,21 +53,21 @@ public class Main {
         });
 
         path("/posts", () -> {
-            get("", (req, res) -> PostController.retrievePosts(req), transformer);
-            get(":id", (req, res) -> PostController.retrievePost(req), transformer);
-            post("", (req, res) -> PostController.createPost(req), transformer);
+            get("", PostController::retrievePosts, transformer);
+            get(":id", PostController::retrievePost, transformer);
+            post("", PostController::createPost, transformer);
         });
 
         path("/users", () -> {
             delete("/current", UserController::logoutUser);
-            get(":id", (req, res) -> UserController.retrieveUser(req), transformer);
-            get("/current", (req, res) -> UserController.retrieveCurrentUser(req), transformer);
-            post("", (req, res) -> UserController.createUser(req), transformer);
-            post("/login", (req, res) -> UserController.loginUser(req), transformer);
+            get(":id", UserController::retrieveUser, transformer);
+            get("/current", UserController::retrieveCurrentUser, transformer);
+            post("", UserController::createUser, transformer);
+            post("/login", UserController::loginUser, transformer);
         });
 
         path("/politicians", () -> {
-            get("", (req, res) -> PoliticianController.retrievePoliticians(req), transformer);
+            get("", PoliticianController::retrievePoliticians, transformer);
             get(":id", (req,res) -> PoliticianController.retrievePolitician(req), transformer);
         });
 

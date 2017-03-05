@@ -8,6 +8,8 @@ import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Topic;
 import nyc.getcityhub.models.Translation;
 import spark.Request;
+import spark.Response;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -52,7 +54,7 @@ public class TopicController {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM topics");
 
-            ArrayList<Topic> topics = new ArrayList<Topic>();
+            ArrayList<Topic> topics = new ArrayList<>();
 
             while (resultSet.next()) {
                 int id = resultSet.getInt(1);
