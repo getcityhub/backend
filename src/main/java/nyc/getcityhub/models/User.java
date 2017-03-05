@@ -65,6 +65,7 @@ public class User {
 
     public static User getUserById(int id) {
         String command = "SELECT * FROM users WHERE id = " + id;
+
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -128,5 +129,58 @@ public class User {
         }
 
         return null;
+    }
+
+    public static boolean userExistsWithEmail(String emailAddress) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+
+            String command = "SELECT * FROM users WHERE email = ?";
+            statement = connection.prepareStatement(command);
+            statement.setString(1, emailAddress);
+
+            resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+
+            return true;
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                resultSet = null;
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                statement = null;
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                connection = null;
+            }
+        }
     }
 }

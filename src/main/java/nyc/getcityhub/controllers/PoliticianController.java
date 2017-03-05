@@ -6,6 +6,7 @@ import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Politician;
 import nyc.getcityhub.models.Translation;
 import spark.Request;
+import spark.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
  */
 public class PoliticianController {
 
-    public static Politician[] retrievePolitician(Request request) throws InternalServerException {
+    public static Politician[] retrievePolitician(Request request, Response response) throws InternalServerException {
         Language language = Language.fromId(request.headers("Accept-Language"));
         String zipcode = request.queryParams("zip");
 
@@ -34,7 +35,7 @@ public class PoliticianController {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 
-            ArrayList<Politician> Politicians = new ArrayList<Politician>();
+            ArrayList<Politician> Politicians = new ArrayList<>();
 
             while (resultSet.next()) {
                 int id = resultSet.getInt(1);
