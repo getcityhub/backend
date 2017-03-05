@@ -11,6 +11,7 @@ import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Post;
 import nyc.getcityhub.models.User;
 import spark.Request;
+import spark.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
  */
 public class PostController {
 
-    public static Post createPost(Request request) throws BadRequestException, UnauthorizedException, InternalServerException {
+    public static Post createPost(Request request, Response response) throws BadRequestException, UnauthorizedException, InternalServerException {
         if (request.body().length() == 0) {
             throw new BadRequestException("The 'title', 'topicId', 'language', and 'text' keys must be included in your request body.");
         }
@@ -119,7 +120,7 @@ public class PostController {
         return null;
     }
 
-    public static Post retrievePost(Request request) throws BadRequestException, NotFoundException {
+    public static Post retrievePost(Request request, Response response) throws BadRequestException, NotFoundException {
         String idString = request.params(":id");
         int id;
 
@@ -142,7 +143,7 @@ public class PostController {
         }
     }
 
-    public static Post[] retrievePosts(Request request) throws InternalServerException {
+    public static Post[] retrievePosts(Request request, Response response) throws InternalServerException {
         String language = Language.fromId(request.headers("Accept-Language")).getId();
 
         String topicId = request.queryParams("cid");

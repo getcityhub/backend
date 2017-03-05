@@ -6,6 +6,8 @@ import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Topic;
 import nyc.getcityhub.models.Translation;
 import spark.Request;
+import spark.Response;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -14,7 +16,7 @@ import java.util.ArrayList;
  */
 public class TopicController {
 
-    public static Topic[] retrieveTopics(Request request) throws InternalServerException {
+    public static Topic[] retrieveTopics(Request request, Response response) throws InternalServerException {
         Language language = Language.fromId(request.headers("Accept-Language"));
 
         Connection connection = null;

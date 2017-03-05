@@ -27,7 +27,7 @@ import java.util.Arrays;
  */
 public class UserController {
 
-    public static User createUser(Request request) throws BadRequestException, InternalServerException {
+    public static User createUser(Request request, Response response) throws BadRequestException, InternalServerException {
         if (request.body().length() == 0) {
             throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', 'password', and 'email' keys must be included in your request body.");
         }
@@ -181,7 +181,7 @@ public class UserController {
         return null;
     }
 
-    public static User retrieveCurrentUser(Request request) throws UnauthorizedException {
+    public static User retrieveCurrentUser(Request request, Response response) throws UnauthorizedException {
         User user = request.session().attribute("user");
 
         if (user == null) {
@@ -191,7 +191,7 @@ public class UserController {
         }
     }
 
-    public static User loginUser(Request request) throws BadRequestException, UnauthorizedException, InternalServerException {
+    public static User loginUser(Request request, Response response) throws BadRequestException, UnauthorizedException, InternalServerException {
         if (request.body().length() == 0) {
             throw new BadRequestException("The 'email' and 'password' keys must be included in your request body.");
         }

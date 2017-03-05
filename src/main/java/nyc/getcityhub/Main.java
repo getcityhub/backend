@@ -53,20 +53,20 @@ public class Main {
         });
 
         path("/posts", () -> {
-            get("", (req, res) -> PostController.retrievePosts(req), transformer);
-            get(":id", (req, res) -> PostController.retrievePost(req), transformer);
-            post("", (req, res) -> PostController.createPost(req), transformer);
+            get("", PostController::retrievePosts, transformer);
+            get(":id", PostController::retrievePost, transformer);
+            post("", PostController::createPost, transformer);
         });
 
         path("/users", () -> {
             delete("/current", UserController::logoutUser);
-            get("/current", (req, res) -> UserController.retrieveCurrentUser(req), transformer);
-            post("", (req, res) -> UserController.createUser(req), transformer);
-            post("/login", (req, res) -> UserController.loginUser(req), transformer);
+            get("/current", UserController::retrieveCurrentUser, transformer);
+            post("", UserController::createUser, transformer);
+            post("/login", UserController::loginUser, transformer);
         });
 
-        get("/politicians", (req, res) -> PoliticianController.retrievePolitician(req), transformer);
-        get("/topics", (req, res) -> TopicController.retrieveTopics(req), transformer);
+        get("/politicians", PoliticianController::retrievePolitician, transformer);
+        get("/topics", TopicController::retrieveTopics, transformer);
 
         exception(BadRequestException.class, (exception, request, response) -> {
             ResponseError error = new ResponseError(400, exception.getMessage());
