@@ -4,17 +4,23 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nulabinc.zxcvbn.Feedback;
+import com.nulabinc.zxcvbn.Strength;
+import com.nulabinc.zxcvbn.Zxcvbn;
+import nyc.getcityhub.Constants;
 import nyc.getcityhub.Main;
 import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.User;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.mindrot.jbcrypt.BCrypt;
 import spark.Request;
 import spark.Response;
 
 import java.sql.*;
+import java.util.Arrays;
 
 /**
  * Created by jackcook on 06/02/2017.
@@ -40,20 +46,67 @@ public class UserController {
         }
 
         String firstName = userObject.get("firstName").getAsString();
+
+        if (firstName.length() < 2) {
+            throw new BadRequestException("First name must be at least two characters long.");
+        } else if (firstName.length() > 20) {
+            throw new BadRequestException("First name must be at most 20 characters long.");
+        } else if (!firstName.matches("([A-zÀ-ÿ]){2,20}")) {
+            // regex checks for letters only (diacritics are allowed)
+            throw new BadRequestException("First name must only have letters.");
+        }
+
         String lastName = userObject.get("lastName").getAsString();
+
+        if (lastName.length() < 2) {
+            throw new BadRequestException("Last name must be at least two characters long.");
+        } else if (lastName.length() > 20) {
+            throw new BadRequestException("Last name must be at most 20 characters long.");
+        } else if (!lastName.matches("([A-zÀ-ÿ]){2,20}")) {
+            // regex checks for letters only (diacritics are allowed)
+            throw new BadRequestException("Last name must only have letters.");
+        }
+
         boolean anonymous = userObject.get("anonymous").getAsBoolean();
-        short zipcode = userObject.get("zipcode").getAsShort();
+        int zipcode = userObject.get("zipcode").getAsInt();
+
+        if (Arrays.asList(Constants.NYC_ZIPCODES).contains(zipcode)) {
+            throw new BadRequestException("Zipcode must be a valid NYC zipcode.");
+        }
+
         String password = userObject.get("password").getAsString();
+
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback();
+
+        if (strength.getScore() < 3) {
+            throw new BadRequestException("Password is too weak. " + feedback.getWarning());
+        }
+
         String emailAddress = userObject.get("email").getAsString();
 
+        if (!EmailValidator.getInstance().isValid(emailAddress)) {
+            throw new BadRequestException("Email address is invalid.");
+        }
+
+        if (User.userExistsWithEmail(emailAddress)) {
+            throw new BadRequestException("Email address has already been registered.");
+        }
+
         JsonArray languages = userObject.get("languages").getAsJsonArray();
+
+        if (languages.size() == 0) {
+            throw new BadRequestException("At least one language must be selected.");
+        }
+
         String languagesString = "";
 
         for (JsonElement element : languages) {
             String id = element.getAsString();
 
             if (!Language.isLanguageSupported(id)) {
-                throw new BadRequestException("The language '" + id + "' is not supported at this time.");
+                throw new BadRequestException("The language '" + id + "' is not supported.");
             }
 
             languagesString += id + ",";
@@ -73,7 +126,7 @@ public class UserController {
             statement.setString(1, firstName);
             statement.setString(2, lastName);
             statement.setBoolean(3, anonymous);
-            statement.setShort(4, zipcode);
+            statement.setInt(4, zipcode);
             statement.setString(5, languagesString);
             statement.setString(6, emailAddress);
             statement.setString(7, BCrypt.hashpw(password, BCrypt.gensalt(10)));
