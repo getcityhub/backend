@@ -8,7 +8,7 @@
 <body style="max-width:600px; margin:0 auto 0 auto; background-color:#FFF; font-family:Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif; font-size: 18px; font-weight: 300; padding-top: 24px; line-height: 1.4;">
 <table style="padding:0 4px 0 4px">
     <tr style="background-color:#2196f3; height: 88px">
-        <td style="background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAABSxJREFUaIHVmstvVVUUxn9r73N6H215aEGiBDtohPAaEDBBjGJCYkyIxoGJYaZO/Bsc+Uc4ME6Y4UA7IDAwkRiNQUgIBHkjBUpKmxIot+W+z2MvB+fc0lYqyt030G9wc3Kyz9rr22vtb69z1xGWgapuBQ4Ae4GdwDBQXm68ZzSAceACcAo4ISJXnjRQlt5Q1WHgM+AQMNIzF/8fxoAjwGERGV92lKruV9Vj+uLimKru/zfnTz5nB/8LTupSEqo6rL1YeedU1Xk3q5mvwwAm5/AZcLDLPF0aUhABJLv2i4NkPmM0U5tDXs3nzrcnLuOa1YyIfxKHVHWrIZNKf2qjDkRwSUT79LfE02PZbdWMhD8iI8ABQ6bzXUNVMydzZY6u/Y6Z/gatzUDnrojvaOw1ZIdUd1BFRJDcwbQ+R3J1FNM3hLar2RhjqN24RHPqDojkZLvGTkN2wnYHEaJ6lTRqA5BMXsHUziOl3biZmwCkSUJ99Gui62ezR7qeFIBhQ5flgaoDoHFvkntnfsuupyZoVaYxpQ3oxA/Ek9eIH83SVxlFXIKCr1Qqm6ePeQpyHwqr1tC49AftR7MkE+O4ZA0OxQSDRGe+o3n+Z2y4BVerdB7BRxIFHmwAkDYbyPhJHv40RP/0WaLSRqJWlUJhPa42RnLzKoXCeqJ6BU0SCPxM3bUVkSybm7evEdw7QfBXQN/AKpJmQM216VtvSdIiVgYxYYrWK7g4wr4IBDRXn9Q5olt/EpSh0L8OaFMOQqQhNKoxRFBwFgmL0HiAJnHHQH5aPzu63wNA2m6jDycxwSbarQYgqEChENCaSbBNIQgMzinWBlTv3KA1V0GM6VpOvRAARdVhjRDVH9FsR3lqKavDEsUgRHEgFjGGmV9/pH73dv7oC0AgKJaQoWE0ukMghkZ1jiR1iGQrH6eOJIkxYZmkdh9z/XsKq9b6mLo7AiKCqsOIUN71Hq0qWGLUQewUMQanMNeMSFUgKNCcGCXc8TnlVzd1jDw/ArkHAKzZtpvSx4dJ7v9Cuc8yIDF9SYuoNourVeiXhNbMXaJNXzL04RcYa1F18yr2rPAjo6oYI1R3vc2t+1/xkkQEYUiaplRKCcE6w70AHq4u8Po7n9C/YWOe+90XFF0T6EgpqpyeuMzF1zbycmk1rSTO9kBeMRhjmWvX2Hz/Nm+MbMdY66Uq9XYSI8KW9cNMzUwRVR5QtAEOBQUjQupSBoDNwxsR40n8AFFPdW0nEufGLnL03AmMMQsSRIjSiA+2v8u+bXsy7ReQFyGFlmLXyA4qjTlO3jnP2uIgClTbdd58ZQv7tu2ZH+fDefB2kHUkNQtmMSzg1M1Xm6k6imERWLBnPMF7BACMGNIkJY5jBIjjGJvnvU/nwWMEFiKwnXXR+d8wv+dpy82jNwSM/YfEB6Ynwe4NAWstgmT/ogCgBNb2YqoeRmARZEFa+UVvImBspkr5+gtPIuUHPVkWa7IUyvzPSKyoCATWYPIIKJl02pUWAZMfbIpikJ5t4t4cZMZixGJtRsSmtqcRaOC5eWfFEFpLGIaICKFLekWgYci6gV5hjQUHSZyQxgk47ZUKjQdkrcytPq2KCNOzD4jTBCOC43EB5+c9bB4XArI+7Kf+bMJAqcz7W99ipjoLAqtKgwyWBwCvzgOckrzFdBRPXRpF52t9zd/IerT6Y8BHJu+AH/FlVRa9h8mi8tnz6h8RkSudg+wwcNyn9U7L6XHrySuOk/m8aMKV2+heQmJFfWqw4j/2WHZf6Qr53OZv8lB1hhI0yvIAAAAASUVORK5CYII=') no-repeat center">
+        <td style="background:url('http://getcityhub.org/torch_icon.png') no-repeat center">
         </td>
     </tr>
     <tr>
@@ -28,7 +28,7 @@
     </tr>
     <tr>
         <td align="center">
-            <a href="https://getcityhub.org" target="_blank" style="color:#FFFFFF; text-decoration:none;">
+            <a href="http://getcityhub.org" target="_blank" style="color:#FFFFFF; text-decoration:none;">
             <table align="center" valign="middle" border="0" cellpadding="0" cellspacing="0" style="background-color:#03A588; border:1px solid #03A588; border-radius:4px; margin-top: 8px; width: 50%; cursor: pointer;">
                 <tr>
                     <td align="center" valign="middle" style="color:#FFFFFF;  font-size:16px; font-weight:bold; =EF=BF=BD=EF=BF=BD=EF=BF=BDline-height:150%; padding-top:15px; padding-right:30px; padding-bottom:15px; padding-left:30px; ">
