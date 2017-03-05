@@ -29,7 +29,7 @@ public class PostController {
         User user = request.session().attribute("user");
 
         if (user == null) {
-            throw new UnauthorizedException("You must be logged in to create posts");
+            throw new UnauthorizedException("You must be logged in to create posts.");
         }
 
         JsonParser parser = new JsonParser();

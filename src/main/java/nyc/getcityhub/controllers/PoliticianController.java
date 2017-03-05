@@ -35,7 +35,7 @@ public class PoliticianController {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 
-            ArrayList<Politician> Politicians = new ArrayList<Politician>();
+            ArrayList<Politician> Politicians = new ArrayList<>();
 
             while (resultSet.next()) {
                 int id = resultSet.getInt(1);

@@ -28,7 +28,7 @@ public class TopicController {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM topics");
 
-            ArrayList<Topic> topics = new ArrayList<Topic>();
+            ArrayList<Topic> topics = new ArrayList<>();
 
             while (resultSet.next()) {
                 int id = resultSet.getInt(1);
