@@ -1,7 +1,9 @@
 package nyc.getcityhub.controllers;
 
 import nyc.getcityhub.Main;
+import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
+import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Topic;
 import nyc.getcityhub.models.Translation;
@@ -15,6 +17,30 @@ import java.util.ArrayList;
  * Created by jackcook on 06/02/2017.
  */
 public class TopicController {
+
+    public static Topic retrieveTopic(Request request, Response response) throws BadRequestException, NotFoundException {
+        Language language = Language.fromId(request.headers("Accept-Language"));
+        String idString = request.params(":id");
+        int id;
+
+        try {
+            id = Integer.parseInt(idString);
+        } catch(NumberFormatException e) {
+            throw new BadRequestException(idString + " is not a valid topic id.");
+        }
+
+        if (id <= 0) {
+            throw new BadRequestException(idString + " is not a valid topic id.");
+        }
+
+        Topic topic= Topic.getTopicById(id, language);
+
+        if (topic == null) {
+            throw new NotFoundException("The topic requested does not exist");
+        } else {
+            return topic;
+        }
+    }
 
     public static Topic[] retrieveTopics(Request request, Response response) throws InternalServerException {
         Language language = Language.fromId(request.headers("Accept-Language"));

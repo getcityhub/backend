@@ -1,5 +1,8 @@
 package nyc.getcityhub.models;
 
+import nyc.getcityhub.Main;
+
+import java.sql.*;
 import java.util.Date;
 
 /**
@@ -99,6 +102,84 @@ public class Politician {
 
     public Date getUpdatedAt() {
         return updatedAt;
+    }
+
+    public static Politician getPoliticianById(int id, Language language) {
+        String command = "SELECT * FROM politicians WHERE id = " + id;
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(command);
+
+            if (resultSet.next()) {
+                String name = Translation.getTranslation(resultSet.getString(2), language);
+                String[] zipcodesArray = resultSet.getString(3).split(",");
+                int[] zipcodes = new int[zipcodesArray.length];
+
+                for (int i = 0; i < zipcodesArray.length; i++) {
+                    zipcodes[i] = Integer.parseInt(zipcodesArray[i]);
+                }
+
+                String position = Translation.getTranslation(resultSet.getString(4), language);
+                String party = Translation.getTranslation(resultSet.getString(5), language);
+                String photo = resultSet.getString(6);
+                String email = resultSet.getString(7);
+                String phone = resultSet.getString(8);
+                String website = resultSet.getString(9);
+                String facebook = resultSet.getString(10);
+                String googleplus = resultSet.getString(11);
+                String twitter = resultSet.getString(12);
+                String youtube = resultSet.getString(13);
+                java.sql.Date createdAt = new java.sql.Date(resultSet.getTimestamp(14).getTime());
+                java.sql.Date updatedAt = new java.sql.Date(resultSet.getTimestamp(15).getTime());
+
+                return new Politician(id, name, zipcodes, position, party, photo, email, phone, website, facebook, googleplus, twitter, youtube, createdAt, updatedAt);
+
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+
+            return null;
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                resultSet = null;
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                statement = null;
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                connection = null;
+            }
+        }
+
+        return null;
     }
 }
 

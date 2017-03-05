@@ -17,8 +17,10 @@ import nyc.getcityhub.Constants;
 import nyc.getcityhub.Main;
 import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
+import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
 import nyc.getcityhub.models.Language;
+import nyc.getcityhub.models.Post;
 import nyc.getcityhub.models.User;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.mindrot.jbcrypt.BCrypt;
@@ -225,6 +227,29 @@ public class UserController {
 
         if (user == null) {
             throw new UnauthorizedException("You are not currently logged in");
+        } else {
+            return user;
+        }
+    }
+
+    public static User retrieveUser(Request request, Response response) throws BadRequestException, NotFoundException {
+        String idString = request.params(":id");
+        int id;
+
+        try {
+            id = Integer.parseInt(idString);
+        } catch(NumberFormatException e) {
+            throw new BadRequestException(idString + " is not a valid user id.");
+        }
+
+        if (id <= 0) {
+            throw new BadRequestException(idString + " is not a valid user id.");
+        }
+
+        User user = User.getUserById(id);
+
+        if (user == null) {
+            throw new NotFoundException("The user requested does not exist");
         } else {
             return user;
         }

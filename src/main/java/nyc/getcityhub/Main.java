@@ -78,13 +78,21 @@ public class Main {
 
         path("/users", () -> {
             delete("/current", UserController::logoutUser);
+            get(":id", UserController::retrieveUser, transformer);
             get("/current", UserController::retrieveCurrentUser, transformer);
             post("", UserController::createUser, transformer);
             post("/login", UserController::loginUser, transformer);
         });
 
-        get("/politicians", PoliticianController::retrievePolitician, transformer);
-        get("/topics", TopicController::retrieveTopics, transformer);
+        path("/politicians", () -> {
+            get("", PoliticianController::retrievePoliticians, transformer);
+            get(":id", PoliticianController::retrievePolitician, transformer);
+        });
+
+        path("/topics", () -> {
+            get("", TopicController::retrieveTopics, transformer);
+            get(":id",TopicController::retrieveTopic, transformer);
+        });
 
         exception(BadRequestException.class, (exception, request, response) -> {
             ResponseError error = new ResponseError(400, exception.getMessage());

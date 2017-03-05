@@ -22,7 +22,7 @@ public class Topic {
         return name;
     }
 
-    public Topic getTopicById(int id, Language language) {
+    public static Topic getTopicById(int id, Language language) {
         String command = "SELECT * FROM topics WHERE id = " + id;
 
         Connection connection = null;
