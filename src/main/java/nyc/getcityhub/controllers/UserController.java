@@ -11,6 +11,8 @@ import com.google.gson.JsonParser;
 import com.nulabinc.zxcvbn.Feedback;
 import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import nyc.getcityhub.Constants;
 import nyc.getcityhub.Main;
 import nyc.getcityhub.exceptions.BadRequestException;
@@ -23,8 +25,14 @@ import org.mindrot.jbcrypt.BCrypt;
 import spark.Request;
 import spark.Response;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.sql.*;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by jackcook on 06/02/2017.
@@ -138,19 +146,32 @@ public class UserController {
 
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-                Destination destination = new Destination().withToAddresses(emailAddress);
+                Map root = new HashMap();
+                root.put("firstName",firstName);
+                root.put("lastName",lastName);
+                root.put("email",emailAddress);
 
-                Content subject = new Content().withData("This is my subject");
-                Content textBody = new Content().withData("This is my body");
-                Body body = new Body().withText(textBody);
+                try {
+                    Template temp = Main.FTL_CONFIG.getTemplate("registration.ftl");
+                    StringWriter writer = new StringWriter();
+                    temp.process(root, writer);
 
-                Message message = new Message().withSubject(subject).withBody(body);
-                SendEmailRequest emailRequest = new SendEmailRequest().withSource("jack@jackcook.nyc").withDestination(destination).withMessage(message);
+                    Destination destination = new Destination().withToAddresses(emailAddress);
 
-                AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
-                Region region = Region.getRegion(Regions.US_EAST_1);
-                client.setRegion(region);
-                client.sendEmail(emailRequest);
+                    Content subject = new Content().withCharset("UTF-8").withData("This is my subject");
+                    Content textBody = new Content().withCharset("UTF-8").withData(writer.toString());
+                    Body body = new Body().withHtml(textBody);
+
+                    Message message = new Message().withSubject(subject).withBody(body);
+                    SendEmailRequest emailRequest = new SendEmailRequest().withSource("jack@jackcook.nyc").withDestination(destination).withMessage(message);
+
+                    AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
+                    Region region = Region.getRegion(Regions.US_EAST_1);
+                    client.setRegion(region);
+                    client.sendEmail(emailRequest);
+                } catch (IOException | TemplateException e) {
+                    e.printStackTrace();
+                }
 
                 int id = resultSet.getInt(1);
                 User user = User.getUserById(id);

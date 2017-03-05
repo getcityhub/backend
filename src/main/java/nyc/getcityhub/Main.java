@@ -1,5 +1,7 @@
 package nyc.getcityhub;
 
+import freemarker.template.Configuration;
+import freemarker.template.TemplateExceptionHandler;
 import nyc.getcityhub.controllers.TopicController;
 import nyc.getcityhub.controllers.PoliticianController;
 import nyc.getcityhub.controllers.PostController;
@@ -11,6 +13,7 @@ import nyc.getcityhub.exceptions.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,6 +21,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -27,6 +32,7 @@ public class Main {
     final private static JsonTransformer transformer = new JsonTransformer();
 
     public static boolean PRODUCTION = false;
+    public static Configuration FTL_CONFIG;
 
     public static void main(String[] args) {
         // -p = production
@@ -43,6 +49,18 @@ public class Main {
                 e.printStackTrace();
             }
         }
+
+        FTL_CONFIG = new Configuration(Configuration.VERSION_2_3_25);
+
+        try {
+            FTL_CONFIG.setDirectoryForTemplateLoading(new File("/home/carol/Desktop/cityhub/emails"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        FTL_CONFIG.setDefaultEncoding("UTF-8");
+        FTL_CONFIG.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        FTL_CONFIG.setLogTemplateExceptions(true);
 
         before((request, response) -> response.type("application/json; charset=utf-8"));
 
