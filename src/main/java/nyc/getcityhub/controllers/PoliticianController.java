@@ -6,7 +6,6 @@ import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Politician;
-import nyc.getcityhub.models.Post;
 import nyc.getcityhub.models.Translation;
 import spark.Request;
 import spark.Response;

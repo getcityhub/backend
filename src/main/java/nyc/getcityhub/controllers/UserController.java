@@ -20,7 +20,6 @@ import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
 import nyc.getcityhub.models.Language;
-import nyc.getcityhub.models.Post;
 import nyc.getcityhub.models.User;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.mindrot.jbcrypt.BCrypt;
@@ -28,9 +27,7 @@ import spark.Request;
 import spark.Response;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -149,9 +146,9 @@ public class UserController {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 Map root = new HashMap();
-                root.put("firstName",firstName);
-                root.put("lastName",lastName);
-                root.put("email",emailAddress);
+                root.put("firstName", firstName);
+                root.put("lastName", lastName);
+                root.put("email", emailAddress);
 
                 try {
                     Template temp = Main.FTL_CONFIG.getTemplate("registration.ftl");
@@ -165,7 +162,7 @@ public class UserController {
                     Body body = new Body().withHtml(textBody);
 
                     Message message = new Message().withSubject(subject).withBody(body);
-                    SendEmailRequest emailRequest = new SendEmailRequest().withSource("jack@jackcook.nyc").withDestination(destination).withMessage(message);
+                    SendEmailRequest emailRequest = new SendEmailRequest().withSource("Team CityHub <no_reply@getcityhub.org>").withDestination(destination).withMessage(message);
 
                     AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
                     Region region = Region.getRegion(Regions.US_EAST_1);

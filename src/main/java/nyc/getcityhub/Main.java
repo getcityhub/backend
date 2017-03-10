@@ -21,8 +21,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -53,7 +51,7 @@ public class Main {
         FTL_CONFIG = new Configuration(Configuration.VERSION_2_3_25);
 
         try {
-            FTL_CONFIG.setDirectoryForTemplateLoading(new File("/home/carol/Desktop/cityhub/emails"));
+            FTL_CONFIG.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir") + "/emails"));
         } catch (IOException e) {
             e.printStackTrace();
         }
