@@ -28,7 +28,6 @@ import spark.Response;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.*;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -81,8 +80,16 @@ public class UserController {
 
         boolean anonymous = userObject.get("anonymous").getAsBoolean();
         int zipcode = userObject.get("zipcode").getAsInt();
+        boolean zipcodeIsValid = false;
 
-        if (Arrays.asList(NYC_ZIPCODES).contains(zipcode)) {
+        for (int i : NYC_ZIPCODES) {
+            if (i == zipcode) {
+                zipcodeIsValid = true;
+                break;
+            }
+        }
+
+        if (!zipcodeIsValid) {
             throw new BadRequestException("Zipcode must be a valid NYC zipcode.");
         }
 
