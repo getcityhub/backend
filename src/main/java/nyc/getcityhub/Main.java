@@ -12,13 +12,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import static nyc.getcityhub.Credentials.*;
 import static spark.Spark.*;
 
 public class Main {
@@ -30,19 +29,14 @@ public class Main {
     public static Configuration FTL_CONFIG;
 
     public static void main(String[] args) {
+        Credentials.loadCredentials();
+
         // -p = production
         if (Arrays.asList(args).contains("-p")) {
             PRODUCTION = true;
 
             port(443);
-
-            try {
-                String keypass = new String(Files.readAllBytes(Paths.get("keypass.txt"))).replace("\n", "");
-                secure("keystore.jks", keypass, null, null);
-            } catch (IOException e) {
-                System.out.println("Error reading keystore password:");
-                e.printStackTrace();
-            }
+            secure("keystore.jks", SSL_KEYPASS, null, null);
         }
 
         FTL_CONFIG = new Configuration(Configuration.VERSION_2_3_25);
