@@ -78,8 +78,10 @@ public class Main {
             delete("/current", UserController::logoutUser);
             get(":id", UserController::retrieveUser, transformer);
             get("/current", UserController::retrieveCurrentUser, transformer);
+            patch("/reset", UserController::updatePassword);
             post("", UserController::createUser, transformer);
             post("/login", UserController::loginUser, transformer);
+            post("/reset", UserController::forgotPassword);
         });
 
         path("/politicians", () -> {

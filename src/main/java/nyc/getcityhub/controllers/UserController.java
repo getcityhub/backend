@@ -32,6 +32,7 @@ import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by jackcook on 06/02/2017.
@@ -337,5 +338,205 @@ public class UserController {
         response.status(204);
 
         return 0;
+    }
+
+    public static int forgotPassword(Request request, Response response) throws BadRequestException, InternalServerException {
+        if (request.body().length() == 0) {
+            throw new BadRequestException("The 'email' key must be included in your request body.");
+        }
+
+        JsonParser parser = new JsonParser();
+        JsonObject bodyObject = (JsonObject) parser.parse(request.body());
+
+        if (!bodyObject.has("email")) {
+            throw new BadRequestException("The 'email' key must be included in your request body.");
+        }
+
+        String email = bodyObject.get("email").getAsString();
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        PreparedStatement resetStatement = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+
+            String query = "SELECT * FROM users WHERE email = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int userId = resultSet.getInt(1);
+                String firstName = resultSet.getString(2);
+                String lastName = resultSet.getString(3);
+
+                Map root = new HashMap();
+                root.put("firstName", firstName);
+                root.put("lastName", lastName);
+
+                try {
+                    Template temp = Main.FTL_CONFIG.getTemplate("forgot-password.ftl");
+                    StringWriter writer = new StringWriter();
+                    temp.process(root, writer);
+
+                    Destination destination = new Destination().withToAddresses(email);
+
+                    Content subject = new Content().withCharset("UTF-8").withData("This is my subject");
+                    Content textBody = new Content().withCharset("UTF-8").withData(writer.toString());
+                    Body body = new Body().withHtml(textBody);
+
+                    Message message = new Message().withSubject(subject).withBody(body);
+                    SendEmailRequest emailRequest = new SendEmailRequest().withSource("Team CityHub <no_reply@getcityhub.org>").withDestination(destination).withMessage(message);
+
+                    AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
+                    Region region = Region.getRegion(Regions.US_EAST_1);
+                    client.setRegion(region);
+                    client.sendEmail(emailRequest);
+                } catch (IOException | TemplateException e) {
+                    e.printStackTrace();
+                }
+
+                String resetQuery = "INSERT INTO password_reset_requests (user_id, code) VALUES (?, ?)";
+                resetStatement = connection.prepareStatement(resetQuery);
+                resetStatement.setInt(1, userId);
+                resetStatement.setString(2, UUID.randomUUID().toString());
+                resetStatement.execute();
+            }
+
+            response.status(204);
+            return 0;
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+
+            throw new InternalServerException(e);
+        } finally {
+            if (resetStatement != null) {
+                try {
+                    resetStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                resetStatement = null;
+            }
+
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                resultSet = null;
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                statement = null;
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                connection = null;
+            }
+        }
+    }
+
+    public static int updatePassword(Request request, Response response) throws BadRequestException, InternalServerException {
+        if (request.body().length() == 0) {
+            throw new BadRequestException("The 'password' and 'token' keys must be included in your request body.");
+        }
+
+        JsonParser parser = new JsonParser();
+        JsonObject bodyObject = (JsonObject) parser.parse(request.body());
+
+        if (!bodyObject.has("password")
+                || !bodyObject.has("code")) {
+            throw new BadRequestException("The 'password' and 'code' keys must be included in your request body.");
+        }
+
+        String password = bodyObject.get("password").getAsString();
+
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback();
+
+        if (strength.getScore() < 3) {
+            throw new BadRequestException("Password is too weak. " + feedback.getWarning());
+        }
+
+        String code = bodyObject.get("code").getAsString();
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        PreparedStatement deleteStatement = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+
+            String query = "UPDATE users SET password = ? WHERE id = (SELECT user_id FROM password_reset_requests WHERE code = ?);";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, BCrypt.hashpw(password, BCrypt.gensalt(10)));
+            statement.setString(2, code);
+            statement.executeUpdate();
+
+            String deleteQuery = "DELETE FROM password_reset_requests WHERE code = ?";
+            deleteStatement = connection.prepareStatement(deleteQuery);
+            deleteStatement.setString(1, code);
+            deleteStatement.execute();
+
+            response.status(204);
+            return 0;
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+
+            throw new InternalServerException(e);
+        } finally {
+            if (deleteStatement != null) {
+                try {
+                    deleteStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                deleteStatement = null;
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                statement = null;
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                connection = null;
+            }
+        }
     }
 }

@@ -52,6 +52,14 @@ CREATE TABLE politicians (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE password_reset_requests (
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  code TEXT NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE translations (
   english TEXT NOT NULL,
   spanish TEXT,
