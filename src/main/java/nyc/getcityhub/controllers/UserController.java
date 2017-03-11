@@ -31,8 +31,9 @@ import java.io.StringWriter;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+
+import static nyc.getcityhub.Constants.*;
 
 /**
  * Created by jackcook on 06/02/2017.
@@ -92,7 +93,7 @@ public class UserController {
         Strength strength = zxcvbn.measure(password);
         Feedback feedback = strength.getFeedback();
 
-        if (strength.getScore() < 3) {
+        if (strength.getScore() < MINIMUM_PASSWORD_STRENGTH) {
             throw new BadRequestException("Password is too weak. " + feedback.getWarning());
         }
 
@@ -141,12 +142,12 @@ public class UserController {
             statement.setInt(4, zipcode);
             statement.setString(5, languagesString);
             statement.setString(6, emailAddress);
-            statement.setString(7, BCrypt.hashpw(password, BCrypt.gensalt(10)));
+            statement.setString(7, BCrypt.hashpw(password, BCrypt.gensalt(BCRYPT_LOG_ROUNDS)));
             statement.executeUpdate();
 
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-                Map root = new HashMap();
+                HashMap<String, String> root = new HashMap<>();
                 root.put("firstName", firstName);
                 root.put("lastName", lastName);
                 root.put("email", emailAddress);
@@ -163,7 +164,7 @@ public class UserController {
                     Body body = new Body().withHtml(textBody);
 
                     Message message = new Message().withSubject(subject).withBody(body);
-                    SendEmailRequest emailRequest = new SendEmailRequest().withSource("Team CityHub <no_reply@getcityhub.org>").withDestination(destination).withMessage(message);
+                    SendEmailRequest emailRequest = new SendEmailRequest().withSource(FROM_EMAIL).withDestination(destination).withMessage(message);
 
                     AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
                     Region region = Region.getRegion(Regions.US_EAST_1);
@@ -360,7 +361,7 @@ public class UserController {
                 String firstName = resultSet.getString(2);
                 String lastName = resultSet.getString(3);
 
-                Map root = new HashMap();
+                HashMap<String, String> root = new HashMap<>();
                 root.put("firstName", firstName);
                 root.put("lastName", lastName);
 
@@ -376,7 +377,7 @@ public class UserController {
                     Body body = new Body().withHtml(textBody);
 
                     Message message = new Message().withSubject(subject).withBody(body);
-                    SendEmailRequest emailRequest = new SendEmailRequest().withSource("Team CityHub <no_reply@getcityhub.org>").withDestination(destination).withMessage(message);
+                    SendEmailRequest emailRequest = new SendEmailRequest().withSource(FROM_EMAIL).withDestination(destination).withMessage(message);
 
                     AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
                     Region region = Region.getRegion(Regions.US_EAST_1);
@@ -456,7 +457,7 @@ public class UserController {
         Strength strength = zxcvbn.measure(password);
         Feedback feedback = strength.getFeedback();
 
-        if (strength.getScore() < 3) {
+        if (strength.getScore() < MINIMUM_PASSWORD_STRENGTH) {
             throw new BadRequestException("Password is too weak. " + feedback.getWarning());
         }
 
@@ -471,7 +472,7 @@ public class UserController {
 
             String query = "UPDATE users SET password = ? WHERE id = (SELECT user_id FROM password_reset_requests WHERE code = ?);";
             statement = connection.prepareStatement(query);
-            statement.setString(1, BCrypt.hashpw(password, BCrypt.gensalt(10)));
+            statement.setString(1, BCrypt.hashpw(password, BCrypt.gensalt(BCRYPT_LOG_ROUNDS)));
             statement.setString(2, code);
             statement.executeUpdate();
 
