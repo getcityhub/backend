@@ -8,6 +8,7 @@ import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.Post;
+import nyc.getcityhub.models.Topic;
 import nyc.getcityhub.models.User;
 import spark.Request;
 import spark.Response;
@@ -44,13 +45,53 @@ public class PostController {
         }
 
         int authorId = user.getId();
-        String title = postObject.get("title").getAsString();
-        int topicId = postObject.get("topicId").getAsInt();
-        String text = postObject.get("text").getAsString();
+
         String language = postObject.get("language").getAsString();
 
         if (!Language.isLanguageSupported(language)) {
             throw new BadRequestException("The language '" + language + "' is not supported at this time.");
+        }
+
+        Language lang = Language.fromId(language);
+
+        String title = postObject.get("title").getAsString();
+
+        int minTitleLength = 10;
+        int maxTitleLength = 50;
+
+        if (lang == Language.CHINESE_SIMPLIFIED){
+            minTitleLength = 2;
+            maxTitleLength = 20;
+        }
+
+        if(title.length() < minTitleLength) {
+            throw new BadRequestException("The title has to be at least " + minTitleLength + " characters long");
+        } else if (title.length() > maxTitleLength){
+            throw new BadRequestException("The title has to be at most " + maxTitleLength + " characters long");
+        }
+
+        int topicId = postObject.get("topicId").getAsInt();
+        Topic topic = Topic.getTopicById(topicId, Language.ENGLISH);
+
+        if (topic == null){
+            throw new BadRequestException("The topic ID must valid.");
+        }
+
+
+        String text = postObject.get("text").getAsString();
+
+        int minPostLength = 50;
+        int maxPostLength = 5000;
+
+        if (lang == Language.CHINESE_SIMPLIFIED){
+            minPostLength = 15;
+            maxPostLength = 1250;
+        }
+
+        if (text.length() < minPostLength){
+            throw new BadRequestException("The post has to be at least " + minPostLength + " characters long.");
+        } else if (text.length() > maxPostLength){
+            throw new BadRequestException("The post has to be at most " + maxPostLength + " characters long.");
         }
 
         Connection connection = null;

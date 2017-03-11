@@ -14,17 +14,19 @@ public class Report {
     private int reporterId;
     private Date createdAt;
     private Date updatedAt;
+    private String language;
     private String text;
-    private ReportReason reason;
+    private int reasonId;
     private User reporter;
 
-    public Report(int id, int reporterId, Date createdAt, Date updatedAt, String text, ReportReason reason) {
+    public Report(int id, int reporterId, Date createdAt, Date updatedAt, String language, String text, int reasonId) {
         this.id = id;
         this.reporterId = reporterId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.language = language;
         this.text = text;
-        this.reason = reason;
+        this.reasonId = reasonId;
     }
 
     public void setReporter(User reporter){
@@ -47,12 +49,16 @@ public class Report {
         return updatedAt;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
     public String getText() {
         return text;
     }
 
-    public ReportReason getReason() {
-        return reason;
+    public int getReasonId() {
+        return reasonId;
     }
 
     public static Report getReportById(int id) {
@@ -68,12 +74,13 @@ public class Report {
 
             if (resultSet.next()) {
                 int reporterId = resultSet.getInt(2);
-                String text = resultSet.getString(3);
-                ReportReason reason = ReportReason.fromId(resultSet.getInt(4));
-                Date createdAt = new Date(resultSet.getTimestamp(5).getTime());
-                Date updatedAt = new Date(resultSet.getTimestamp(6).getTime());
+                String language = resultSet.getString(3);
+                String text = resultSet.getString(4);
+                int reasonId = ReportReason.fromId(resultSet.getInt(5)).getId();
+                Date createdAt = new Date(resultSet.getTimestamp(6).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(7).getTime());
 
-                return new Report(id, reporterId, createdAt, updatedAt, text, reason);
+                return new Report(id, reporterId, createdAt, updatedAt, language, text, reasonId);
             }
         }catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
