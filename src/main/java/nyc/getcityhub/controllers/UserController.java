@@ -192,8 +192,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                resultSet = null;
             }
 
             if (statement != null) {
@@ -202,8 +200,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                statement = null;
             }
 
             if (connection != null) {
@@ -212,8 +208,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                connection = null;
             }
         }
 
@@ -307,8 +301,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                resultSet = null;
             }
 
             if (statement != null) {
@@ -317,8 +309,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                statement = null;
             }
 
             if (connection != null) {
@@ -327,8 +317,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                connection = null;
             }
         }
     }
@@ -406,6 +394,7 @@ public class UserController {
             }
 
             response.status(204);
+
             return 0;
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -420,8 +409,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                resetStatement = null;
             }
 
             if (resultSet != null) {
@@ -430,8 +417,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                resultSet = null;
             }
 
             if (statement != null) {
@@ -440,8 +425,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                statement = null;
             }
 
             if (connection != null) {
@@ -450,8 +433,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                connection = null;
             }
         }
     }
@@ -514,8 +495,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                deleteStatement = null;
             }
 
             if (statement != null) {
@@ -524,8 +503,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                statement = null;
             }
 
             if (connection != null) {
@@ -534,8 +511,6 @@ public class UserController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                connection = null;
             }
         }
     }
