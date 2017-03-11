@@ -14,6 +14,9 @@ public class Constants {
     // Minimum password strength (out of 5) as determined by zxcvbn
     public final static int MINIMUM_PASSWORD_STRENGTH = 3;
 
+    // The URL to use for MySQL connections
+    public final static String JDBC_URL = "jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION;
+
     // List of all valid NYC zipcodes
     public final static int[] NYC_ZIPCODES = {
         10453, 10457, 10460, // Central Bronx

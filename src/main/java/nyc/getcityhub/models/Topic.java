@@ -1,8 +1,8 @@
 package nyc.getcityhub.models;
 
-import nyc.getcityhub.Main;
-
 import java.sql.*;
+
+import static nyc.getcityhub.Constants.*;
 
 public class Topic {
 
@@ -30,7 +30,7 @@ public class Topic {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 
@@ -51,8 +51,6 @@ public class Topic {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                resultSet = null;
             }
 
             if (statement != null) {
@@ -61,8 +59,6 @@ public class Topic {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                statement = null;
             }
 
             if (connection != null) {
@@ -71,8 +67,6 @@ public class Topic {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                connection = null;
             }
         }
 

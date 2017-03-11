@@ -1,6 +1,5 @@
 package nyc.getcityhub.controllers;
 
-import nyc.getcityhub.Main;
 import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
@@ -12,6 +11,8 @@ import spark.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
+
+import static nyc.getcityhub.Constants.*;
 
 /**
  * Created by stephanie on 2/12/17.
@@ -57,7 +58,7 @@ public class PoliticianController {
                 command = "SELECT * FROM politicians WHERE zipcodes LIKE '%" + zipcode + "%'";
             }
 
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 

@@ -138,7 +138,7 @@ public class UserController {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
 
             String query = "INSERT INTO users (first_name, last_name, anonymous, zipcode, languages, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -275,7 +275,7 @@ public class UserController {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
 
             String query = "SELECT * FROM users WHERE email = ?";
             statement = connection.prepareStatement(query);
@@ -355,7 +355,7 @@ public class UserController {
         PreparedStatement resetStatement = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
 
             String query = "SELECT * FROM users WHERE email = ?";
             statement = connection.prepareStatement(query);
@@ -474,7 +474,7 @@ public class UserController {
         PreparedStatement deleteStatement = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
 
             String query = "UPDATE users SET password = ? WHERE id = (SELECT user_id FROM password_reset_requests WHERE code = ?);";
             statement = connection.prepareStatement(query);

@@ -1,9 +1,9 @@
 package nyc.getcityhub.models;
 
-import nyc.getcityhub.Main;
-
 import java.sql.*;
 import java.util.Date;
+
+import static nyc.getcityhub.Constants.*;
 
 /**
  * Created by stephanie on 2/12/17.
@@ -112,7 +112,7 @@ public class Politician {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 
@@ -154,8 +154,6 @@ public class Politician {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                resultSet = null;
             }
 
             if (statement != null) {
@@ -164,8 +162,6 @@ public class Politician {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                statement = null;
             }
 
             if (connection != null) {
@@ -174,8 +170,6 @@ public class Politician {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                connection = null;
             }
         }
 

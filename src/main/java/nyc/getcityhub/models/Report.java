@@ -1,14 +1,15 @@
 package nyc.getcityhub.models;
 
-import nyc.getcityhub.Main;
-
 import java.sql.*;
 import java.util.Date;
+
+import static nyc.getcityhub.Constants.*;
 
 /**
  * Created by carol on 3/10/17.
  */
 public class Report {
+
     private int id;
     private int reporterId;
     private Date createdAt;
@@ -17,7 +18,7 @@ public class Report {
     private ReportReason reason;
     private User reporter;
 
-    public Report(int id, int reporterId, Date createdAt, Date updatedAt, String text, ReportReason reason){
+    public Report(int id, int reporterId, Date createdAt, Date updatedAt, String text, ReportReason reason) {
         this.id = id;
         this.reporterId = reporterId;
         this.createdAt = createdAt;
@@ -61,7 +62,7 @@ public class Report {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 
@@ -108,5 +109,4 @@ public class Report {
 
         return null;
     }
-
 }

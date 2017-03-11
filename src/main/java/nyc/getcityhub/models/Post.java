@@ -1,9 +1,9 @@
 package nyc.getcityhub.models;
 
-import nyc.getcityhub.Main;
-
 import java.sql.*;
 import java.util.Date;
+
+import static nyc.getcityhub.Constants.*;
 
 /**
  * Created by carol on 2/5/17.
@@ -36,7 +36,6 @@ public class Post {
     }
 
     public int getId() {
-
         return id;
     }
 
@@ -49,12 +48,10 @@ public class Post {
     }
 
     public int getAuthorId() {
-
         return authorId;
     }
 
     public String getTitle() {
-
         return title;
     }
 
@@ -81,7 +78,7 @@ public class Post {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 
@@ -96,7 +93,7 @@ public class Post {
 
                 return new Post(id, createdAt, updatedAt, authorId, title, text, topicId, language);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
@@ -109,8 +106,6 @@ public class Post {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                resultSet = null;
             }
 
             if (statement != null) {
@@ -119,8 +114,6 @@ public class Post {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                statement = null;
             }
 
             if (connection != null) {
@@ -129,8 +122,6 @@ public class Post {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                connection = null;
             }
         }
 

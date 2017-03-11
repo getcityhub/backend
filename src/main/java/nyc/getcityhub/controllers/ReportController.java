@@ -2,7 +2,6 @@ package nyc.getcityhub.controllers;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import nyc.getcityhub.Main;
 import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
@@ -13,6 +12,8 @@ import spark.Request;
 import spark.Response;
 
 import java.sql.*;
+
+import static nyc.getcityhub.Constants.*;
 
 /**
  * Created by carol on 3/10/17.
@@ -47,7 +48,7 @@ public class ReportController {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
 
             String query = "INSERT INTO reports (reporter_id, text, reason) VALUES (?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);

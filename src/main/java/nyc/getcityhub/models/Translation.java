@@ -1,9 +1,8 @@
 package nyc.getcityhub.models;
 
-import nyc.getcityhub.Main;
-
 import java.sql.*;
-import java.util.Date;
+
+import static nyc.getcityhub.Constants.*;
 
 /**
  * Created by v-jacco on 2/25/17.
@@ -50,7 +49,7 @@ public class Translation {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
 
             String command = "SELECT * FROM translations WHERE english = ?";
             statement = connection.prepareStatement(command);
@@ -84,8 +83,6 @@ public class Translation {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                resultSet = null;
             }
 
             if (statement != null) {
@@ -94,8 +91,6 @@ public class Translation {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                statement = null;
             }
 
             if (connection != null) {
@@ -104,8 +99,6 @@ public class Translation {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                connection = null;
             }
         }
     }

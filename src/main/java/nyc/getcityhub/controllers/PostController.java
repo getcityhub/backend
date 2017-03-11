@@ -2,7 +2,6 @@ package nyc.getcityhub.controllers;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import nyc.getcityhub.Main;
 import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
@@ -15,6 +14,8 @@ import spark.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
+
+import static nyc.getcityhub.Constants.*;
 
 /**
  * Created by jackcook on 06/02/2017.
@@ -57,7 +58,7 @@ public class PostController {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
 
             String query = "INSERT INTO posts (author_id, title, topic_id, text, language) VALUES (?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -146,7 +147,7 @@ public class PostController {
         ResultSet resultSet = null;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
+            connection = DriverManager.getConnection(JDBC_URL);
             statement = connection.createStatement();
 
             ArrayList<String> parts = new ArrayList<>();
