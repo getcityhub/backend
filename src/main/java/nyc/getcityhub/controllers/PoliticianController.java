@@ -108,6 +108,8 @@ public class PoliticianController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
+                resultSet = null;
             }
 
             if (statement != null) {
@@ -116,6 +118,8 @@ public class PoliticianController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
+                statement = null;
             }
 
             if (connection != null) {
@@ -124,6 +128,8 @@ public class PoliticianController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
+                connection = null;
             }
         }
     }

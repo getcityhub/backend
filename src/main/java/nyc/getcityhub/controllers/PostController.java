@@ -55,8 +55,6 @@ public class PostController {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Statement postStatement = null;
-        ResultSet postResultSet = null;
 
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/cityhub?user=root&password=cityhub&useSSL=" + Main.PRODUCTION);
@@ -92,6 +90,8 @@ public class PostController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
+                resultSet = null;
             }
 
             if (statement != null) {
@@ -100,6 +100,8 @@ public class PostController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
+                statement = null;
             }
 
             if (connection != null) {
@@ -108,6 +110,8 @@ public class PostController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
+                connection = null;
             }
         }
 
@@ -206,6 +210,8 @@ public class PostController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
+                resultSet = null;
             }
 
             if (statement != null) {
@@ -214,6 +220,8 @@ public class PostController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
+                statement = null;
             }
 
             if (connection != null) {
@@ -222,6 +230,8 @@ public class PostController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
+                connection = null;
             }
         }
     }

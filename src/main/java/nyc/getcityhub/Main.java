@@ -2,10 +2,7 @@ package nyc.getcityhub;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
-import nyc.getcityhub.controllers.TopicController;
-import nyc.getcityhub.controllers.PoliticianController;
-import nyc.getcityhub.controllers.PostController;
-import nyc.getcityhub.controllers.UserController;
+import nyc.getcityhub.controllers.*;
 import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
@@ -70,28 +67,31 @@ public class Main {
 
         path("/posts", () -> {
             get("", PostController::retrievePosts, transformer);
-            get(":id", PostController::retrievePost, transformer);
+            get("/:id", PostController::retrievePost, transformer);
             post("", PostController::createPost, transformer);
+        });
+
+        path("/reports", () -> {
+           get("/:id", ReportController::retrieveReport, transformer);
+           post("", ReportController::createReport, transformer);
         });
 
         path("/users", () -> {
             delete("/current", UserController::logoutUser);
-            get(":id", UserController::retrieveUser, transformer);
+            get("/:id", UserController::retrieveUser, transformer);
             get("/current", UserController::retrieveCurrentUser, transformer);
-            patch("/reset", UserController::updatePassword);
             post("", UserController::createUser, transformer);
             post("/login", UserController::loginUser, transformer);
-            post("/reset", UserController::forgotPassword);
         });
 
         path("/politicians", () -> {
             get("", PoliticianController::retrievePoliticians, transformer);
-            get(":id", PoliticianController::retrievePolitician, transformer);
+            get("/:id", PoliticianController::retrievePolitician, transformer);
         });
 
         path("/topics", () -> {
             get("", TopicController::retrieveTopics, transformer);
-            get(":id",TopicController::retrieveTopic, transformer);
+            get("/:id",TopicController::retrieveTopic, transformer);
         });
 
         exception(BadRequestException.class, (exception, request, response) -> {

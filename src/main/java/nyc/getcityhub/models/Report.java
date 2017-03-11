@@ -6,38 +6,36 @@ import java.sql.*;
 import java.util.Date;
 
 /**
- * Created by carol on 2/5/17.
+ * Created by carol on 3/10/17.
  */
-public class Post {
-
+public class Report {
     private int id;
+    private int reporterId;
     private Date createdAt;
     private Date updatedAt;
-    private transient int authorId;
-    private String title;
     private String text;
-    private int topicId;
-    private String language;
-    private User author;
+    private ReportReason reason;
+    private User reporter;
 
-    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, int topicId, String language) {
+    public Report(int id, int reporterId, Date createdAt, Date updatedAt, String text, ReportReason reason){
         this.id = id;
+        this.reporterId = reporterId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.authorId = authorId;
-        this.title = title;
         this.text = text;
-        this.topicId = topicId;
-        this.language = language;
+        this.reason = reason;
     }
 
-    public void setAuthor(User author){
-        this.author = author;
+    public void setReporter(User reporter){
+        this.reporter = reporter;
     }
 
     public int getId() {
-
         return id;
+    }
+
+    public int getUserId() {
+        return reporterId;
     }
 
     public Date getCreatedAt() {
@@ -48,34 +46,16 @@ public class Post {
         return updatedAt;
     }
 
-    public int getAuthorId() {
-
-        return authorId;
-    }
-
-    public String getTitle() {
-
-        return title;
-    }
-
     public String getText() {
         return text;
     }
 
-    public String getLanguages() {
-        return language;
+    public ReportReason getReason() {
+        return reason;
     }
 
-    public int getTopicId() {
-        return topicId;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public static Post getPostById(int id) {
-        String command = "SELECT * FROM posts WHERE id = " + id;
+    public static Report getReportById(int id) {
+        String command = "SELECT * FROM reports WHERE id = " + id;
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -86,15 +66,13 @@ public class Post {
             resultSet = statement.executeQuery(command);
 
             if (resultSet.next()) {
-                int authorId = resultSet.getInt(2);
-                String title = resultSet.getString(3);
-                String text = resultSet.getString(4);
-                int topicId = resultSet.getInt(5);
-                String language = resultSet.getString(6);
-                Date createdAt = new Date(resultSet.getTimestamp(7).getTime());
-                Date updatedAt = new Date(resultSet.getTimestamp(8).getTime());
+                int reporterId = resultSet.getInt(2);
+                String text = resultSet.getString(3);
+                ReportReason reason = ReportReason.fromId(resultSet.getInt(4));
+                Date createdAt = new Date(resultSet.getTimestamp(5).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(6).getTime());
 
-                return new Post(id, createdAt, updatedAt, authorId, title, text, topicId, language);
+                return new Report(id, reporterId, createdAt, updatedAt, text, reason);
             }
         }catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -109,8 +87,6 @@ public class Post {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                resultSet = null;
             }
 
             if (statement != null) {
@@ -119,8 +95,6 @@ public class Post {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                statement = null;
             }
 
             if (connection != null) {
@@ -129,11 +103,10 @@ public class Post {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                connection = null;
             }
         }
 
         return null;
     }
+
 }
