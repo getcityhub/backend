@@ -17,8 +17,8 @@ public class Credentials {
             String[] keys = new String(Files.readAllBytes(Paths.get("keys.txt"))).split("\n");
 
             for (String secretStuff : keys) {
-                String key = secretStuff.split("=")[0];
-                String value = secretStuff.split("=")[1];
+                String key = secretStuff.split("=", 2)[0];
+                String value = secretStuff.split("=", 2)[1];
 
                 switch (key) {
                     case "AWS_ACCESS_KEY_ID":
