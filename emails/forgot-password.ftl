@@ -31,7 +31,7 @@
             <a href="http://getcityhub.org" target="_blank" style="color:#FFFFFF; text-decoration:none;">
             <table align="center" valign="middle" border="0" cellpadding="0" cellspacing="0" style="background-color:#03A588; border:1px solid #03A588; border-radius:4px; margin-top: 8px; width: 50%; cursor: pointer;">
                 <tr>
-                    <td align="center" valign="middle" style="color:#FFFFFF;  font-size:16px; font-weight:bold; =EF=BF=BD=EF=BF=BD=EF=BF=BDline-height:150%; padding-top:15px; padding-right:30px; padding-bottom:15px; padding-left:30px; ">
+                    <td align="center" valign="middle" style="color:#FFFFFF;  font-size:16px; font-weight:bold; line-height:150%; padding-top:15px; padding-right:30px; padding-bottom:15px; padding-left:30px; ">
                       Change password
                     </td>
                 </tr>
