@@ -63,6 +63,7 @@ public class Main {
             get("", PostController::retrievePosts, transformer);
             get("/:id", PostController::retrievePost, transformer);
             post("", PostController::createPost, transformer);
+            post("/:id/like", PostController::likePost);
         });
 
         path("/reports", () -> {

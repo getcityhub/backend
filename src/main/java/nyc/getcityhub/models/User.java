@@ -14,16 +14,18 @@ public class User {
     private int zipcode;
     private String[] languages;
     private String emailAddress;
+    private int[] liked;
     private Date createdAt;
     private Date updatedAt;
 
-    public User(int id, String firstName, String lastName, boolean anonymous, int zipcode, String[] languages, String emailAddress, Date createdAt, Date updatedAt) {
+    public User(int id, String firstName, String lastName, boolean anonymous, int zipcode, String[] languages, String emailAddress, int[] liked, Date createdAt, Date updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.anonymous = anonymous;
         this.languages = languages;
         this.emailAddress = emailAddress;
+        this.liked = liked;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.zipcode = zipcode;
@@ -53,7 +55,13 @@ public class User {
         return languages;
     }
 
-    public String getEmailAddress() { return emailAddress; }
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public int[] getLiked() {
+        return liked;
+    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -85,10 +93,21 @@ public class User {
                 String[] languagesArray = languages.split(",");
 
                 String emailAddress = resultSet.getString(7);
-                Date createdAt = new Date(resultSet.getTimestamp(9).getTime());
-                Date updatedAt = new Date(resultSet.getTimestamp(10).getTime());
 
-                return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, createdAt, updatedAt);
+                String liked = resultSet.getString(9);
+                String[] postIdsString = liked.split(",");
+                int[] likedArray = new int[postIdsString.length];
+
+                if (postIdsString.length > 1) {
+                    for (int i = 0; i < postIdsString.length; i++) {
+                        likedArray[i] = Integer.parseInt(postIdsString[i]);
+                    }
+                }
+
+                Date createdAt = new Date(resultSet.getTimestamp(10).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(11).getTime());
+
+                return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, likedArray, createdAt, updatedAt);
             }
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());

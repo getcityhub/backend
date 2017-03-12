@@ -18,9 +18,10 @@ public class Post {
     private String text;
     private int topicId;
     private String language;
+    private int likes;
     private User author;
 
-    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, int topicId, String language) {
+    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, int topicId, String language, int likes) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -29,6 +30,7 @@ public class Post {
         this.text = text;
         this.topicId = topicId;
         this.language = language;
+        this.likes = likes;
     }
 
     public void setAuthor(User author){
@@ -63,6 +65,10 @@ public class Post {
         return language;
     }
 
+    public int getLikes() {
+        return likes;
+    }
+
     public int getTopicId() {
         return topicId;
     }
@@ -88,11 +94,14 @@ public class Post {
                 String text = resultSet.getString(4);
                 int topicId = resultSet.getInt(5);
                 String language = resultSet.getString(6);
-                Date createdAt = new Date(resultSet.getTimestamp(7).getTime());
-                Date updatedAt = new Date(resultSet.getTimestamp(8).getTime());
+                int likes = resultSet.getInt(7);
+                Date createdAt = new Date(resultSet.getTimestamp(8).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(9).getTime());
 
-                return new Post(id, createdAt, updatedAt, authorId, title, text, topicId, language);
+                return new Post(id, createdAt, updatedAt, authorId, title, text, topicId, language, likes);
             }
+
+            return null;
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
@@ -124,7 +133,5 @@ public class Post {
                 }
             }
         }
-
-        return null;
     }
 }

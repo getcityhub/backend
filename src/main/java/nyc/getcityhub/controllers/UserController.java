@@ -140,7 +140,7 @@ public class UserController {
         try {
             connection = DriverManager.getConnection(JDBC_URL);
 
-            String query = "INSERT INTO users (first_name, last_name, anonymous, zipcode, languages, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (first_name, last_name, anonymous, zipcode, languages, email, password, liked) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, firstName);
             statement.setString(2, lastName);
@@ -149,6 +149,7 @@ public class UserController {
             statement.setString(5, languagesString);
             statement.setString(6, emailAddress);
             statement.setString(7, BCrypt.hashpw(password, BCrypt.gensalt(BCRYPT_LOG_ROUNDS)));
+            statement.setString(8, "");
             statement.executeUpdate();
 
             resultSet = statement.getGeneratedKeys();
