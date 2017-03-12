@@ -281,7 +281,7 @@ public class PostController {
         User user = request.session().attribute("user");
 
         if (user == null) {
-            throw new UnauthorizedException("You must be logged in to like posts.");
+            throw new UnauthorizedException("You must be logged in to " + (like ? "like" : "unlike") + " posts.");
         }
 
         int userId = user.getId();
@@ -301,19 +301,21 @@ public class PostController {
                 likedPostIds.add(likedPostId);
             }
 
-            if (likedPostIds.contains(postId) && post.getAuthorId() != userId) {
+            if (like == !likedPostIds.contains(postId) && post.getAuthorId() != userId) {
                 statement = connection.prepareStatement("UPDATE posts SET likes = likes " + (like ? "+" : "-") + " 1 where id = " + postId);
                 statement.executeUpdate();
 
                 if (like) {
                     likedPostIds.add(postId);
                 } else {
-                    likedPostIds.remove(postId);
+                    likedPostIds.remove(new Integer(postId));
                 }
 
                 String likedPostIdsString = likedPostIds.stream().map(Object::toString).collect(Collectors.joining(","));
 
-                userStatement = connection.prepareStatement("UPDATE users SET liked = '" + likedPostIdsString + "' WHERE id = " + userId);
+                userStatement = connection.prepareStatement("UPDATE users SET liked = ? WHERE id = ?");
+                userStatement.setString(1, likedPostIdsString);
+                userStatement.setInt(2, userId);
                 userStatement.executeUpdate();
             }
 
