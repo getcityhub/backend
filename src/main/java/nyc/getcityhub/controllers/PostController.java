@@ -55,6 +55,7 @@ public class PostController {
 
         Connection connection = null;
         PreparedStatement statement = null;
+        PreparedStatement likeStatement = null;
         ResultSet resultSet = null;
 
         try {
@@ -73,10 +74,17 @@ public class PostController {
             if (resultSet.next()) {
                 int id = resultSet.getInt(1);
 
-                Post post = Post.getPostById(id);
-                post.setAuthor(User.getUserById(authorId));
+                likeStatement = connection.prepareStatement("UPDATE users SET liked = IF(CHAR_LENGTH(liked) = 0, '" + id + "', CONCAT(liked, '," + id + "')) WHERE id = " + authorId);
+                likeStatement.executeUpdate();
 
-                return post;
+                Post post = Post.getPostById(id);
+
+                if (post != null) {
+                    post.setAuthor(User.getUserById(authorId));
+                    return post;
+                } else {
+                    throw new InternalServerException("An unknown error occurred.");
+                }
             }
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -85,6 +93,14 @@ public class PostController {
 
             throw new InternalServerException(e);
         } finally {
+            if (likeStatement != null) {
+                try {
+                    likeStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
             if (resultSet != null) {
                 try {
                     resultSet.close();
@@ -234,7 +250,7 @@ public class PostController {
         try {
             connection = DriverManager.getConnection(JDBC_URL);
 
-            statement = connection.prepareStatement("UPDATE posts SET likes = likes + 1 where id = " + postId);
+            statement = connection.prepareStatement("UPDATE posts SET likes = IF((SELECT liked FROM users WHERE id = " + userId + ") LIKE '" + postId + ",%' OR (SELECT liked FROM users WHERE id = " + userId + ") LIKE '%," + postId + "', likes, likes + 1) where id = " + postId);
             statement.executeUpdate();
 
             userStatement = connection.prepareStatement("UPDATE users SET liked = IF(CHAR_LENGTH(liked) = 0, '" + postId + "', CONCAT(liked, '," + postId + "')) WHERE id = " + userId);
