@@ -63,7 +63,8 @@ public class Main {
             get("", PostController::retrievePosts, transformer);
             get("/:id", PostController::retrievePost, transformer);
             post("", PostController::createPost, transformer);
-            post("/:id/like", PostController::likePost);
+            post("/:id/like", (req, res) -> PostController.likePost(req, res, true));
+            post("/:id/unlike", (req, res) -> PostController.likePost(req, res, false));
         });
 
         path("/reports", () -> {

@@ -15,6 +15,8 @@ import spark.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static nyc.getcityhub.Constants.*;
 
@@ -73,8 +75,8 @@ public class PostController {
         int topicId = postObject.get("topicId").getAsInt();
         Topic topic = Topic.getTopicById(topicId, Language.ENGLISH);
 
-        if (topic == null){
-            throw new BadRequestException("The topic ID must valid.");
+        if (topic == null) {
+            throw new BadRequestException("The topic ID must be valid.");
         }
 
 
@@ -262,7 +264,7 @@ public class PostController {
         }
     }
 
-    public static int likePost(Request request, Response response) throws BadRequestException, InternalServerException, UnauthorizedException {
+    public static int likePost(Request request, Response response, Boolean like) throws BadRequestException, InternalServerException, UnauthorizedException {
         String idString = request.params(":id");
         int postId;
 
@@ -283,6 +285,8 @@ public class PostController {
         }
 
         int userId = user.getId();
+        User updatedUser = User.getUserById(userId);
+        Post post = Post.getPostById(postId);
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -291,11 +295,27 @@ public class PostController {
         try {
             connection = DriverManager.getConnection(JDBC_URL);
 
-            statement = connection.prepareStatement("UPDATE posts SET likes = IF((SELECT liked FROM users WHERE id = " + userId + ") LIKE '" + postId + ",%' OR (SELECT liked FROM users WHERE id = " + userId + ") LIKE '%," + postId + "', likes, likes + 1) where id = " + postId);
-            statement.executeUpdate();
+            ArrayList<Integer> likedPostIds = new ArrayList<>();
 
-            userStatement = connection.prepareStatement("UPDATE users SET liked = IF(CHAR_LENGTH(liked) = 0, '" + postId + "', CONCAT(liked, '," + postId + "')) WHERE id = " + userId);
-            userStatement.executeUpdate();
+            for (int likedPostId : updatedUser.getLiked()) {
+                likedPostIds.add(likedPostId);
+            }
+
+            if (likedPostIds.contains(postId) && post.getAuthorId() != userId) {
+                statement = connection.prepareStatement("UPDATE posts SET likes = likes " + (like ? "+" : "-") + " 1 where id = " + postId);
+                statement.executeUpdate();
+
+                if (like) {
+                    likedPostIds.add(postId);
+                } else {
+                    likedPostIds.remove(postId);
+                }
+
+                String likedPostIdsString = likedPostIds.stream().map(Object::toString).collect(Collectors.joining(","));
+
+                userStatement = connection.prepareStatement("UPDATE users SET liked = '" + likedPostIdsString + "' WHERE id = " + userId);
+                userStatement.executeUpdate();
+            }
 
             response.status(204);
             return 0;
@@ -306,6 +326,14 @@ public class PostController {
 
             throw new InternalServerException(e);
         } finally {
+            if (userStatement != null) {
+                try {
+                    userStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
             if (statement != null) {
                 try {
                     statement.close();
