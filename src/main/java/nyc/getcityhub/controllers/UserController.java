@@ -1,9 +1,5 @@
 package nyc.getcityhub.controllers;
 
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
-import com.amazonaws.services.simpleemail.model.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,13 +7,12 @@ import com.google.gson.JsonParser;
 import com.nulabinc.zxcvbn.Feedback;
 import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import nyc.getcityhub.Main;
+import nyc.getcityhub.services.EmailService;
 import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
+import nyc.getcityhub.models.Email;
 import nyc.getcityhub.models.Language;
 import nyc.getcityhub.models.User;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -25,8 +20,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import spark.Request;
 import spark.Response;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.UUID;
@@ -154,32 +147,13 @@ public class UserController {
 
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-                HashMap<String, String> root = new HashMap<>();
-                root.put("firstName", firstName);
-                root.put("lastName", lastName);
-                root.put("email", emailAddress);
+                HashMap<String, String> data = new HashMap<>();
+                data.put("firstName", firstName);
+                data.put("lastName", lastName);
+                data.put("email", emailAddress);
 
-                try {
-                    Template temp = Main.FTL_CONFIG.getTemplate("registration.ftl");
-                    StringWriter writer = new StringWriter();
-                    temp.process(root, writer);
-
-                    Destination destination = new Destination().withToAddresses(emailAddress);
-
-                    Content subject = new Content().withCharset("UTF-8").withData("This is my subject");
-                    Content textBody = new Content().withCharset("UTF-8").withData(writer.toString());
-                    Body body = new Body().withHtml(textBody);
-
-                    Message message = new Message().withSubject(subject).withBody(body);
-                    SendEmailRequest emailRequest = new SendEmailRequest().withSource(FROM_EMAIL).withDestination(destination).withMessage(message);
-
-                    AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
-                    Region region = Region.getRegion(Regions.US_EAST_1);
-                    client.setRegion(region);
-                    client.sendEmail(emailRequest);
-                } catch (IOException | TemplateException e) {
-                    e.printStackTrace();
-                }
+                Email email = new Email("registration", data, "Welcome to CityHub");
+                EmailService.sendEmail(email, emailAddress);
 
                 int id = resultSet.getInt(1);
                 User user = User.getUserById(id);
@@ -348,7 +322,7 @@ public class UserController {
             throw new BadRequestException("The 'email' key must be included in your request body.");
         }
 
-        String email = bodyObject.get("email").getAsString();
+        String emailAddress = bodyObject.get("email").getAsString();
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -360,7 +334,7 @@ public class UserController {
 
             String query = "SELECT * FROM users WHERE email = ?";
             statement = connection.prepareStatement(query);
-            statement.setString(1, email);
+            statement.setString(1, emailAddress);
             resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -368,31 +342,12 @@ public class UserController {
                 String firstName = resultSet.getString(2);
                 String lastName = resultSet.getString(3);
 
-                HashMap<String, String> root = new HashMap<>();
-                root.put("firstName", firstName);
-                root.put("lastName", lastName);
+                HashMap<String, String> data = new HashMap<>();
+                data.put("firstName", firstName);
+                data.put("lastName", lastName);
 
-                try {
-                    Template temp = Main.FTL_CONFIG.getTemplate("forgot-password.ftl");
-                    StringWriter writer = new StringWriter();
-                    temp.process(root, writer);
-
-                    Destination destination = new Destination().withToAddresses(email);
-
-                    Content subject = new Content().withCharset("UTF-8").withData("This is my subject");
-                    Content textBody = new Content().withCharset("UTF-8").withData(writer.toString());
-                    Body body = new Body().withHtml(textBody);
-
-                    Message message = new Message().withSubject(subject).withBody(body);
-                    SendEmailRequest emailRequest = new SendEmailRequest().withSource(FROM_EMAIL).withDestination(destination).withMessage(message);
-
-                    AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
-                    Region region = Region.getRegion(Regions.US_EAST_1);
-                    client.setRegion(region);
-                    client.sendEmail(emailRequest);
-                } catch (IOException | TemplateException e) {
-                    e.printStackTrace();
-                }
+                Email email = new Email("forgot-password", data, "CityHub Password Reset");
+                EmailService.sendEmail(email, emailAddress);
 
                 String resetQuery = "INSERT INTO password_reset_requests (user_id, code) VALUES (?, ?)";
                 resetStatement = connection.prepareStatement(resetQuery);
