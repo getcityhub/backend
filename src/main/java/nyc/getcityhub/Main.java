@@ -7,22 +7,26 @@ import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import static nyc.getcityhub.Credentials.*;
 import static spark.Spark.*;
 
 public class Main {
 
-    final private static Logger logger = LoggerFactory.getLogger(Main.class);
+    final private static Logger logger = Logger.getLogger(Main.class.getName());
     final private static JsonTransformer transformer = new JsonTransformer();
 
     public static boolean PRODUCTION = false;
@@ -39,17 +43,8 @@ public class Main {
             secure("keystore.jks", SSL_KEYPASS, null, null);
         }
 
-        FTL_CONFIG = new Configuration(Configuration.VERSION_2_3_25);
-
-        try {
-            FTL_CONFIG.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir") + "/emails"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        FTL_CONFIG.setDefaultEncoding("UTF-8");
-        FTL_CONFIG.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        FTL_CONFIG.setLogTemplateExceptions(true);
+        setupLogger();
+        setupFreemarker();
 
         before((request, response) -> response.type("application/json; charset=utf-8"));
 
@@ -111,6 +106,8 @@ public class Main {
         });
 
         exception(InternalServerException.class, (exception, request, response) -> {
+            logger.log(Level.SEVERE, "Internal server exception", exception);
+
             ResponseError error = new ResponseError(500, exception.getMessage());
             response.status(error.getStatusCode());
             response.body(transformer.render(error));
@@ -125,5 +122,31 @@ public class Main {
             ResponseError error = new ResponseError(500, "Internal server error");
             return transformer.render(error);
         });
+    }
+
+    private static void setupLogger() {
+        System.setProperty("sentry.environment", PRODUCTION ? "production" : System.getProperty("user.name"));
+
+        try {
+            FileInputStream fis = new FileInputStream(System.getProperty("user.dir") + "/logging.properties");
+            LogManager.getLogManager().readConfiguration(fis);
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void setupFreemarker() {
+        FTL_CONFIG = new Configuration(Configuration.VERSION_2_3_25);
+
+        try {
+            FTL_CONFIG.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir") + "/emails"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        FTL_CONFIG.setDefaultEncoding("UTF-8");
+        FTL_CONFIG.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        FTL_CONFIG.setLogTemplateExceptions(true);
     }
 }
