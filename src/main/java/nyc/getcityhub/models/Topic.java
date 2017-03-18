@@ -1,7 +1,7 @@
 package nyc.getcityhub.models;
 
-public enum Topic{
-    OHTER(0, "Other"),
+public enum Topic {
+    OTHER(0, "Other"),
     PUBLIC_HEALTH_AND_SAFETY(1, "Public Health/Safety"),
     TRANSPORTATION(2, "Transportation"),
     VEHICLES_AND_PARKING(3, "Vehicles and Parking"),
@@ -22,8 +22,9 @@ public enum Topic{
         this.name = name;
     }
 
-    public static Topic fromId(int id){
-        switch(id){
+    public static Topic fromId(int id) {
+        switch(id) {
+            case 0: return OTHER;
             case 1: return PUBLIC_HEALTH_AND_SAFETY;
             case 2: return TRANSPORTATION;
             case 3: return VEHICLES_AND_PARKING;
@@ -35,16 +36,15 @@ public enum Topic{
             case 9: return HOUSING_AND_DEVELOPMENT;
             case 10: return RECREATION;
             case 11: return SOCIAL_SERVICES;
-            default: return OHTER;
-
+            default: return null;
         }
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public String getName(){
-        return name;
+    public String getName(Language language) {
+        return Translation.getTranslation(name, language);
     }
 }
