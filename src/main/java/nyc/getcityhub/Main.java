@@ -61,6 +61,12 @@ public class Main {
             post("/:id/unlike", (req, res) -> PostController.likePost(req, res, false));
         });
 
+        path("/events", () -> {
+            get("", EventController::retrieveEvents, transformer);
+            get("/:id", EventController::retrieveEvent, transformer);
+            post("", EventController::createEvent, transformer);
+        });
+
         path("/reports", () -> {
            get("/:id", ReportController::retrieveReport, transformer);
            post("", ReportController::createReport, transformer);
