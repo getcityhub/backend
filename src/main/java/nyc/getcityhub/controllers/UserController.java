@@ -72,7 +72,15 @@ public class UserController {
         }
 
         boolean anonymous = userObject.get("anonymous").getAsBoolean();
-        int zipcode = userObject.get("zipcode").getAsInt();
+
+        int zipcode;
+
+        try {
+            zipcode = userObject.get("zipcode").getAsInt();
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Zipcode must be a valid NYC zipcode.");
+        }
+
         boolean zipcodeIsValid = false;
 
         for (int i : NYC_ZIPCODES) {
