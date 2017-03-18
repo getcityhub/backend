@@ -12,7 +12,11 @@ public class UserSerializer implements JsonSerializer<User> {
 
     @Override
     public JsonElement serialize(User user, Type type, JsonSerializationContext jsonSerializationContext) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .disableHtmlEscaping()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
+                .create();
+
         JsonObject object = (JsonObject) gson.toJsonTree(user);
 
         object.remove("anonymous");
