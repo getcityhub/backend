@@ -85,11 +85,6 @@ public class Main {
             get("/:id", PoliticianController::retrievePolitician, transformer);
         });
 
-        path("/topics", () -> {
-            get("", TopicController::retrieveTopics, transformer);
-            get("/:id",TopicController::retrieveTopic, transformer);
-        });
-
         exception(BadRequestException.class, (exception, request, response) -> {
             ResponseError error = new ResponseError(400, exception.getMessage());
             response.status(error.getStatusCode());

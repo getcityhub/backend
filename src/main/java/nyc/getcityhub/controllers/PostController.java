@@ -71,7 +71,7 @@ public class PostController {
         }
 
         int topicId = postObject.get("topicId").getAsInt();
-        Topic topic = Topic.getTopicById(topicId, Language.ENGLISH);
+        Topic topic = Topic.fromId(topicId);
 
         if (topic == null){
             throw new BadRequestException("The topic ID must valid.");

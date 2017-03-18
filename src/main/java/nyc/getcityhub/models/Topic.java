@@ -1,75 +1,50 @@
 package nyc.getcityhub.models;
 
-import java.sql.*;
-
-import static nyc.getcityhub.Constants.*;
-
-public class Topic {
+public enum Topic{
+    OHTER(0, "Other"),
+    PUBLIC_HEALTH_AND_SAFETY(1, "Public Health/Safety"),
+    TRANSPORTATION(2, "Transportation"),
+    VEHICLES_AND_PARKING(3, "Vehicles and Parking"),
+    TAXES(4, "Taxes"),
+    NOISE(5, "Noise"),
+    BUSINESS(6, "Business"),
+    EDUCATION(7, "Education"),
+    CIVIC_SERVICES(8, "Civic Services"),
+    HOUSING_AND_DEVELOPMENT(9, "Housing and Development"),
+    RECREATION(10, "Recreation"),
+    SOCIAL_SERVICES(11, "Social Services");
 
     private int id;
     private String name;
 
-    public Topic(int id, String name) {
+    Topic(int id, String name){
         this.id = id;
         this.name = name;
     }
 
-    public int getId() {
+    public static Topic fromId(int id){
+        switch(id){
+            case 1: return PUBLIC_HEALTH_AND_SAFETY;
+            case 2: return TRANSPORTATION;
+            case 3: return VEHICLES_AND_PARKING;
+            case 4: return TAXES;
+            case 5: return NOISE;
+            case 6: return BUSINESS;
+            case 7: return EDUCATION;
+            case 8: return CIVIC_SERVICES;
+            case 9: return HOUSING_AND_DEVELOPMENT;
+            case 10: return RECREATION;
+            case 11: return SOCIAL_SERVICES;
+            default: return OHTER;
+
+        }
+    }
+
+    public int getId(){
         return id;
     }
 
-    public String getName() {
+    public String getName(){
         return name;
-    }
-
-    public static Topic getTopicById(int id, Language language) {
-        String command = "SELECT * FROM topics WHERE id = " + id;
-
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = DriverManager.getConnection(JDBC_URL);
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(command);
-
-            if (resultSet.next()) {
-                String name = Translation.getTranslation(resultSet.getString(2), language);
-                return new Topic(id, name);
-            }
-        } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
-            return null;
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return null;
     }
 }
