@@ -7,6 +7,7 @@ import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
+import spark.Request;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -104,7 +105,7 @@ public class Main {
         });
 
         exception(InternalServerException.class, (exception, request, response) -> {
-            logger.log(Level.SEVERE, exception.getMessage(), exception);
+            logger.log(Level.SEVERE, generateRequestData(request), exception);
 
             ResponseError error = new ResponseError(500, exception.getMessage());
             response.status(error.getStatusCode());
@@ -117,7 +118,7 @@ public class Main {
         });
 
         internalServerError((request, response) -> {
-            logger.log(Level.SEVERE, "Unknown internal server exception", request);
+            logger.severe("Unknown exception occurred\n\n" + generateRequestData(request));
 
             ResponseError error = new ResponseError(500, "Internal server error");
             return transformer.render(error);
@@ -148,5 +149,18 @@ public class Main {
         FTL_CONFIG.setDefaultEncoding("UTF-8");
         FTL_CONFIG.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         FTL_CONFIG.setLogTemplateExceptions(true);
+    }
+
+    private static String generateRequestData(Request request) {
+        String data = request.requestMethod() + " " + request.uri() + " " + request.protocol() + "\n";
+
+        for (String header : request.headers()) {
+            data += header + ": " + request.headers(header) + "\n";
+        }
+
+        data += "\n";
+        data += request.body();
+
+        return data;
     }
 }

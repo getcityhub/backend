@@ -109,6 +109,8 @@ public class User {
 
                 return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, likedPostIds, createdAt, updatedAt);
             }
+
+            return null;
         } catch (SQLException e) {
             return null;
         } finally {
@@ -136,8 +138,6 @@ public class User {
                 }
             }
         }
-
-        return null;
     }
 
     public static boolean userExistsWithEmail(String emailAddress) {
