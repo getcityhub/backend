@@ -82,11 +82,7 @@ public class Report {
 
                 return new Report(id, reporterId, createdAt, updatedAt, language, text, reasonId);
             }
-        }catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
+        } catch (SQLException e) {
             return null;
         } finally {
             if (resultSet != null) {

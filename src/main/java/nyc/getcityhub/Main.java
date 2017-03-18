@@ -11,8 +11,6 @@ import nyc.getcityhub.exceptions.UnauthorizedException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 import java.text.DateFormat;
@@ -106,7 +104,7 @@ public class Main {
         });
 
         exception(InternalServerException.class, (exception, request, response) -> {
-            logger.log(Level.SEVERE, "Internal server exception", exception);
+            logger.log(Level.SEVERE, exception.getMessage(), exception);
 
             ResponseError error = new ResponseError(500, exception.getMessage());
             response.status(error.getStatusCode());
@@ -119,6 +117,8 @@ public class Main {
         });
 
         internalServerError((request, response) -> {
+            logger.log(Level.SEVERE, "Unknown internal server exception", request);
+
             ResponseError error = new ResponseError(500, "Internal server error");
             return transformer.render(error);
         });

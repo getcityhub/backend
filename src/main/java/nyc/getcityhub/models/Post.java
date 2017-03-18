@@ -103,10 +103,6 @@ public class Post {
 
             return null;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             return null;
         } finally {
             if (resultSet != null) {

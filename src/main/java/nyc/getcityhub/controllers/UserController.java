@@ -162,10 +162,6 @@ public class UserController {
                 return user;
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             throw new InternalServerException(e);
         } finally {
             if (resultSet != null) {
@@ -271,10 +267,6 @@ public class UserController {
 
             throw new UnauthorizedException("Invalid email or password");
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             throw new InternalServerException(e);
         } finally {
             if (resultSet != null) {
@@ -360,10 +352,6 @@ public class UserController {
 
             return 0;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             throw new InternalServerException(e);
         } finally {
             if (resetStatement != null) {
@@ -446,10 +434,6 @@ public class UserController {
             response.status(204);
             return 0;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             throw new InternalServerException(e);
         } finally {
             if (deleteStatement != null) {

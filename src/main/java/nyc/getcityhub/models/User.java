@@ -110,10 +110,6 @@ public class User {
                 return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, likedPostIds, createdAt, updatedAt);
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             return null;
         } finally {
             if (resultSet != null) {
@@ -159,11 +155,7 @@ public class User {
             resultSet = statement.executeQuery();
             return resultSet.next();
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
-            return true;
+            return false;
         } finally {
             if (resultSet != null) {
                 try {

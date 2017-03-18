@@ -130,10 +130,6 @@ public class PostController {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             throw new InternalServerException(e);
         } finally {
             if (likeStatement != null) {
@@ -232,10 +228,6 @@ public class PostController {
 
             return postsArray;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             throw new InternalServerException(e);
         } finally {
             if (resultSet != null) {
@@ -322,10 +314,6 @@ public class PostController {
             response.status(204);
             return 0;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             throw new InternalServerException(e);
         } finally {
             if (userStatement != null) {
