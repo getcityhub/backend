@@ -193,6 +193,7 @@ public class PostController {
 
     public static Post[] retrievePosts(Request request, Response response) throws InternalServerException {
         String language = Language.fromId(request.headers("Accept-Language")).getId();
+        String search = request.queryParams("q");
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -202,7 +203,18 @@ public class PostController {
             connection = DriverManager.getConnection(JDBC_URL);
 
             String query = "SELECT *, ((likes - 1) / power(time_to_sec(timediff(NOW(), created_at)) / 3600 + 2, 1.8)) AS score FROM posts ORDER BY score DESC";
+
+            if (search != null) {
+                query = "SELECT *, ((likes - 1) / power(time_to_sec(timediff(NOW(), created_at)) / 3600 + 2, 1.8)) AS score FROM posts WHERE title LIKE CONCAT('%', ?, '%') OR text LIKE CONCAT('%', ?, '%') ORDER BY score DESC";
+            }
+
             statement = connection.prepareStatement(query);
+
+            if (search != null) {
+                statement.setString(1, search);
+                statement.setString(2, search);
+            }
+
             resultSet = statement.executeQuery();
 
             ArrayList<Post> posts = new ArrayList<>();
