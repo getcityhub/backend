@@ -105,7 +105,7 @@ public class Main {
         });
 
         exception(InternalServerException.class, (exception, request, response) -> {
-            logger.log(Level.SEVERE, generateRequestData(request), exception);
+            logger.log(Level.SEVERE, exception.getMessage() + "\n\n" + generateRequestData(request), exception);
 
             ResponseError error = new ResponseError(500, exception.getMessage());
             response.status(error.getStatusCode());
@@ -118,7 +118,7 @@ public class Main {
         });
 
         internalServerError((request, response) -> {
-            logger.severe("Unknown exception occurred\n\n" + generateRequestData(request));
+            logger.severe("An unknown exception occurred\n\n" + generateRequestData(request));
 
             ResponseError error = new ResponseError(500, "Internal server error");
             return transformer.render(error);

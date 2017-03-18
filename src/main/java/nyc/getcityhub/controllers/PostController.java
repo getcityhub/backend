@@ -228,6 +228,7 @@ public class PostController {
 
             return postsArray;
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             throw new InternalServerException(e);
         } finally {
             if (resultSet != null) {
