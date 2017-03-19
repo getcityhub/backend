@@ -34,7 +34,7 @@ public class UserController {
 
     public static User createUser(Request request, Response response) throws BadRequestException, InternalServerException {
         if (request.body().length() == 0) {
-            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', 'password', and 'email' keys must be included in your request body.");
+            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', 'password', 'email', and 'mailingList' keys must be included in your request body.");
         }
 
         JsonParser parser = new JsonParser();
@@ -46,8 +46,9 @@ public class UserController {
                 || !userObject.has("zipcode")
                 || !userObject.has("languages")
                 || !userObject.has("password")
-                || !userObject.has("email")) {
-            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', 'password', and 'email' keys must be included in your request body.");
+                || !userObject.has("email")
+                || !userObject.has("mailingList")) {
+            throw new BadRequestException("The 'firstName', 'lastName', 'anonymous', 'zipcode', 'languages', 'password', 'email', and 'mailingList' keys must be included in your request body.");
         }
 
         String firstName = userObject.get("firstName").getAsString();
@@ -135,14 +136,17 @@ public class UserController {
 
         languagesString = languagesString.substring(0, languagesString.length() - 1);
 
+        boolean mailingList = userObject.get("mailingList").getAsBoolean();
+
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
+        PreparedStatement insertStatement = null;
 
         try {
             connection = DriverManager.getConnection(JDBC_URL);
 
-            String query = "INSERT INTO users (first_name, last_name, anonymous, zipcode, languages, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (first_name, last_name, anonymous, zipcode, languages, email, password, mailing_list) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, firstName);
             statement.setString(2, lastName);
@@ -151,6 +155,7 @@ public class UserController {
             statement.setString(5, languagesString);
             statement.setString(6, emailAddress);
             statement.setString(7, BCrypt.hashpw(password, BCrypt.gensalt(BCRYPT_LOG_ROUNDS)));
+            statement.setBoolean(8,mailingList);
             statement.executeUpdate();
 
             resultSet = statement.getGeneratedKeys();
@@ -163,6 +168,13 @@ public class UserController {
                 Email email = new Email("registration", data, "Welcome to CityHub");
                 EmailService.sendEmail(email, emailAddress);
 
+                if (mailingList) {
+                    String insertQuery = "INSERT INTO mailing_list VALUES (?)";
+                    insertStatement = connection.prepareStatement(insertQuery);
+                    insertStatement.setString(1, emailAddress);
+                    insertStatement.executeUpdate();
+                }
+
                 int id = resultSet.getInt(1);
                 User user = User.getUserById(id);
 
@@ -170,6 +182,7 @@ public class UserController {
                 return user;
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             throw new InternalServerException(e);
         } finally {
             if (resultSet != null) {
@@ -191,6 +204,14 @@ public class UserController {
             if (connection != null) {
                 try {
                     connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (insertStatement != null) {
+                try {
+                    insertStatement.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
