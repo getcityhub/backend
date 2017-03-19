@@ -12,18 +12,15 @@
         </tr>
         <tr>
             <td style="padding-top: 24px; padding-left: 10px; padding-right: 10px;">
-                Hey ${firstName} ${lastName},
+                Hey,
             </td>
         </tr>
         <tr>
             <td style="padding-top: 8px; padding-left: 10px; padding-right: 10px;">
-                This message is to confirm that the CityHub account with the email <span style="font-weight:bold;">${email}</span> belongs to you. After verification, we will be ready to activate your account.
-            </td>
+                You recently signed up for the CityHub mailing list. To confirm your subscription, click here:
             </tr>
             <tr>
                 <td style="padding-top: 8px;" align="center">
-                    <br />
-                    To confirm that this is your email, click here:
                 </td>
             </tr>
             <tr>
@@ -42,7 +39,7 @@
             <tr>
                 <td style="padding-top: 8px; padding-left: 10px; padding-right: 10px;">
                     <br />
-                    If this is not your email for CityHub, don’t worry, someone probably just typed the wrong email address.
+                    If you didn’t sign up for our mailing list, don’t worry, someone probably just typed the wrong email address.
                 </td>
             </tr>
             <tr>

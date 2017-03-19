@@ -18,6 +18,7 @@
         <tr>
             <td style="padding-top: 8px; padding-left: 10px; padding-right: 10px;">
                 We received a request to change your password on CityHub.
+            </td>
             </tr>
             <tr>
                 <td style="padding-top: 8px;" align="center">
