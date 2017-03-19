@@ -15,18 +15,16 @@ public class User {
     private int zipcode;
     private String[] languages;
     private String emailAddress;
-    private ArrayList<Integer> liked;
     private Date createdAt;
     private Date updatedAt;
 
-    public User(int id, String firstName, String lastName, boolean anonymous, int zipcode, String[] languages, String emailAddress, ArrayList<Integer> liked, Date createdAt, Date updatedAt) {
+    public User(int id, String firstName, String lastName, boolean anonymous, int zipcode, String[] languages, String emailAddress, Date createdAt, Date updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.anonymous = anonymous;
         this.languages = languages;
         this.emailAddress = emailAddress;
-        this.liked = liked;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.zipcode = zipcode;
@@ -60,10 +58,6 @@ public class User {
         return emailAddress;
     }
 
-    public ArrayList<Integer> getLiked() {
-        return liked;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -95,19 +89,10 @@ public class User {
 
                 String emailAddress = resultSet.getString(7);
 
-                String liked = resultSet.getString(9);
-                ArrayList<Integer> likedPostIds = new ArrayList<>();
+                Date createdAt = new Date(resultSet.getTimestamp(9).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(10).getTime());
 
-                if (liked.length() > 0) {
-                    for (String postId : liked.split(",")) {
-                        likedPostIds.add(Integer.valueOf(postId));
-                    }
-                }
-
-                Date createdAt = new Date(resultSet.getTimestamp(10).getTime());
-                Date updatedAt = new Date(resultSet.getTimestamp(11).getTime());
-
-                return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, likedPostIds, createdAt, updatedAt);
+                return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, createdAt, updatedAt);
             }
 
             return null;

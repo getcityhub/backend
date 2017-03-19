@@ -21,7 +21,7 @@ public class Post {
     private int likes;
     private User author;
 
-    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, int topicId, String language, int likes) {
+    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, int topicId, String language) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -30,7 +30,7 @@ public class Post {
         this.text = text;
         this.topicId = topicId;
         this.language = language;
-        this.likes = likes;
+        this.likes = Like.likesOnPost(id);
     }
 
     public void setAuthor(User author){
@@ -94,11 +94,10 @@ public class Post {
                 String text = resultSet.getString(4);
                 int topicId = resultSet.getInt(5);
                 String language = resultSet.getString(6);
-                int likes = resultSet.getInt(7);
-                Date createdAt = new Date(resultSet.getTimestamp(8).getTime());
-                Date updatedAt = new Date(resultSet.getTimestamp(9).getTime());
+                Date createdAt = new Date(resultSet.getTimestamp(7).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(8).getTime());
 
-                return new Post(id, createdAt, updatedAt, authorId, title, text, topicId, language, likes);
+                return new Post(id, createdAt, updatedAt, authorId, title, text, topicId, language);
             }
 
             return null;

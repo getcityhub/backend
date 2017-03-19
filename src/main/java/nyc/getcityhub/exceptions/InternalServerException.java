@@ -17,7 +17,7 @@ public class InternalServerException extends Exception {
         if (e.getErrorCode() == 1049)
             message = "The database doesn't exist";
         else if (e.getErrorCode() == 1146)
-            message = "The topics table doesn't exist in the database";
+            message = "The table doesn't exist in the database";
         else
             message = "An unknown exception occurred when accessing the database";
     }
