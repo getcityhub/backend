@@ -92,6 +92,10 @@ public class Main {
             get("/:id",TopicController::retrieveTopic, transformer);
         });
 
+        path("/emails", () -> {
+            post("", EmailController::registerEmail, transformer);
+        });
+
         exception(BadRequestException.class, (exception, request, response) -> {
             ResponseError error = new ResponseError(400, exception.getMessage());
             response.status(error.getStatusCode());

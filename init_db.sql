@@ -73,6 +73,15 @@ CREATE TABLE password_reset_requests (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE mailing_list (
+    email TEXT
+);
+
+CREATE TABLE mailing_list_unconfirmed (
+    email TEXT,
+    code TEXT
+);
+
 CREATE TABLE translations (
   english TEXT NOT NULL,
   spanish TEXT,
