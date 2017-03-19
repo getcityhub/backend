@@ -75,6 +75,7 @@ public class Main {
         path("/users", () -> {
             delete("/current", UserController::logoutUser);
             get("/current", UserController::retrieveCurrentUser, transformer);
+            get("/:id/likes", UserController::retrieveLikedPosts, transformer);
             get("/:id", UserController::retrieveUser, transformer);
             patch("/reset", UserController::updatePassword);
             post("", UserController::createUser, transformer);

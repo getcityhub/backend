@@ -21,6 +21,7 @@ import spark.Request;
 import spark.Response;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -219,16 +220,74 @@ public class UserController {
             throw new BadRequestException(idString + " is not a valid user id.");
         }
 
-        if (id <= 0) {
-            throw new BadRequestException(idString + " is not a valid user id.");
-        }
-
         User user = User.getUserById(id);
 
         if (user == null) {
             throw new NotFoundException("The user requested does not exist");
         } else {
             return user;
+        }
+    }
+
+    public static ArrayList<Integer> retrieveLikedPosts(Request request, Response response) throws BadRequestException, NotFoundException {
+        String idString = request.params(":id");
+        int id;
+
+        try {
+            id = Integer.parseInt(idString);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException(idString + " is not a valid user id.");
+        }
+
+        User user = User.getUserById(id);
+
+        if (user == null) {
+            throw new NotFoundException("The user requested does not exist.");
+        } else {
+            Connection connection = null;
+            PreparedStatement statement = null;
+            ResultSet resultSet = null;
+
+            try {
+                connection = DriverManager.getConnection(JDBC_URL);
+
+                statement = connection.prepareStatement("SELECT * FROM likes WHERE user_id = " + user.getId());
+                resultSet = statement.executeQuery();
+
+                ArrayList<Integer> postIds = new ArrayList<>();
+
+                while (resultSet.next()) {
+                    postIds.add(resultSet.getInt(2));
+                }
+
+                return postIds;
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                if (resultSet != null) {
+                    try {
+                        resultSet.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 

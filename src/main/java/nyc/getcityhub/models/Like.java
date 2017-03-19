@@ -25,47 +25,6 @@ public class Like {
         return postId;
     }
 
-    public static boolean doesUserLikePost(int userId, int postId) {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = DriverManager.getConnection(JDBC_URL);
-
-            statement = connection.prepareStatement("SELECT * FROM likes WHERE user_id = " + userId + " AND post_id = " + postId);
-            resultSet = statement.executeQuery();
-
-            return resultSet.next();
-        } catch (SQLException e) {
-            return false;
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     public static int likesOnPost(int postId) {
         Connection connection = null;
         PreparedStatement statement = null;
