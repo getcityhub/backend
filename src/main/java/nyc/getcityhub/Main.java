@@ -85,6 +85,7 @@ public class Main {
             get("/:id/likes", UserController::retrieveLikedPosts, transformer);
             get("/:id", UserController::retrieveUser, transformer);
             patch("/reset", UserController::updatePassword);
+            patch("/verify", UserController::verifyUser);
             post("", UserController::createUser, transformer);
             post("/login", UserController::loginUser, transformer);
             post("/reset", UserController::forgotPassword);
