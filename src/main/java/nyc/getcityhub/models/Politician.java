@@ -12,6 +12,7 @@ public class Politician {
 
     private int id;
     private String name;
+    private transient boolean male;
     private transient int[] zipcodes;
     private String position;
     private String party;
@@ -26,9 +27,10 @@ public class Politician {
     private Date createdAt;
     private Date updatedAt;
 
-    public Politician(int id, String name, int[] zipcodes, String position, String party, String photoUrl, String email, String phone, String website, String facebook, String googleplus, String twitter, String youtube, Date createdAt, Date updatedAt) {
+    public Politician(int id, String name, boolean male, int[] zipcodes, String position, String party, String photoUrl, String email, String phone, String website, String facebook, String googleplus, String twitter, String youtube, Date createdAt, Date updatedAt) {
         this.id = id;
         this.name = name;
+        this.male = male;
         this.zipcodes = zipcodes;
         this.position = position;
         this.party = party;
@@ -50,6 +52,10 @@ public class Politician {
 
     public String getName() {
         return name;
+    }
+
+    public boolean getMale() {
+        return male;
     }
 
     public int[] getZipcode() {
@@ -117,28 +123,29 @@ public class Politician {
             resultSet = statement.executeQuery(command);
 
             if (resultSet.next()) {
-                String name = Translation.getTranslation(resultSet.getString(2), language);
-                String[] zipcodesArray = resultSet.getString(3).split(",");
+                String name = resultSet.getString(2);
+                boolean male = resultSet.getBoolean(3);
+                String[] zipcodesArray = resultSet.getString(4).split(",");
                 int[] zipcodes = new int[zipcodesArray.length];
 
                 for (int i = 0; i < zipcodesArray.length; i++) {
                     zipcodes[i] = Integer.parseInt(zipcodesArray[i]);
                 }
 
-                String position = Translation.getTranslation(resultSet.getString(4), language);
-                String party = Translation.getTranslation(resultSet.getString(5), language);
-                String photo = resultSet.getString(6);
-                String email = resultSet.getString(7);
-                String phone = resultSet.getString(8);
-                String website = resultSet.getString(9);
-                String facebook = resultSet.getString(10);
-                String googleplus = resultSet.getString(11);
-                String twitter = resultSet.getString(12);
-                String youtube = resultSet.getString(13);
-                java.sql.Date createdAt = new java.sql.Date(resultSet.getTimestamp(14).getTime());
-                java.sql.Date updatedAt = new java.sql.Date(resultSet.getTimestamp(15).getTime());
+                String position = Translation.getTranslation(resultSet.getString(5), language, male);
+                String party = Translation.getTranslation(resultSet.getString(6), language, male);
+                String photo = resultSet.getString(7);
+                String email = resultSet.getString(8);
+                String phone = resultSet.getString(9);
+                String website = resultSet.getString(10);
+                String facebook = resultSet.getString(11);
+                String googleplus = resultSet.getString(12);
+                String twitter = resultSet.getString(13);
+                String youtube = resultSet.getString(14);
+                java.sql.Date createdAt = new java.sql.Date(resultSet.getTimestamp(15).getTime());
+                java.sql.Date updatedAt = new java.sql.Date(resultSet.getTimestamp(16).getTime());
 
-                return new Politician(id, name, zipcodes, position, party, photo, email, phone, website, facebook, googleplus, twitter, youtube, createdAt, updatedAt);
+                return new Politician(id, name, male, zipcodes, position, party, photo, email, phone, website, facebook, googleplus, twitter, youtube, createdAt, updatedAt);
 
             }
         } catch (SQLException e) {

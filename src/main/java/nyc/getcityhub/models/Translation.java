@@ -43,7 +43,7 @@ public class Translation {
         return traditional;
     }
 
-    public static String getTranslation(String english, Language target) {
+    public static String getTranslation(String english, Language target, boolean male) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -59,9 +59,9 @@ public class Translation {
             if (resultSet.next()) {
                 switch (target) {
                     case SPANISH:
-                        return resultSet.getString(2);
+                        return adaptToGender(resultSet.getString(2), male);
                     case FRENCH:
-                        return resultSet.getString(3);
+                        return adaptToGender(resultSet.getString(3), male);
                     case CHINESE_SIMPLIFIED:
                         return resultSet.getString(4);
                     case CHINESE_TRADITIONAL:
@@ -97,5 +97,27 @@ public class Translation {
                 }
             }
         }
+    }
+
+    private static String adaptToGender(String translation, boolean male) {
+        while (translation.contains("(")) {
+            int beginning = translation.indexOf('(');
+            int end = translation.indexOf(')') + 1;
+
+            String group = translation.substring(beginning, end).replace("(", "\\(").replace(")", "\\)");
+            String content = group.replace("\\(", "").replace("\\)", "");
+
+            if (content.contains("/")) {
+                translation = translation.replaceFirst(group, content.split("/")[male ? 0 : 1]);
+            } else {
+                if (male) {
+                    translation = translation.replaceFirst(group, "");
+                } else {
+                    translation = translation.replaceFirst(group, content);
+                }
+            }
+        }
+
+        return translation;
     }
 }

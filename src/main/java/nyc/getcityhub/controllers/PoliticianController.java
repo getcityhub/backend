@@ -67,28 +67,29 @@ public class PoliticianController {
             while (resultSet.next()) {
                 int id = resultSet.getInt(1);
                 String name = resultSet.getString(2);
+                boolean male = resultSet.getBoolean(3);
 
-                String[] zipcodesArray = resultSet.getString(3).split(",");
+                String[] zipcodesArray = resultSet.getString(4).split(",");
                 int[] zipcodes = new int[zipcodesArray.length];
 
                 for (int i = 0; i < zipcodesArray.length; i++) {
                     zipcodes[i] = Integer.parseInt(zipcodesArray[i]);
                 }
 
-                String position = Translation.getTranslation(resultSet.getString(4), language);
-                String party = Translation.getTranslation(resultSet.getString(5), language);
-                String photo = resultSet.getString(6);
-                String email = resultSet.getString(7);
-                String phone = resultSet.getString(8);
-                String website = resultSet.getString(9);
-                String facebook = resultSet.getString(10);
-                String googleplus = resultSet.getString(11);
-                String twitter = resultSet.getString(12);
-                String youtube = resultSet.getString(13);
-                Date createdAt = new Date(resultSet.getTimestamp(14).getTime());
-                Date updatedAt = new Date(resultSet.getTimestamp(15).getTime());
+                String position = Translation.getTranslation(resultSet.getString(5), language, male);
+                String party = Translation.getTranslation(resultSet.getString(6), language, male);
+                String photo = resultSet.getString(7);
+                String email = resultSet.getString(8);
+                String phone = resultSet.getString(9);
+                String website = resultSet.getString(10);
+                String facebook = resultSet.getString(11);
+                String googleplus = resultSet.getString(12);
+                String twitter = resultSet.getString(13);
+                String youtube = resultSet.getString(14);
+                Date createdAt = new Date(resultSet.getTimestamp(15).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(16).getTime());
 
-                Politician politician = new Politician(id, name, zipcodes, position, party, photo, email, phone, website, facebook, googleplus, twitter, youtube, createdAt, updatedAt);
+                Politician politician = new Politician(id, name, male, zipcodes, position, party, photo, email, phone, website, facebook, googleplus, twitter, youtube, createdAt, updatedAt);
                 Politicians.add(politician);
             }
 

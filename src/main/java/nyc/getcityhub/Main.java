@@ -8,6 +8,7 @@ import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
 import nyc.getcityhub.models.Post;
+import nyc.getcityhub.models.Translation;
 import spark.Request;
 
 import java.io.File;
