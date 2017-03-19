@@ -97,6 +97,7 @@ public class Main {
 
         path("/emails", () -> {
             post("", EmailController::registerEmail, transformer);
+            post("/form", EmailController::registerFromForm, transformer);
             patch("/confirm", EmailController::confirmEmail, transformer);
             delete("/delete", EmailController::deleteEmail, transformer);
         });

@@ -12,8 +12,11 @@ import org.apache.commons.validator.routines.EmailValidator;
 import spark.Response;
 import spark.Request;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.*;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 import static nyc.getcityhub.Constants.JDBC_URL;
 
@@ -26,6 +29,7 @@ public class EmailController {
         if (request.body().length() == 0) {
             throw new BadRequestException("The 'email' key must be included in your request body.");
         }
+
         JsonParser parser = new JsonParser();
         JsonObject postObject =  (JsonObject) parser.parse(request.body());
 
@@ -60,6 +64,64 @@ public class EmailController {
             return 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new InternalServerException(e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static int registerFromForm(Request request, Response response) throws BadRequestException, InternalServerException {
+        if (request.body().length() == 0) {
+            throw new BadRequestException("Your email address must be included in the request body.");
+        }
+
+        String email;
+
+        try {
+            email = URLDecoder.decode(request.body().split("=")[1], "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new BadRequestException("An error occurred while adding you to the mailing list.");
+        }
+
+        if (!EmailValidator.getInstance().isValid(email)) {
+            throw new BadRequestException("Email address is invalid.");
+        }
+
+        if (emailExists(email)) {
+            throw new BadRequestException("Email address has already been registered.");
+        }
+
+        String code = createCode();
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = DriverManager.getConnection(JDBC_URL);
+
+            String query = "INSERT INTO mailing_list_unconfirmed (email, code) VALUES (?, ?)";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            statement.setString(2, code);
+            statement.executeUpdate();
+
+            response.status(204);
+            return 0;
+        } catch (SQLException e) {
             throw new InternalServerException(e);
         } finally {
             if (statement != null) {
@@ -170,6 +232,7 @@ public class EmailController {
         }
 
     }
+
     public static int deleteEmail(Request request, Response response)throws BadRequestException, UnauthorizedException, InternalServerException {
         if (request.body().length() == 0) {
             throw new BadRequestException("The 'email' key must be included in your request body.");
