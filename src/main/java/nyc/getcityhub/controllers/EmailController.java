@@ -2,6 +2,7 @@ package nyc.getcityhub.controllers;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mysql.cj.api.x.InsertStatement;
 import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
@@ -23,13 +24,13 @@ public class EmailController {
 
     public static int registerEmail(Request request, Response response)throws BadRequestException, UnauthorizedException, InternalServerException {
         if (request.body().length() == 0) {
-            throw new BadRequestException("The 'email' keys must be included in your request body.");
+            throw new BadRequestException("The 'email' key must be included in your request body.");
         }
         JsonParser parser = new JsonParser();
         JsonObject postObject =  (JsonObject) parser.parse(request.body());
 
         if (!postObject.has("email")) {
-            throw new BadRequestException("The 'email' keys must be included in your request body.");
+            throw new BadRequestException("The 'email' key must be included in your request body.");
         }
 
         String email = postObject.get("email").getAsString();
@@ -79,6 +80,97 @@ public class EmailController {
         }
     }
 
+    public static int confirmEmail(Request request, Response response)throws BadRequestException, UnauthorizedException, InternalServerException {
+        if (request.body().length() == 0) {
+            throw new BadRequestException("The 'email' and 'code' keys must be included in your request body.");
+        }
+        JsonParser parser = new JsonParser();
+        JsonObject postObject =  (JsonObject) parser.parse(request.body());
+
+        if (!postObject.has("email") || !postObject.has("code")) {
+            throw new BadRequestException("The 'email' and 'code' keys must be included in your request body.");
+        }
+
+        String email = postObject.get("email").getAsString();
+        String code = postObject.get("code").getAsString();
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        PreparedStatement deleteStatement = null;
+        PreparedStatement insertStatement = null;
+
+        try {
+            connection = DriverManager.getConnection(JDBC_URL);
+
+            String query = "SELECT * FROM mailing_list_unconfirmed WHERE email = ? AND code = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            statement.setString(2, code);
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String deleteQuery = "DELETE FROM mailing_list_unconfirmed WHERE email = ? AND code = ?";
+                deleteStatement = connection.prepareStatement(deleteQuery);
+                deleteStatement.setString(1, email);
+                deleteStatement.setString(2, code);
+                deleteStatement.executeUpdate();
+
+                String insertQuery = "INSERT INTO mailing_list VALUES (?)";
+                insertStatement = connection.prepareStatement(insertQuery);
+                insertStatement.setString(1, email);
+                insertStatement.executeUpdate();
+            } else {
+                throw new BadRequestException("The email address or the code was incorrect.");
+            }
+
+            response.status(204);
+            return 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new InternalServerException(e);
+        } finally {
+            if (insertStatement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (deleteStatement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (resultSet != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
     private static String createCode() {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder code = new StringBuilder();
@@ -92,7 +184,7 @@ public class EmailController {
         return code.toString();
     }
 
-    public static boolean emailExists (String emailAddress) {
+    private static boolean emailExists(String emailAddress) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -100,7 +192,7 @@ public class EmailController {
         try {
             connection = DriverManager.getConnection(JDBC_URL);
 
-            String command = "SELECT * FROM mailing_list_unconfirmed WHERE email = ?";
+            String command = "SELECT * FROM mailing_list WHERE email = ?";
             statement = connection.prepareStatement(command);
             statement.setString(1, emailAddress);
 
