@@ -154,25 +154,12 @@ public class PostController {
     }
 
     public static Post retrievePost(Request request, Response response) throws BadRequestException, NotFoundException {
-        String idString = request.params(":id");
-        int id;
+        int id = Integer.parseInt(request.params(":id"));
 
-        try {
-            id = Integer.parseInt(idString);
-        } catch(NumberFormatException e) {
-            throw new BadRequestException(idString + " is not a valid post id.");
-        }
-
-        if (id <= 0) {
-            throw new BadRequestException(idString + " is not a valid post id.");
-        }
-
-        Post post = Post.getPostById(id);
-
-        if (post == null) {
-            throw new NotFoundException("The post requested does not exist");
+        if (Post.idIsValid(request.params(":id"))) {
+            return Post.getPostById(id);
         } else {
-            return post;
+            throw new NotFoundException("The requested post could not be found.");
         }
     }
 

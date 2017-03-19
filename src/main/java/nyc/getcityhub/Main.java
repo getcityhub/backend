@@ -7,6 +7,7 @@ import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
+import nyc.getcityhub.models.Post;
 import spark.Request;
 
 import java.io.File;
@@ -54,6 +55,12 @@ public class Main {
         });
 
         path("/posts", () -> {
+            before("/:id/*", (req, res) -> {
+                if (!Post.idIsValid(req.params(":id"))) {
+                    throw new NotFoundException("The requested post could not be found.");
+                }
+            });
+
             get("", PostController::retrievePosts, transformer);
             get("/:id", PostController::retrievePost, transformer);
             post("", PostController::createPost, transformer);

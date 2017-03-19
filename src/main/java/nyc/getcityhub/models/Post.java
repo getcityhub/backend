@@ -1,5 +1,8 @@
 package nyc.getcityhub.models;
 
+import nyc.getcityhub.exceptions.BadRequestException;
+import nyc.getcityhub.exceptions.NotFoundException;
+
 import java.sql.*;
 import java.util.Date;
 
@@ -75,6 +78,18 @@ public class Post {
 
     public User getAuthor() {
         return author;
+    }
+
+    public static boolean idIsValid(String id) {
+        int postId;
+
+        try {
+            postId = Integer.parseInt(id);
+        } catch(NumberFormatException e) {
+            return false;
+        }
+
+        return Post.getPostById(postId) != null;
     }
 
     public static Post getPostById(int id) {
