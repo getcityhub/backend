@@ -14,7 +14,7 @@ CREATE TABLE posts (
 );
 
 CREATE TABLE likes (
-  author_id INT NOT NULL,
+  user_id INT NOT NULL,
   post_id INT NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

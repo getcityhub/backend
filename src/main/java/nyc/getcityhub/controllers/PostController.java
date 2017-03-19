@@ -286,16 +286,16 @@ public class PostController {
 
             if (like) {
                 if (post.getAuthorId() != user.getId()) {
-                    statement = connection.prepareStatement("SELECT * FROM likes WHERE author_id = " + user.getId() + " AND post_id = " + post.getId());
+                    statement = connection.prepareStatement("SELECT * FROM likes WHERE user_id = " + user.getId() + " AND post_id = " + post.getId());
                     resultSet = statement.executeQuery();
 
                     if (!resultSet.next()) {
-                        likedStatement = connection.prepareStatement("INSERT INTO likes (author_id, post_id) VALUES (" + user.getId() + "," + post.getId() + ")");
+                        likedStatement = connection.prepareStatement("INSERT INTO likes (user_id, post_id) VALUES (" + user.getId() + "," + post.getId() + ")");
                         likedStatement.executeUpdate();
                     }
                 }
             } else {
-                statement = connection.prepareStatement("DELETE FROM likes WHERE author_id = " + user.getId() + " AND post_id = " + post.getId());
+                statement = connection.prepareStatement("DELETE FROM likes WHERE user_id = " + user.getId() + " AND post_id = " + post.getId());
                 statement.executeUpdate();
             }
 

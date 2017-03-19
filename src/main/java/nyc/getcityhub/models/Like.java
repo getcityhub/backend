@@ -35,7 +35,7 @@ public class Like {
         try {
             connection = DriverManager.getConnection(JDBC_URL);
 
-            statement = connection.prepareStatement("SELECT * FROM likes WHERE author_id = " + userId + " AND post_id = " + postId);
+            statement = connection.prepareStatement("SELECT * FROM likes WHERE user_id = " + userId + " AND post_id = " + postId);
             resultSet = statement.executeQuery();
 
             return resultSet.next();
