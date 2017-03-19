@@ -133,21 +133,21 @@ public class EmailController {
         } finally {
             if (insertStatement != null) {
                 try {
-                    statement.close();
+                    insertStatement.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
             if (deleteStatement != null) {
                 try {
-                    statement.close();
+                    deleteStatement.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
             if (resultSet != null) {
                 try {
-                    statement.close();
+                    resultSet.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -170,7 +170,53 @@ public class EmailController {
         }
 
     }
+    public static int deleteEmail(Request request, Response response)throws BadRequestException, UnauthorizedException, InternalServerException {
+        if (request.body().length() == 0) {
+            throw new BadRequestException("The 'email' key must be included in your request body.");
+        }
+        JsonParser parser = new JsonParser();
+        JsonObject postObject = (JsonObject) parser.parse(request.body());
 
+        if (!postObject.has("email")) {
+            throw new BadRequestException("The 'email' key must be included in your request body.");
+        }
+
+        String email = postObject.get("email").getAsString();
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = DriverManager.getConnection(JDBC_URL);
+
+            String query = "DELETE FROM mailing_list WHERE email = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            statement.executeUpdate();
+            response.status(204);
+            return 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new InternalServerException(e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     private static String createCode() {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder code = new StringBuilder();

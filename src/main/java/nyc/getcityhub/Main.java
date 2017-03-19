@@ -97,7 +97,8 @@ public class Main {
 
         path("/emails", () -> {
             post("", EmailController::registerEmail, transformer);
-            patch("/confirm",EmailController::confirmEmail, transformer);
+            patch("/confirm", EmailController::confirmEmail, transformer);
+            delete("/delete", EmailController::deleteEmail, transformer);
         });
 
         exception(BadRequestException.class, (exception, request, response) -> {
