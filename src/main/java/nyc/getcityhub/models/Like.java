@@ -1,10 +1,8 @@
 package nyc.getcityhub.models;
 
-import nyc.getcityhub.exceptions.InternalServerException;
-
 import java.sql.*;
 
-import static nyc.getcityhub.Constants.JDBC_URL;
+import static nyc.getcityhub.Constants.*;
 
 /**
  * Created by carol on 3/18/17.

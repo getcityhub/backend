@@ -15,8 +15,6 @@ import spark.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import static nyc.getcityhub.Constants.*;
 
