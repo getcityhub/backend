@@ -7,6 +7,7 @@ import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.UnauthorizedException;
 import nyc.getcityhub.models.Post;
 import nyc.getcityhub.models.User;
+import org.apache.commons.validator.routines.EmailValidator;
 import spark.Response;
 import spark.Request;
 
@@ -32,6 +33,14 @@ public class EmailController {
         }
 
         String email = postObject.get("email").getAsString();
+        if (!EmailValidator.getInstance().isValid(email)) {
+            throw new BadRequestException("Email address is invalid.");
+        }
+
+        if (emailExists(email)) {
+            throw new BadRequestException("Email address has already been registered.");
+        }
+
         String code = createCode();
 
         Connection connection = null;
@@ -81,5 +90,48 @@ public class EmailController {
         }
 
         return code.toString();
+    }
+
+    public static boolean emailExists (String emailAddress) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DriverManager.getConnection(JDBC_URL);
+
+            String command = "SELECT * FROM mailing_list_unconfirmed WHERE email = ?";
+            statement = connection.prepareStatement(command);
+            statement.setString(1, emailAddress);
+
+            resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
