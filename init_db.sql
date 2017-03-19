@@ -42,8 +42,13 @@ CREATE TABLE users (
   password TEXT NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  mailing_list TINYINT(1) NOT NULL,
+  verified TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (id)
+);
+
+CREATE TABLE verification_codes (
+  email TEXT,
+  code TEXT
 );
 
 CREATE TABLE politicians (
@@ -85,12 +90,12 @@ CREATE TABLE password_reset_requests (
 );
 
 CREATE TABLE mailing_list (
-    email TEXT
+  email TEXT
 );
 
 CREATE TABLE mailing_list_unconfirmed (
-    email TEXT,
-    code TEXT
+  email TEXT,
+  code TEXT
 );
 
 CREATE TABLE translations (

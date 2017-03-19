@@ -23,6 +23,7 @@ import spark.Response;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 import static nyc.getcityhub.Constants.*;
@@ -138,15 +139,18 @@ public class UserController {
 
         boolean mailingList = userObject.get("mailingList").getAsBoolean();
 
+        String code = createCode();
+
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         PreparedStatement insertStatement = null;
+        PreparedStatement codeStatement = null;
 
         try {
             connection = DriverManager.getConnection(JDBC_URL);
 
-            String query = "INSERT INTO users (first_name, last_name, anonymous, zipcode, languages, email, password, mailing_list) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (first_name, last_name, anonymous, zipcode, languages, email, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, firstName);
             statement.setString(2, lastName);
@@ -155,11 +159,17 @@ public class UserController {
             statement.setString(5, languagesString);
             statement.setString(6, emailAddress);
             statement.setString(7, BCrypt.hashpw(password, BCrypt.gensalt(BCRYPT_LOG_ROUNDS)));
-            statement.setBoolean(8,mailingList);
             statement.executeUpdate();
 
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
+
+                String codeQuery = "INSERT INTO verification_codes (email, code )VALUES (?, ?)";
+                codeStatement = connection.prepareStatement(codeQuery);
+                codeStatement.setString(1, emailAddress);
+                codeStatement.setString(2, code);
+                codeStatement.executeUpdate();
+
                 HashMap<String, String> data = new HashMap<>();
                 data.put("firstName", firstName);
                 data.put("lastName", lastName);
@@ -182,7 +192,6 @@ public class UserController {
                 return user;
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             throw new InternalServerException(e);
         } finally {
             if (resultSet != null) {
@@ -212,6 +221,13 @@ public class UserController {
             if (insertStatement != null) {
                 try {
                     insertStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (codeStatement != null) {
+                try {
+                    codeStatement.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -547,5 +563,17 @@ public class UserController {
                 }
             }
         }
+    }
+    private static String createCode() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder code = new StringBuilder();
+        Random rnd = new Random();
+
+        while (code.length() < 16) {
+            int index = (int) (rnd.nextFloat() * chars.length());
+            code.append(chars.charAt(index));
+        }
+
+        return code.toString();
     }
 }

@@ -14,10 +14,11 @@ public class User {
     private int zipcode;
     private String[] languages;
     private String emailAddress;
+    private boolean verified;
     private Date createdAt;
     private Date updatedAt;
 
-    public User(int id, String firstName, String lastName, boolean anonymous, int zipcode, String[] languages, String emailAddress, Date createdAt, Date updatedAt) {
+    public User(int id, String firstName, String lastName, boolean anonymous, int zipcode, String[] languages, String emailAddress, Date createdAt, Date updatedAt, boolean verified) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -27,6 +28,7 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.zipcode = zipcode;
+        this.verified = verified;
     }
 
     public int getId() {
@@ -55,6 +57,10 @@ public class User {
 
     public String getEmailAddress() {
         return emailAddress;
+    }
+
+    public boolean isVerified() {
+        return verified;
     }
 
     public Date getCreatedAt() {
@@ -91,7 +97,9 @@ public class User {
                 Date createdAt = new Date(resultSet.getTimestamp(9).getTime());
                 Date updatedAt = new Date(resultSet.getTimestamp(10).getTime());
 
-                return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, createdAt, updatedAt);
+                boolean verified = resultSet.getBoolean(11);
+
+                return new User(id, firstName, lastName, anonymous, zipcode, languagesArray, emailAddress, createdAt, updatedAt, verified);
             }
 
             return null;
