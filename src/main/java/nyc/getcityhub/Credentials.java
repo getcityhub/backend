@@ -27,6 +27,9 @@ public class Credentials {
                     case "AWS_SECRET_ACCESS_KEY":
                         System.setProperty("aws.secretKey", value);
                         break;
+                    case "SENTRY_DSN":
+                        System.setProperty("sentry.dsn", value);
+                        break;
                     case "SSL_KEYPASS":
                         SSL_KEYPASS = value;
                         break;

@@ -1,5 +1,8 @@
 package nyc.getcityhub.models;
 
+import nyc.getcityhub.exceptions.BadRequestException;
+import nyc.getcityhub.exceptions.NotFoundException;
+
 import java.sql.*;
 import java.util.Date;
 
@@ -21,7 +24,7 @@ public class Post {
     private int likes;
     private User author;
 
-    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, int topicId, String language, int likes) {
+    public Post(int id, Date createdAt, Date updatedAt, int authorId, String title, String text, int topicId, String language) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -30,7 +33,7 @@ public class Post {
         this.text = text;
         this.topicId = topicId;
         this.language = language;
-        this.likes = likes;
+        this.likes = Like.likesOnPost(id);
     }
 
     public void setAuthor(User author){
@@ -77,6 +80,18 @@ public class Post {
         return author;
     }
 
+    public static boolean idIsValid(String id) {
+        int postId;
+
+        try {
+            postId = Integer.parseInt(id);
+        } catch(NumberFormatException e) {
+            return false;
+        }
+
+        return Post.getPostById(postId) != null;
+    }
+
     public static Post getPostById(int id) {
         String command = "SELECT * FROM posts WHERE id = " + id;
         Connection connection = null;
@@ -94,19 +109,14 @@ public class Post {
                 String text = resultSet.getString(4);
                 int topicId = resultSet.getInt(5);
                 String language = resultSet.getString(6);
-                int likes = resultSet.getInt(7);
-                Date createdAt = new Date(resultSet.getTimestamp(8).getTime());
-                Date updatedAt = new Date(resultSet.getTimestamp(9).getTime());
+                Date createdAt = new Date(resultSet.getTimestamp(7).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(8).getTime());
 
-                return new Post(id, createdAt, updatedAt, authorId, title, text, topicId, language, likes);
+                return new Post(id, createdAt, updatedAt, authorId, title, text, topicId, language);
             }
 
             return null;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             return null;
         } finally {
             if (resultSet != null) {

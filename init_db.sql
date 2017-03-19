@@ -1,12 +1,6 @@
 CREATE DATABASE cityhub;
 USE cityhub;
 
-CREATE TABLE topics (
-  id INT NOT NULL AUTO_INCREMENT,
-  name TEXT NOT NULL,
-  PRIMARY KEY (id)
-);
-
 CREATE TABLE posts (
   id INT NOT NULL AUTO_INCREMENT,
   author_id INT NOT NULL,
@@ -14,7 +8,24 @@ CREATE TABLE posts (
   text TEXT NOT NULL,
   topic_id INT NOT NULL,
   language TEXT NOT NULL,
-  likes INT NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE likes (
+  user_id INT NOT NULL,
+  post_id INT NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE events (
+  id INT NOT NULL AUTO_INCREMENT,
+  host TEXT NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  start_date DATETIME NOT NULL,
+  end_date DATETIME NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
@@ -29,7 +40,6 @@ CREATE TABLE users (
   languages TEXT NOT NULL,
   email TEXT NOT NULL,
   password TEXT NOT NULL,
-  liked TEXT NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
@@ -112,7 +122,19 @@ INSERT INTO translations VALUES ('Democrat', 'Demócrata', 'Démocrate', '民主
     ('Staten Island Borough President',	'Presidente del condado del Staten Island',	'Président d''arrondissement de Staten Island',	'史丹顿岛区长', '史丹頓島區張'),
     ('Attorney General', 'Fiscal general', 'Avocat général', '司法部长', '司法部長'),
     ('State Comptroller', 'Anditor del estado', 'Contrôleur d''état', '州审计长', '州審計長'),
-    -- NY-XX representative needed
+    ('NY-03 Representative', 'Representante NY-03', 'Représentant NY-03', 'NY-03 议员', 'NY-03 议员'),
+    ('NY-05 Representative', 'Representante NY-05', 'Représentant NY-05', 'NY-05 议员', 'NY-05 议员'),
+    ('NY-06 Representative', 'Representante NY-06', 'Représentant NY-06', 'NY-06 议员', 'NY-06 议员'),
+    ('NY-07 Representative', 'Representante NY-07', 'Représentant NY-07', 'NY-07 议员', 'NY-07 议员'),
+    ('NY-08 Representative', 'Representante NY-08', 'Représentant NY-08', 'NY-08 议员', 'NY-08 议员'),
+    ('NY-09 Representative', 'Representante NY-09', 'Représentant NY-09', 'NY-09 议员', 'NY-09 议员'),
+    ('NY-10 Representative', 'Representante NY-10', 'Représentant NY-10', 'NY-10 议员', 'NY-10 议员'),
+    ('NY-11 Representative', 'Representante NY-11', 'Représentant NY-11', 'NY-11 议员', 'NY-11 议员'),
+    ('NY-12 Representative', 'Representante NY-12', 'Représentant NY-12', 'NY-12 议员', 'NY-12 议员'),
+    ('NY-13 Representative', 'Representante NY-13', 'Représentant NY-13', 'NY-13 议员', 'NY-13 议员'),
+    ('NY-14 Representative', 'Representante NY-14', 'Représentant NY-14', 'NY-14 议员', 'NY-14 议员'),
+    ('NY-15 Representative', 'Representante NY-15', 'Représentant NY-15', 'NY-15 议员', 'NY-15 议员'),
+    ('NY-16 Representative', 'Representante NY-16', 'Représentant NY-16', 'NY-16 议员', 'NY-16 议员'),
     ('Public Health/Safety', 'La salud y seguridad publica', 'Santé publique/Sécurité',	'公共安全与卫生', '公共安全與衛生'),
 	('Transportation', 'Transportación', 'Transport', '交通', '交通'),
 	('Vehicles and Parking', 'Vehículos y Aparacar', 'Véhicules et Parking', '车辆停车',	'車輛停車'),

@@ -15,8 +15,6 @@ import spark.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import static nyc.getcityhub.Constants.*;
 
@@ -73,7 +71,7 @@ public class PostController {
         }
 
         int topicId = postObject.get("topicId").getAsInt();
-        Topic topic = Topic.getTopicById(topicId, Language.ENGLISH);
+        Topic topic = Topic.fromId(topicId);
 
         if (topic == null) {
             throw new BadRequestException("The topic ID must be valid.");
@@ -85,20 +83,19 @@ public class PostController {
         int minPostLength = 50;
         int maxPostLength = 5000;
 
-        if (lang == Language.CHINESE_SIMPLIFIED){
+        if (lang == Language.CHINESE_SIMPLIFIED || lang == Language.CHINESE_TRADITIONAL) {
             minPostLength = 15;
             maxPostLength = 1250;
         }
 
-        if (text.length() < minPostLength){
+        if (text.length() < minPostLength) {
             throw new BadRequestException("The post has to be at least " + minPostLength + " characters long.");
-        } else if (text.length() > maxPostLength){
+        } else if (text.length() > maxPostLength) {
             throw new BadRequestException("The post has to be at most " + maxPostLength + " characters long.");
         }
 
         Connection connection = null;
         PreparedStatement statement = null;
-        PreparedStatement likeStatement = null;
         ResultSet resultSet = null;
 
         try {
@@ -116,10 +113,6 @@ public class PostController {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 int id = resultSet.getInt(1);
-
-                likeStatement = connection.prepareStatement("UPDATE users SET liked = IF(CHAR_LENGTH(liked) = 0, '" + id + "', CONCAT(liked, '," + id + "')) WHERE id = " + authorId);
-                likeStatement.executeUpdate();
-
                 Post post = Post.getPostById(id);
 
                 if (post != null) {
@@ -130,20 +123,8 @@ public class PostController {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             throw new InternalServerException(e);
         } finally {
-            if (likeStatement != null) {
-                try {
-                    likeStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
             if (resultSet != null) {
                 try {
                     resultSet.close();
@@ -173,30 +154,18 @@ public class PostController {
     }
 
     public static Post retrievePost(Request request, Response response) throws BadRequestException, NotFoundException {
-        String idString = request.params(":id");
-        int id;
+        int id = Integer.parseInt(request.params(":id"));
 
-        try {
-            id = Integer.parseInt(idString);
-        } catch(NumberFormatException e) {
-            throw new BadRequestException(idString + " is not a valid post id.");
-        }
-
-        if (id <= 0) {
-            throw new BadRequestException(idString + " is not a valid post id.");
-        }
-
-        Post post = Post.getPostById(id);
-
-        if (post == null) {
-            throw new NotFoundException("The post requested does not exist");
+        if (Post.idIsValid(request.params(":id"))) {
+            return Post.getPostById(id);
         } else {
-            return post;
+            throw new NotFoundException("The requested post could not be found.");
         }
     }
 
     public static Post[] retrievePosts(Request request, Response response) throws InternalServerException {
         String language = Language.fromId(request.headers("Accept-Language")).getId();
+        String search = request.queryParams("q");
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -205,8 +174,19 @@ public class PostController {
         try {
             connection = DriverManager.getConnection(JDBC_URL);
 
-            String query = "SELECT *, ((likes - 1) / power(time_to_sec(timediff(NOW(), created_at)) / 3600 + 2, 1.8)) AS score FROM posts ORDER BY score DESC";
+            String query = "SELECT *, ((SELECT COUNT(*) FROM likes WHERE post_id = id) / power(time_to_sec(timediff(NOW(), created_at)) / 3600 + 2, 1.8)) AS score FROM posts ORDER BY score DESC";
+
+            if (search != null) {
+                query = "SELECT *, ((SELECT COUNT(*) FROM likes WHERE post_id = id) / power(time_to_sec(timediff(NOW(), created_at)) / 3600 + 2, 1.8)) AS score FROM posts WHERE title LIKE CONCAT('%', ?, '%') OR text LIKE CONCAT('%', ?, '%') ORDER BY score DESC";
+            }
+
             statement = connection.prepareStatement(query);
+
+            if (search != null) {
+                statement.setString(1, search);
+                statement.setString(2, search);
+            }
+
             resultSet = statement.executeQuery();
 
             ArrayList<Post> posts = new ArrayList<>();
@@ -218,11 +198,10 @@ public class PostController {
                 String text = resultSet.getString(4);
                 int postTopicId = resultSet.getInt(5);
                 String postLanguage = resultSet.getString(6);
-                int likes = resultSet.getInt(7);
-                Date createdAt = new Date(resultSet.getTimestamp(8).getTime());
-                Date updatedAt = new Date(resultSet.getTimestamp(9).getTime());
+                Date createdAt = new Date(resultSet.getTimestamp(7).getTime());
+                Date updatedAt = new Date(resultSet.getTimestamp(8).getTime());
 
-                Post post = new Post(id, createdAt, updatedAt, authorId, title, text, postTopicId, postLanguage, likes);
+                Post post = new Post(id, createdAt, updatedAt, authorId, title, text, postTopicId, postLanguage);
                 post.setAuthor(User.getUserById(authorId));
                 posts.add(post);
             }
@@ -232,10 +211,6 @@ public class PostController {
 
             return postsArray;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             throw new InternalServerException(e);
         } finally {
             if (resultSet != null) {
@@ -281,54 +256,51 @@ public class PostController {
         User user = request.session().attribute("user");
 
         if (user == null) {
-            throw new UnauthorizedException("You must be logged in to like posts.");
+            throw new UnauthorizedException("You must be logged in to " + (like ? "like" : "unlike") + " posts.");
         }
 
-        int userId = user.getId();
-        User updatedUser = User.getUserById(userId);
         Post post = Post.getPostById(postId);
 
         Connection connection = null;
         PreparedStatement statement = null;
-        PreparedStatement userStatement = null;
+        ResultSet resultSet = null;
+        PreparedStatement likedStatement = null;
 
         try {
             connection = DriverManager.getConnection(JDBC_URL);
 
-            ArrayList<Integer> likedPostIds = new ArrayList<>();
+            if (like) {
+                if (post.getAuthorId() != user.getId()) {
+                    statement = connection.prepareStatement("SELECT * FROM likes WHERE user_id = " + user.getId() + " AND post_id = " + post.getId());
+                    resultSet = statement.executeQuery();
 
-            for (int likedPostId : updatedUser.getLiked()) {
-                likedPostIds.add(likedPostId);
-            }
-
-            if (likedPostIds.contains(postId) && post.getAuthorId() != userId) {
-                statement = connection.prepareStatement("UPDATE posts SET likes = likes " + (like ? "+" : "-") + " 1 where id = " + postId);
-                statement.executeUpdate();
-
-                if (like) {
-                    likedPostIds.add(postId);
-                } else {
-                    likedPostIds.remove(postId);
+                    if (!resultSet.next()) {
+                        likedStatement = connection.prepareStatement("INSERT INTO likes (user_id, post_id) VALUES (" + user.getId() + "," + post.getId() + ")");
+                        likedStatement.executeUpdate();
+                    }
                 }
-
-                String likedPostIdsString = likedPostIds.stream().map(Object::toString).collect(Collectors.joining(","));
-
-                userStatement = connection.prepareStatement("UPDATE users SET liked = '" + likedPostIdsString + "' WHERE id = " + userId);
-                userStatement.executeUpdate();
+            } else {
+                statement = connection.prepareStatement("DELETE FROM likes WHERE user_id = " + user.getId() + " AND post_id = " + post.getId());
+                statement.executeUpdate();
             }
 
             response.status(204);
+
             return 0;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-
             throw new InternalServerException(e);
         } finally {
-            if (userStatement != null) {
+            if (likedStatement != null) {
                 try {
-                    userStatement.close();
+                    likedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
