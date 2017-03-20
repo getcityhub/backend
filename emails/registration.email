@@ -1,0 +1,5 @@
+greeting = Hey ${firstName} ${lastName},
+lineOne = This message is to confirm that the CityHub account with the email <span style="font-weight:bold;">${email}</span> belongs to you. After verification, we will be ready to activate your account.
+lineTwo = <br />To confirm that this is your email, click here:
+button = Confirm Email
+lineThree = <br />If this is not your email for CityHub, don’t worry, someone probably just typed the wrong email address.

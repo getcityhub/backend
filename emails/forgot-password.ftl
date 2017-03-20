@@ -19,47 +19,47 @@
             <td style="padding-top: 8px; padding-left: 10px; padding-right: 10px;">
                 We received a request to change your password on CityHub.
             </td>
-            </tr>
-            <tr>
-                <td style="padding-top: 8px;" align="center">
-                    <br />
-                    To change your password, click here:
-                </td>
-            </tr>
-            <tr>
-                <td align="center">
-                    <a href="http://getcityhub.org" target="_blank" style="color:#ffffff; text-decoration:none;">
-                        <table align="center" valign="middle" border="0" cellpadding="0" cellspacing="0" style="background-color:#03324a; border:1px solid #03324a; border-radius:4px; margin-top: 8px; width: 50%; cursor: pointer;">
-                            <tr>
-                                <td align="center" valign="middle" style="color:#ffffff; font-size:16px; font-weight:bold; line-height:150%; padding-top:15px; padding-right:30px; padding-bottom:15px; padding-left:30px;">
-                                    Change Password
-                                </td>
-                            </tr>
-                        </table>
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td style="padding-top: 8px; padding-left: 10px; padding-right: 10px;">
-                    <br />
-                    If you didn’t request a password change, you can ignore this message and continue to use your current password; someone probably typed the wrong email address.
-                </td>
-            </tr>
-            <tr>
-                <td style="padding-top: 24px; padding-left: 10px; padding-right: 10px;">
-                    Thanks,
-                </td>
-            </tr>
-            <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                    <br />
-                    Team CityHub
-                </td>
-            </tr>
-            <tr>
-                <td style="padding-top: 30px;">
-                </td>
-            </tr>
-        </table>
-    </body>
-    </html>
+        </tr>
+        <tr>
+            <td style="padding-top: 8px;" align="center">
+                <br />
+                To change your password, click here:
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <a href="http://getcityhub.org" target="_blank" style="color:#ffffff; text-decoration:none;">
+                    <table align="center" valign="middle" border="0" cellpadding="0" cellspacing="0" style="background-color:#03324a; border:1px solid #03324a; border-radius:4px; margin-top: 8px; width: 50%; cursor: pointer;">
+                        <tr>
+                            <td align="center" valign="middle" style="color:#ffffff; font-size:16px; font-weight:bold; line-height:150%; padding-top:15px; padding-right:30px; padding-bottom:15px; padding-left:30px;">
+                                Change Password
+                            </td>
+                        </tr>
+                    </table>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-top: 8px; padding-left: 10px; padding-right: 10px;">
+                <br />
+                If you didn’t request a password change, you can ignore this message and continue to use your current password; someone probably typed the wrong email address.
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-top: 24px; padding-left: 10px; padding-right: 10px;">
+                Thanks,
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left: 10px; padding-right: 10px;">
+                <br />
+                Team CityHub
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-top: 30px;">
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

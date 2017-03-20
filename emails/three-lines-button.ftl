@@ -12,16 +12,17 @@
         </tr>
         <tr>
             <td style="padding-top: 24px; padding-left: 10px; padding-right: 10px;">
-                Hey,
+                ${greeting}
             </td>
         </tr>
         <tr>
             <td style="padding-top: 8px; padding-left: 10px; padding-right: 10px;">
-                You recently signed up for the CityHub mailing list. To confirm your subscription, click here:
+                ${lineOne}
             </td>
         </tr>
         <tr>
             <td style="padding-top: 8px;" align="center">
+                ${lineTwo}
             </td>
         </tr>
         <tr>
@@ -30,7 +31,7 @@
                     <table align="center" valign="middle" border="0" cellpadding="0" cellspacing="0" style="background-color:#03324a; border:1px solid #03324a; border-radius:4px; margin-top: 8px; width: 50%; cursor: pointer;">
                         <tr>
                             <td align="center" valign="middle" style="color:#ffffff; font-size:16px; font-weight:bold; line-height:150%; padding-top:15px; padding-right:30px; padding-bottom:15px; padding-left:30px;">
-                                Confirm Subscription
+                                ${button}
                             </td>
                         </tr>
                     </table>
@@ -39,8 +40,7 @@
         </tr>
         <tr>
             <td style="padding-top: 8px; padding-left: 10px; padding-right: 10px;">
-                <br />
-                If you didn’t sign up for our mailing list, don’t worry, someone probably just typed the wrong email address.
+                ${lineThree}
             </td>
         </tr>
         <tr>

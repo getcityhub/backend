@@ -163,8 +163,7 @@ public class UserController {
 
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-
-                String codeQuery = "INSERT INTO verification_codes (email, code )VALUES (?, ?)";
+                String codeQuery = "INSERT INTO verification_codes (email, code) VALUES (?, ?)";
                 codeStatement = connection.prepareStatement(codeQuery);
                 codeStatement.setString(1, emailAddress);
                 codeStatement.setString(2, code);
@@ -192,6 +191,8 @@ public class UserController {
                 return user;
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
             throw new InternalServerException(e);
         } finally {
             if (resultSet != null) {

@@ -18,7 +18,7 @@ public class Email {
     }
 
     public String getFileName() {
-        return fileName + ".ftl";
+        return fileName + ".email";
     }
 
     public HashMap<String, String> getData() {

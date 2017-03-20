@@ -10,7 +10,11 @@ import nyc.getcityhub.Main;
 import nyc.getcityhub.models.Email;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 
 import static nyc.getcityhub.Constants.FROM_EMAIL;
 
@@ -22,9 +26,24 @@ public class EmailService {
     public static void sendEmail(Email email, String destinationEmail) {
         Runnable runnable = () -> {
             try {
-                Template temp = Main.FTL_CONFIG.getTemplate(email.getFileName());
+                String[] lines = new String(Files.readAllBytes(Paths.get("emails/" + email.getFileName()))).split("\n");
+
+                HashMap<String, String> data = new HashMap<>();
+
+                for (String line : lines) {
+                    String[] lineData = line.split(" = ", 2);
+
+                    StringReader reader = new StringReader(lineData[1]);
+                    Template lineTemplate = new Template("lineTemplate", reader, Main.FTL_CONFIG);
+                    StringWriter writer = new StringWriter();
+                    lineTemplate.process(email.getData(), writer);
+
+                    data.put(lineData[0], writer.toString());
+                }
+
+                Template temp = Main.FTL_CONFIG.getTemplate("three-lines-button.ftl");
                 StringWriter writer = new StringWriter();
-                temp.process(email.getData(), writer);
+                temp.process(data, writer);
 
                 Destination destination = new Destination().withToAddresses(destinationEmail);
 
