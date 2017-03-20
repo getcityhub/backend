@@ -1,5 +1,44 @@
+[en-US]
 greeting = Hey ${firstName} ${lastName},
 lineOne = This message is to confirm that the CityHub account with the email <span style="font-weight:bold;">${email}</span> belongs to you. After verification, we will be ready to activate your account.
 lineTwo = <br />To confirm that this is your email, click here:
 button = Confirm Email
 lineThree = <br />If this is not your email for CityHub, don’t worry, someone probably just typed the wrong email address.
+thanks = Thanks,
+signature = Team CityHub
+
+[es-ES]
+greeting = Hola ${first name} ${last name},
+lineOne = Este mensaje es para confirmar que la cuenta de CityHub con el correo electrónico de ${email} le pertenece a usted. Tras su confirmación, estaremos listos para activar su cuenta.
+lineTwo = <br />Para confirmar este correo electrónico, haga clic aquí:
+button = Confirmar el correo electrónico
+lineThree = <br />Si este no es su correo electrónico para CityHub, no se preocupe, alguien probablemente escribió el correo electrónico incorrecto.
+thanks = Gracias,
+signature = Equipo CityHub
+
+[fr-FR]
+greeting = Salut ${firstName} ${lastName},
+lineOne = Ce message est pour confirmer que le compte CityHub avec l’adresse email ${email} vous appartient. Après vérification, nous serions prêts pour activer votre compte.
+lineTwo = <br />Pour confirmer que c’est votre email, cliquez ici:
+button = Confirmer email
+lineThree = <br />Si ce n’est pas votre email pour CityHub, ne vous inquiétez pas, quelqu’un a tapé probablement l’adresse email incorrect.
+thanks = Merci,
+signature = Équipe CityHub
+
+[zh-Hans]
+greeting = 你好${lastName}${firstName}，
+lineOne = 这条讯息是确认Email地址为${email}的CityHub账户属于你。完成验证后，我们将激活你的帐户。
+lineTwo = <br />要确认这是你的Email，请点击此处
+button = 确认Email
+lineThree = <br />如果这不是你注册CityHub的Email或你并未注册CityHub，不要担心，别人可能只是输入了错误的Email。
+thanks = 谢谢，
+signature = CityHub团队
+
+[zh-Hant]
+greeting = 你好${lastName}${firstName}，
+lineOne = 這條訊息是確認Email地址為${email}的CityHub賬戶屬於你。完成驗證之後，我們將激活你的帳戶。
+lineTwo = <br />要確認這是你的Email，請點擊此處
+button = 確認Email
+lineThree = <br />如果這不是你註冊CityHub的Email或你並未註冊CityHub，不要擔心，別人可能只是輸入了錯誤的Email。
+thanks = 謝謝，
+signature = CityHub團隊

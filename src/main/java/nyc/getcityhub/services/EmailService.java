@@ -29,8 +29,28 @@ public class EmailService {
                 String[] lines = new String(Files.readAllBytes(Paths.get("emails/" + email.getFileName()))).split("\n");
 
                 HashMap<String, String> data = new HashMap<>();
+                boolean readingData = false;
+                int i = 0;
 
                 for (String line : lines) {
+                    i += 1;
+
+                    if (line.matches("\\[(.*){2}-(.*){2,4}\\]")) {
+                        if (line.replace("[", "").replace("]", "").equals(email.getLanguage().getId())) {
+                            readingData = true;
+                        }
+
+                        continue;
+                    } else if (line.length() == 0) {
+                        if (readingData) {
+                            break;
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        if (!readingData) continue;
+                    }
+
                     String[] lineData = line.split(" = ", 2);
 
                     StringReader reader = new StringReader(lineData[1]);

@@ -45,13 +45,12 @@
         </tr>
         <tr>
             <td style="padding-top: 24px; padding-left: 10px; padding-right: 10px;">
-                Thanks,
+                ${thanks}
             </td>
         </tr>
         <tr>
             <td style="padding-left: 10px; padding-right: 10px;">
-                <br />
-                Team CityHub
+                ${signature}
             </td>
         </tr>
         <tr>

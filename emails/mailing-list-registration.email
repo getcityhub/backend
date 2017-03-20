@@ -1,0 +1,44 @@
+[en-US]
+greeting = Hey!
+lineOne = You recently signed up for the CityHub mailing list. To confirm your subscription, click here:
+lineTwo = <div></div>
+button = Confirm Subscription
+lineThree = <br />If you didn’t sign up for our mailing list, don’t worry, someone probably just typed the wrong email address.
+thanks = Thanks,
+signature = Team CityHub
+
+[es-ES]
+greeting = Hola!
+lineOne = Recientemente se contrató para la lista de correos de Cityhub. Para confirmar su suscripción, haga clic aquí:
+lineTwo = <div></div>
+button = Confirmar el correo electrónico
+lineThree = <br />Si se no contrató para la lista de correos, no se preocupe, alguien probablemente escribió el correo electrónico incorrecto.
+thanks = Gracias,
+signature = Equipo CityHub
+
+[fr-FR]
+greeting = Hé!
+lineOne = Vous vous êtes inscrit récemment pour la liste de distribution CityHub. Pour confirmer votre abonnement, cliquez ici:
+lineTwo = <div></div>
+button = Confirmer abonnement
+lineThree = <br />Si vous ne vous êtes pas inscrit pour notre liste de distribution, ne vous inquiétez pas, quelqu’un a tapé probablement l’adresse email incorrect.
+thanks = Merci,
+signature = Équipe CityHub
+
+[zh-Hans]
+greeting = 你好，
+lineOne = 你最近注册了CityHub邮件列表。要确认你的订阅，请点击此处：
+lineTwo = <div></div>
+button = 确认Email
+lineThree = <br />如果你没有注册我们的邮件列表，不要担心，别人可能只是输入了错误的Email。
+thanks = 谢谢，
+signature = CityHub团队
+
+[zh-Hant]
+greeting = 你好，
+lineOne = 你最近註冊了CityHub郵件列表。要確認你的訂閱，請點擊此處：
+lineTwo = <div></div>
+button = 確認Email
+lineThree = 如果你沒有註冊我們的郵件列表，不要擔心，別人可能只是輸入了錯誤的Email。
+thanks = 謝謝，
+signature = CityHub團隊
