@@ -60,7 +60,7 @@ public class EmailService {
 
                     if (lineData[0].equals("subject")) {
                         subjectText = lineData[1];
-                    } else if (lineData[0].equals("signature")) {
+                    } else if (lineData[0].equals("sender")) {
                         senderName = lineData[1];
                     }
                 }
