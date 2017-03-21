@@ -40,7 +40,7 @@ signature = CityHub团队
 
 [zh-Hant]
 subject = Welcome to CityHub
-greeting = 你好${lastName}${firstName}，
+greeting = 你好${firstName} ${lastName}，
 lineOne = 這條訊息是確認Email地址為${email}的CityHub賬戶屬於你。完成驗證之後，我們將激活你的帳戶。
 lineTwo = <br />要確認這是你的Email，請點擊此處
 button = 確認Email
