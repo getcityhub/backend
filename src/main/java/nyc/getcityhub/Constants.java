@@ -8,9 +8,6 @@ public class Constants {
     // The number of log rounds to use for BCrypt salts
     public final static int BCRYPT_LOG_ROUNDS = 10;
 
-    // The name/address emails should be sent from
-    public final static String FROM_EMAIL = "Team CityHub <no_reply@getcityhub.org>";
-
     // Minimum password strength (out of 5) as determined by zxcvbn
     public final static int MINIMUM_PASSWORD_STRENGTH = 3;
 

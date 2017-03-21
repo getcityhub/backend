@@ -1,4 +1,5 @@
 [en-US]
+subject = CityHub Mailing List
 greeting = Hey!
 lineOne = You recently signed up for the CityHub mailing list. To confirm your subscription, click here:
 lineTwo = <div></div>
@@ -8,6 +9,7 @@ thanks = Thanks,
 signature = Team CityHub
 
 [es-ES]
+subject = CityHub Mailing List
 greeting = Hola!
 lineOne = Recientemente se contrató para la lista de correos de Cityhub. Para confirmar su suscripción, haga clic aquí:
 lineTwo = <div></div>
@@ -17,6 +19,7 @@ thanks = Gracias,
 signature = Equipo CityHub
 
 [fr-FR]
+subject = CityHub Mailing List
 greeting = Hé!
 lineOne = Vous vous êtes inscrit récemment pour la liste de distribution CityHub. Pour confirmer votre abonnement, cliquez ici:
 lineTwo = <div></div>
@@ -26,6 +29,7 @@ thanks = Merci,
 signature = Équipe CityHub
 
 [zh-Hans]
+subject = CityHub Mailing List
 greeting = 你好，
 lineOne = 你最近注册了CityHub邮件列表。要确认你的订阅，请点击此处：
 lineTwo = <div></div>
@@ -35,6 +39,7 @@ thanks = 谢谢，
 signature = CityHub团队
 
 [zh-Hant]
+subject = CityHub Mailing List
 greeting = 你好，
 lineOne = 你最近註冊了CityHub郵件列表。要確認你的訂閱，請點擊此處：
 lineTwo = <div></div>

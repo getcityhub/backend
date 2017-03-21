@@ -16,8 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
-import static nyc.getcityhub.Constants.FROM_EMAIL;
-
 /**
  * Created by jackcook on 3/15/17.
  */
@@ -30,11 +28,11 @@ public class EmailService {
 
                 HashMap<String, String> data = new HashMap<>();
                 boolean readingData = false;
-                int i = 0;
+
+                String subjectText = "Welcome to CityHub";
+                String senderName = "Team CityHub";
 
                 for (String line : lines) {
-                    i += 1;
-
                     if (line.matches("\\[(.*){2}-(.*){2,4}\\]")) {
                         if (line.replace("[", "").replace("]", "").equals(email.getLanguage().getId())) {
                             readingData = true;
@@ -59,6 +57,12 @@ public class EmailService {
                     lineTemplate.process(email.getData(), writer);
 
                     data.put(lineData[0], writer.toString());
+
+                    if (lineData[0].equals("subject")) {
+                        subjectText = lineData[1];
+                    } else if (lineData[0].equals("signature")) {
+                        senderName = lineData[1];
+                    }
                 }
 
                 Template temp = Main.FTL_CONFIG.getTemplate("three-lines-button.ftl");
@@ -67,12 +71,14 @@ public class EmailService {
 
                 Destination destination = new Destination().withToAddresses(destinationEmail);
 
-                Content subject = new Content().withCharset("UTF-8").withData(email.getSubject());
+                Content subject = new Content().withCharset("UTF-8").withData(subjectText);
                 Content textBody = new Content().withCharset("UTF-8").withData(writer.toString());
                 Body body = new Body().withHtml(textBody);
 
+                String sender = senderName + " <no_reply@getcityhub.org>";
+
                 Message message = new Message().withSubject(subject).withBody(body);
-                SendEmailRequest emailRequest = new SendEmailRequest().withSource(FROM_EMAIL).withDestination(destination).withMessage(message);
+                SendEmailRequest emailRequest = new SendEmailRequest().withSource(sender).withDestination(destination).withMessage(message);
 
                 AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
                 Region region = Region.getRegion(Regions.US_EAST_1);

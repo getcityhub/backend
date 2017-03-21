@@ -174,7 +174,7 @@ public class UserController {
                 data.put("lastName", lastName);
                 data.put("email", emailAddress);
 
-                Email email = new Email("registration", data, "Welcome to CityHub", Language.fromId(languages.get(0).getAsString()));
+                Email email = new Email("registration", data, Language.fromId(languages.get(0).getAsString()));
                 EmailService.sendEmail(email, emailAddress);
 
                 if (mailingList) {
@@ -535,7 +535,7 @@ public class UserController {
                 data.put("firstName", firstName);
                 data.put("lastName", lastName);
 
-                Email email = new Email("forgot-password", data, "CityHub Password Reset", Language.fromId(languagesArray[0]));
+                Email email = new Email("forgot-password", data, Language.fromId(languagesArray[0]));
                 EmailService.sendEmail(email, emailAddress);
 
                 String resetQuery = "INSERT INTO password_reset_requests (user_id, code) VALUES (?, ?)";

@@ -1,4 +1,5 @@
 [en-US]
+subject = Welcome to CityHub
 greeting = Hey ${firstName} ${lastName},
 lineOne = This message is to confirm that the CityHub account with the email <span style="font-weight:bold;">${email}</span> belongs to you. After verification, we will be ready to activate your account.
 lineTwo = <br />To confirm that this is your email, click here:
@@ -8,6 +9,7 @@ thanks = Thanks,
 signature = Team CityHub
 
 [es-ES]
+subject = Welcome to CityHub
 greeting = Hola ${first name} ${last name},
 lineOne = Este mensaje es para confirmar que la cuenta de CityHub con el correo electrónico de ${email} le pertenece a usted. Tras su confirmación, estaremos listos para activar su cuenta.
 lineTwo = <br />Para confirmar este correo electrónico, haga clic aquí:
@@ -17,6 +19,7 @@ thanks = Gracias,
 signature = Equipo CityHub
 
 [fr-FR]
+subject = Welcome to CityHub
 greeting = Salut ${firstName} ${lastName},
 lineOne = Ce message est pour confirmer que le compte CityHub avec l’adresse email ${email} vous appartient. Après vérification, nous serions prêts pour activer votre compte.
 lineTwo = <br />Pour confirmer que c’est votre email, cliquez ici:
@@ -26,6 +29,7 @@ thanks = Merci,
 signature = Équipe CityHub
 
 [zh-Hans]
+subject = Welcome to CityHub
 greeting = 你好${lastName}${firstName}，
 lineOne = 这条讯息是确认Email地址为${email}的CityHub账户属于你。完成验证后，我们将激活你的帐户。
 lineTwo = <br />要确认这是你的Email，请点击此处
@@ -35,6 +39,7 @@ thanks = 谢谢，
 signature = CityHub团队
 
 [zh-Hant]
+subject = Welcome to CityHub
 greeting = 你好${lastName}${firstName}，
 lineOne = 這條訊息是確認Email地址為${email}的CityHub賬戶屬於你。完成驗證之後，我們將激活你的帳戶。
 lineTwo = <br />要確認這是你的Email，請點擊此處
