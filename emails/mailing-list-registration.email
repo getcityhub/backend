@@ -23,7 +23,7 @@ signature = Equipo CityHub
 [fr-FR]
 sender = =?utf-8?b?w4lxdWlwZSBDaXR5SHVi?=
 subject = Liste de distribution CityHub
-greeting = Hé!
+greeting = Salut!
 lineOne = Vous vous êtes inscrit récemment pour la liste de distribution CityHub. Pour confirmer votre abonnement, cliquez ici:
 lineTwo = <div></div>
 button = Confirmer abonnement
