@@ -64,6 +64,7 @@ public class Main {
 
             get("", PostController::retrievePosts, transformer);
             get("/:id", PostController::retrievePost, transformer);
+            get("/:id/view", PostController::viewPost);
             post("", PostController::createPost, transformer);
             post("/:id/like", (req, res) -> PostController.likePost(req, res, true));
             post("/:id/unlike", (req, res) -> PostController.likePost(req, res, false));

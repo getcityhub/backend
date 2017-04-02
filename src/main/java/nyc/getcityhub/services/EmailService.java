@@ -65,7 +65,7 @@ public class EmailService {
                     }
                 }
 
-                Template temp = Main.FTL_CONFIG.getTemplate("three-lines-button.ftl");
+                Template temp = Main.FTL_CONFIG.getTemplate("emails/three-lines-button.ftl");
                 StringWriter writer = new StringWriter();
                 temp.process(data, writer);
 

@@ -2,6 +2,9 @@ package nyc.getcityhub.controllers;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import nyc.getcityhub.Main;
 import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
 import nyc.getcityhub.exceptions.NotFoundException;
@@ -13,8 +16,12 @@ import nyc.getcityhub.models.User;
 import spark.Request;
 import spark.Response;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static nyc.getcityhub.Constants.*;
 
@@ -236,6 +243,43 @@ public class PostController {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public static String viewPost(Request request, Response response) throws BadRequestException, InternalServerException {
+        response.type("text/html; charset=utf-8");
+
+        String idString = request.params(":id");
+        int postId;
+
+        try {
+            postId = Integer.parseInt(idString);
+        } catch(NumberFormatException e) {
+            throw new BadRequestException(idString + " is not a valid post id.");
+        }
+
+        if (postId <= 0) {
+            throw new BadRequestException(idString + " is not a valid post id.");
+        }
+
+        Post post = Post.getPostById(postId);
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("title", post.getTitle());
+        data.put("author", post.getAuthor().isAnonymous() ? "Anonymous" : post.getAuthor().getFirstName() + " " + post.getAuthor().getLastName());
+        data.put("text", post.getText());
+        data.put("date", "lol");
+
+        try {
+            Template template = Main.FTL_CONFIG.getTemplate("../html/post.ftl");
+            StringWriter writer = new StringWriter();
+            template.process(data, writer);
+
+            return writer.toString();
+        } catch (IOException | TemplateException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new InternalServerException("An unknown exception occurred.");
         }
     }
 
