@@ -160,7 +160,7 @@ public class Main {
         FTL_CONFIG = new Configuration(Configuration.VERSION_2_3_25);
 
         try {
-            FTL_CONFIG.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir") + "/emails"));
+            FTL_CONFIG.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir")));
         } catch (IOException e) {
             e.printStackTrace();
         }

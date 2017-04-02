@@ -1,5 +1,6 @@
 package nyc.getcityhub.controllers;
 
+import com.amazonaws.services.dynamodbv2.xspec.NULL;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import freemarker.template.Template;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -263,22 +265,23 @@ public class PostController {
         }
 
         Post post = Post.getPostById(postId);
-
-        HashMap<String, String> data = new HashMap<>();
-        data.put("title", post.getTitle());
-        data.put("author", post.getAuthor().isAnonymous() ? "Anonymous" : post.getAuthor().getFirstName() + " " + post.getAuthor().getLastName());
-        data.put("text", post.getText());
-        data.put("date", "lol");
+        User author = User.getUserById(post.getAuthorId());
 
         try {
-            Template template = Main.FTL_CONFIG.getTemplate("../html/post.ftl");
+            HashMap<String, String> data = new HashMap<>();
+            data.put("title", post.getTitle());
+            data.put("author", author.isAnonymous() ? "Anonymous" : author.getFirstName() + " " + author.getLastName());
+            data.put("text", post.getText());
+
+            SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy");
+            data.put("date", format.format(post.getCreatedAt()));
+
+            Template template = Main.FTL_CONFIG.getTemplate("html/post.ftl");
             StringWriter writer = new StringWriter();
             template.process(data, writer);
 
             return writer.toString();
-        } catch (IOException | TemplateException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+        } catch (Exception e) {
             throw new InternalServerException("An unknown exception occurred.");
         }
     }
