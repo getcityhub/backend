@@ -1,10 +1,8 @@
 package nyc.getcityhub.controllers;
 
-import com.amazonaws.services.dynamodbv2.xspec.NULL;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import nyc.getcityhub.Main;
 import nyc.getcityhub.exceptions.BadRequestException;
 import nyc.getcityhub.exceptions.InternalServerException;
@@ -17,8 +15,6 @@ import nyc.getcityhub.models.User;
 import spark.Request;
 import spark.Response;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.*;
 import java.text.SimpleDateFormat;
